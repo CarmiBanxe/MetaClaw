@@ -4,7 +4,7 @@
 
 <br/>
 
-**只需与你的 Agent 对话 —— 它会不断学习，持续进化。**
+### 只需与你的 Agent 对话 —— 它会不断学习，持续进化。
 
 <p>
   <a href="https://github.com/aiming-lab/MetaClaw"><img src="https://img.shields.io/badge/github-MetaClaw-181717?style=flat&labelColor=555&logo=github&logoColor=white" alt="GitHub"></a>
