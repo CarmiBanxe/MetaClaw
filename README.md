@@ -28,7 +28,15 @@
 
 ---
 
+## 🎥 Demo
+
+https://github.com/user-attachments/assets/fce77dfc-dfaa-4765-a7de-556128254655
+
+---
+
 ## 📖 Overview
+
+
 
 **MetaClaw turns live conversations into continuous training data — automatically.**  
 Just talk to your agent as usual, and MetaClaw handles the learning loop behind the scenes.
