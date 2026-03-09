@@ -53,7 +53,7 @@ MetaClaw learns directly from live user-agent conversations. Instead of collecti
 At every turn, MetaClaw retrieves the most relevant skill instructions and injects them into the agent’s system prompt. This enables immediate behavior improvement without waiting for retraining.
 
 ### **Skill evolution**
-When the agent fails, MetaClaw analyzes the full interaction trajectory and uses an LLM to generate new skills automatically. Over time, the system becomes more capable by learning from its own mistakes.
+When the agent fails, MetaClaw analyzes the full interaction trajectory and uses an LLM to generate new skills automatically. Over time, the system becomes more capable by learning from its own mistakes. If you're interested in the broader idea of skill-augmented RL, check out our [SkillRL](https://github.com/aiming-lab/SkillRL) project.
 
 ### **No GPU cluster required**
 Training is offloaded to Tinker cloud, so any machine with network access can run the full system. This makes continual learning much easier to deploy and maintain.
@@ -172,6 +172,7 @@ export AZURE_OPENAI_ENDPOINT="https://your-endpoint.openai.azure.com/"
 MetaClaw builds on top of the following open-source projects:
 
 - [OpenClaw](https://openclaw.ai) – the core agent framework.
+- [SkillRL](https://github.com/aiming-lab/SkillRL) – our skill-augmented RL framework.
 - [Tinker](https://www.thinkingmachines.ai/tinker/) – used for online RL training.
 - [OpenClaw-RL](https://github.com/Gen-Verse/OpenClaw-RL) – inspiration for our RL design.
 - [awesome-openclaw-skills](https://github.com/VoltAgent/awesome-openclaw-skills) – provides the foundation for our skill bank.
