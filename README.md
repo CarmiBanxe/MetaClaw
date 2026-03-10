@@ -11,6 +11,7 @@
   <img src="https://img.shields.io/badge/⚡_Fully_Async-yellow?style=flat&labelColor=555" alt="Fully Async" />
   <img src="https://img.shields.io/badge/☁️_No_GPU_Cluster-blue?style=flat&labelColor=555" alt="No GPU Cluster" />
   <img src="https://img.shields.io/badge/🛠️_Skill_Evolution-orange?style=flat&labelColor=555" alt="Skill Evolution" />
+  <img src="https://img.shields.io/badge/🚀_One--Click_Deploy-green?style=flat&labelColor=555" alt="One-Click Deploy" />
 </p>
 
 <p align="center">
@@ -23,7 +24,8 @@
 
 ## 🔥 News
 
-- **[03/09/2026]** We release **MetaClaw** — Just talk to your agent and let it evolve automatically. **NO** GPU deployment required; just plug into the **API**. 
+- **[03/10/2026]** **v0.2** — One-click deployment via `metaclaw` CLI. Skills enabled by default, RL is now opt-in.
+- **[03/09/2026]** We release **MetaClaw** — Just talk to your agent and let it evolve automatically. **NO** GPU deployment required; just plug into the **API**.
 
 ---
 
@@ -35,120 +37,165 @@ https://github.com/user-attachments/assets/1c2919fc-5612-40f7-bb97-c74ab50619d5
 
 ## 📖 Overview
 
-
-
-**MetaClaw turns live conversations into continuous training data — automatically.**  
+**MetaClaw turns live conversations into continuous training data — automatically.**
 Just talk to your agent as usual, and MetaClaw handles the learning loop behind the scenes.
 
-It wraps your model behind an OpenAI-compatible API, intercepts interactions from OpenClaw, scores each turn, and continuously improves the policy through online fine-tuning. Updated weights are hot-swapped into production with no service interruption.
+It wraps your model behind an OpenAI-compatible proxy, intercepts interactions from OpenClaw, injects relevant skills at every turn, and optionally fine-tunes the model continuously via Tinker cloud RL. Updated weights are hot-swapped with no service interruption.
 
-There is no need to maintain a dedicated GPU cluster. MetaClaw is built around **Kimi-2.5** (~200B MoE) using [Tinker](https://www.thinkingmachines.ai/tinker/) for cloud-based LoRA training, with **Qwen3-4B** available as a lightweight alternative.
+There is no need to maintain a dedicated GPU cluster. MetaClaw works with any OpenAI-compatible LLM API out of the box, and optionally integrates **Kimi-K2.5** (~200B MoE) via [Tinker](https://www.thinkingmachines.ai/tinker/) for cloud-based LoRA training.
 
 ## 🤖 Key Features
 
-### **Train from real usage**
-MetaClaw learns directly from live user-agent conversations. Instead of collecting static datasets and retraining offline, it continuously improves from actual deployment.
+### **One-click deployment**
+Configure once with `metaclaw setup`, then `metaclaw start` brings up the proxy, injects skills, and wires OpenClaw automatically. No manual shell scripts needed.
+
+### **Two operating modes**
+
+| Mode | Default | What it does |
+|------|---------|--------------|
+| `skills_only` | ✅ | Proxy → your LLM API. Skills injected, auto-summarized after each session. No GPU/Tinker required. |
+| `rl` | off | Proxy → Tinker cloud RL. Full training loop with PRM scoring and skill evolution from failures. |
 
 ### **Skill injection**
-At every turn, MetaClaw retrieves the most relevant skill instructions and injects them into the agent’s system prompt. This enables immediate behavior improvement without waiting for retraining.
+At every turn, MetaClaw retrieves the most relevant skill instructions and injects them into the agent's system prompt. Immediate behavior improvement without retraining.
 
-### **Skill evolution**
-When the agent fails, MetaClaw analyzes the full interaction trajectory and uses an LLM to generate new skills automatically. Over time, the system becomes more capable by learning from its own mistakes. If you're interested in the broader idea of skill-augmented RL, check out our [SkillRL](https://github.com/aiming-lab/SkillRL) project.
+### **Automatic skill summarization**
+After each conversation, the same LLM you're already using analyzes the session and distills new skills automatically. With RL enabled, a dedicated judge model extracts skills from failed episodes.
 
 ### **No GPU cluster required**
-Training is offloaded to Tinker cloud, so any machine with network access can run the full system. This makes continual learning much easier to deploy and maintain.
+In `skills_only` mode, only a network connection is needed. RL training is offloaded to Tinker cloud.
 
 ### **Asynchronous by design**
-Serving, reward modeling, and training are fully decoupled. The agent continues responding in real time while scoring and optimization run in parallel.
-
-### **Two learning modes**
-MetaClaw supports both:
-- **RL (GRPO)** for learning from implicit feedback signals
-- **On-Policy Distillation (OPD)** for leveraging richer natural-language supervision
-
-This gives you a practical path to improve agents from both lightweight signals and high-quality textual feedback.
+Serving, reward modeling, and training are fully decoupled. The agent continues responding while scoring and optimization run in parallel.
 
 ---
 
 ## 🚀 Quick Start
 
-### 1. Install dependencies
+### 1. Install
 
 ```bash
-pip install fastapi uvicorn httpx openai transformers
-pip install tinker tinker-cookbook   # Tinker SDK
+pip install -e .            # skills_only mode (lightweight)
+pip install -e ".[rl]"      # + RL training support (torch, transformers, tinker)
+pip install -e ".[evolve]"  # + skill evolution via OpenAI-compatible LLM
 ```
 
-### 2. Configure OpenClaw
-
-Run the setup script once to point the OpenClaw gateway at the MetaClaw proxy:
+### 2. Configure
 
 ```bash
-bash openclaw_model_kimi.sh   # Kimi-2.5 (recommended)
+metaclaw setup
 ```
 
-### 3. Start training
+The interactive wizard will ask you to choose your LLM provider (Kimi, Qwen, or custom), enter your API key, and optionally enable RL training.
+
+### 3. Start
 
 ```bash
-export TINKER_API_KEY="..."
-cd /path/to/metaclaw
-python examples/run_conversation_rl.py
+metaclaw start
 ```
 
-That's it. Start chatting with your agent — MetaClaw automatically collects conversation turns, scores them, and trains the model. After every `batch_size` samples, new weights are hot-swapped in with no restart.
+That's it. MetaClaw starts the proxy, automatically configures OpenClaw to use it, and restarts the gateway. Open OpenClaw and start chatting — skills are injected at every turn, and the session is automatically summarized into new skills when you're done.
+
+---
+
+## 🛠️ CLI Reference
+
+```
+metaclaw setup              # Interactive first-time configuration wizard
+metaclaw start              # Start MetaClaw (proxy + optional RL)
+metaclaw start --mode rl    # Force RL mode for this session
+metaclaw stop               # Stop a running MetaClaw instance
+metaclaw status             # Check proxy health and running mode
+metaclaw config show        # View current configuration
+metaclaw config KEY VALUE   # Set a config value
+```
+
+**Common config keys:**
+
+```bash
+metaclaw config rl.enabled true           # Enable RL training
+metaclaw config rl.tinker_api_key sk-...  # Set Tinker key
+metaclaw config skills.auto_evolve false  # Disable auto skill summarization
+metaclaw config proxy.port 31000          # Change proxy port
+```
 
 ---
 
 ## ⚙️ Configuration
 
-All settings are in `MetaClawConfig` (`metaclaw/config.py`). The most commonly adjusted fields:
+Configuration lives in `~/.metaclaw/config.yaml`, created by `metaclaw setup`.
 
-| Field | Default | Description |
-|-------|---------|-------------|
-| `model_name` | `"moonshotai/Kimi-2.5"` | Base model |
-| `lora_rank` | `32` | LoRA rank |
-| `batch_size` | `32` | Samples before each training step |
-| `max_steps` | `1000` | Total training steps |
-| `loss_fn` | `"importance_sampling"` | `"importance_sampling"` / `"ppo"` / `"cispo"` |
-| `use_prm` | `True` | Enable PRM reward scoring |
-| `prm_url` | `"https://api.openai.com/v1"` | Any OpenAI-compatible judge endpoint |
-| `prm_model` | `"gpt-5.2"` | Judge model |
-| `use_skills` | `False` | Enable skill injection |
-| `enable_skill_evolution` | `False` | Auto-generate skills from failures |
-| `proxy_port` | `30000` | Proxy listen port |
-| `tinker_sampling_url` | `"http://localhost:8080"` | Tinker sampling endpoint |
+```yaml
+mode: skills_only          # "skills_only" | "rl"
 
-For programmatic rollout (no IDE needed), set `openclaw_env_data_dir` to a directory of JSONL task files:
+llm:
+  provider: kimi            # kimi | qwen | openai | custom
+  model_id: moonshotai/Kimi-K2.5
+  api_base: https://api.moonshot.cn/v1
+  api_key: sk-...
 
-```json
-{"task_id": "task_1", "instruction": "Register the webhook at https://example.com/hook"}
+proxy:
+  port: 30000
+
+skills:
+  enabled: true
+  dir: ~/.metaclaw/skills   # your skill library
+  retrieval_mode: template  # template | embedding
+  top_k: 6
+  auto_evolve: true         # auto-summarize skills after each session
+
+rl:
+  enabled: false            # set to true to enable RL training
+  model: moonshotai/Kimi-K2.5
+  tinker_api_key: ""
+  prm_url: https://api.openai.com/v1
+  prm_model: gpt-5.2
+  prm_api_key: ""
+  lora_rank: 32
+  batch_size: 8
+  evolver_api_base: ""      # leave empty to reuse llm.api_base
+  evolver_api_key: ""
+  evolver_model: gpt-5.2
 ```
 
 ---
 
 ## 💪 Skills
 
-Skills are short Markdown instructions injected into the agent's system prompt at each turn. They're organized in `memory_data/conversation/conversation_skills.json` by category (`coding`, `security`, `agentic`, etc.).
+Skills are short Markdown instructions injected into the agent's system prompt at each turn. They live in your skills directory (`~/.metaclaw/skills/` by default), organized as individual `SKILL.md` files.
 
-Enable with:
+**Skill auto-summarization** runs after each conversation. The LLM you configured analyzes what happened and generates new skills automatically. No manual curation needed — the library grows with your usage.
 
-```python
-config = MetaClawConfig(use_skills=True)
-```
-
-To automatically generate new skills when the agent struggles:
-
-```python
-config = MetaClawConfig(
-    use_skills=True,
-    enable_skill_evolution=True,
-    azure_openai_deployment="gpt-5.2",
-)
-```
+To pre-load the built-in skill bank (40+ skills across coding, security, agentic tasks, etc.):
 
 ```bash
-export AZURE_OPENAI_API_KEY="..."
-export AZURE_OPENAI_ENDPOINT="https://your-endpoint.openai.azure.com/"
+cp -r memory_data/skills/* ~/.metaclaw/skills/
+```
+
+---
+
+## 🔬 Advanced: RL Mode
+
+Enable RL training to continuously fine-tune the model from live conversations:
+
+```bash
+metaclaw config rl.enabled true
+metaclaw config rl.tinker_api_key sk-...
+metaclaw config rl.prm_url https://api.openai.com/v1
+metaclaw config rl.prm_api_key sk-...
+metaclaw start
+```
+
+In RL mode:
+- Each conversation turn is tokenized and submitted as a training sample
+- A judge LLM (PRM) scores responses asynchronously
+- Tinker cloud runs LoRA fine-tuning; updated weights are hot-swapped every `batch_size` samples
+- A dedicated evolver LLM extracts new skills from failed episodes
+
+**Programmatic rollout** (no OpenClaw TUI needed): set `openclaw_env_data_dir` to a directory of JSONL task files:
+
+```json
+{"task_id": "task_1", "instruction": "Register the webhook at https://example.com/hook"}
 ```
 
 ---
