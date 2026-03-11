@@ -28,14 +28,15 @@
 <div align="center">
 
 ### Two commands. That's it.
+</div>
 
-```bash
+```
 metaclaw setup   # one-time config wizard
 metaclaw start   # proxy up, skills on, OpenClaw wired
 ```
 
+<div align="center">
 <img src="assets/metaclaw.gif" alt="MetaClaw demo" width="700">
-
 </div>
 
 ---
