@@ -142,6 +142,7 @@ skills:
   dir: ~/.metaclaw/skills   # your skill library
   retrieval_mode: template  # template | embedding
   top_k: 6
+  task_specific_top_k: 10   # cap task-specific skills (default 10)
   auto_evolve: true         # auto-summarize skills after each session
 
 rl:
@@ -153,9 +154,12 @@ rl:
   prm_api_key: ""
   lora_rank: 32
   batch_size: 4
+  resume_from_ckpt: ""      # optional checkpoint path to resume training
   evolver_api_base: ""      # leave empty to reuse llm.api_base
   evolver_api_key: ""
   evolver_model: gpt-5.2
+
+max_context_tokens: 20000   # prompt token cap before truncation
 ```
 
 ---
