@@ -27,7 +27,7 @@ logging.basicConfig(
 
 async def main():
     config = MetaClawConfig(
-        model_name="Qwen/Qwen3-4B",
+        model_name="Qwen/Qwen3-8B",
         lora_rank=32,
         renderer_name="qwen3",
 
