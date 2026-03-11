@@ -4,8 +4,26 @@ import os
 import subprocess
 
 def run_llm(messages):    
-    api_key = os.environ.get("OPENAI_API_KEY", "")
-    base_url = os.environ.get("OPENAI_BASE_URL", "https://api.openai.com/v1")
+    # Prefer MetaClaw PRM config so RL mode can reuse configured judge endpoint.
+    prm_url = ""
+    prm_api_key = ""
+    prm_model = ""
+    try:
+        from .config_store import ConfigStore
+
+        cfg = ConfigStore().load()
+        rl_cfg = cfg.get("rl", {}) if isinstance(cfg, dict) else {}
+        if isinstance(rl_cfg, dict):
+            prm_url = str(rl_cfg.get("prm_url", "") or "")
+            prm_api_key = str(rl_cfg.get("prm_api_key", "") or "")
+            prm_model = str(rl_cfg.get("prm_model", "") or "")
+    except Exception:
+        # Keep runtime resilient: fall back to environment variables/defaults.
+        pass
+
+    api_key = prm_api_key or os.environ.get("OPENAI_API_KEY", "")
+    base_url = prm_url or os.environ.get("OPENAI_BASE_URL", "https://api.openai.com/v1")
+    model_id = prm_model or os.environ.get("PRM_MODEL", "gpt-5.2")
     client_kwargs: dict[str, Any] = {"api_key": api_key}
     client_kwargs["base_url"] = base_url
     client = OpenAI(**client_kwargs)
@@ -29,7 +47,7 @@ def run_llm(messages):
     rewrite_messages = [{"role": "system", "content": compression_instruction}, *messages]
 
     response = client.chat.completions.create(
-        model="gpt-5.2",
+        model=model_id,
         messages=rewrite_messages,
         max_completion_tokens=2500,
     )
