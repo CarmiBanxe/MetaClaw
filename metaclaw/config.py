@@ -20,10 +20,11 @@ class MetaClawConfig:
     # Training                                                            #
     # ------------------------------------------------------------------ #
     learning_rate: float = 1e-4
-    batch_size: int = 32          # Number of ConversationSamples per training step
+    batch_size: int = 4           # Number of ConversationSamples per training step
     max_steps: int = 1000
     loss_fn: str = "importance_sampling"  # "ppo" | "importance_sampling" | "cispo"
     save_weights_timeout_s: float = 200.0  # timeout for sampling-client refresh
+    resume_from_ckpt: str = ""    # optional Tinker resume path, e.g. tinker://.../weights/step_0003
 
     # ------------------------------------------------------------------ #
     # Reward / PRM                                                        #
@@ -49,6 +50,7 @@ class MetaClawConfig:
     retrieval_mode: str = "template"          # "template" | "embedding"
     embedding_model_path: str = "Qwen/Qwen3-Embedding-0.6B"
     skill_top_k: int = 6                      # General skills to inject
+    task_specific_top_k: int = 10    # Task-specific skills cap; None means no cap
     enable_skill_evolution: bool = False
     skill_update_threshold: float = 0.4       # Evolve when success rate < threshold
     max_new_skills: int = 3
@@ -56,7 +58,7 @@ class MetaClawConfig:
     # ------------------------------------------------------------------ #
     # Context window                                                       #
     # ------------------------------------------------------------------ #
-    max_context_tokens: int = 12000            # hard cap on prompt token count; must match
+    max_context_tokens: int = 20000            # hard cap on prompt token count; must match
                                               # Tinker's max_seq_len minus headroom for response
 
     # ------------------------------------------------------------------ #

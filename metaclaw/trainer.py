@@ -88,6 +88,19 @@ class MetaClawTrainer:
             base_model=self.config.model_name,
             rank=self.config.lora_rank,
         )
+        if self.config.resume_from_ckpt:
+            logger.info("[Trainer] resuming training client from ckpt: %s", self.config.resume_from_ckpt)
+            try:
+                await self.training_client.load_state_async(self.config.resume_from_ckpt)
+                logger.info("[Trainer] load_state done")
+            except AttributeError as e:
+                raise RuntimeError(
+                    f"[Trainer] load_state failed: missing async API on training_client ({e})"
+                ) from e
+            except Exception as e:
+                raise RuntimeError(
+                    f"[Trainer] load_state failed from resume_from_ckpt={self.config.resume_from_ckpt}: {e}"
+                ) from e
 
         # 2. Initial sampling client (checkpoint = base weights)
         self.sampling_client = (
@@ -101,6 +114,7 @@ class MetaClawTrainer:
                 skills_dir=self.config.skills_dir,
                 retrieval_mode=self.config.retrieval_mode,
                 embedding_model_path=self.config.embedding_model_path,
+                task_specific_top_k=self.config.task_specific_top_k
             )
             logger.info("[Trainer] SkillManager ready: %s", self.skill_manager.get_skill_count())
 
@@ -192,10 +206,13 @@ class MetaClawTrainer:
             return
 
         logger.info("[Trainer] weights saved, sampling client updated")
-        if step_idx % 5 == 0:
+        if step_idx % 1 == 0:
             ckpt_name = f"step_{step_idx:04d}"
             try:
-                resume_path = self.training_client.save_state(name=ckpt_name).result().path
+                resolved = await self.training_client.save_state_async(name=ckpt_name)
+                resume_path = getattr(resolved, "path", None)
+                if not resume_path:
+                    raise RuntimeError("save_state returned no checkpoint path")
                 logger.info("[Trainer] save_state done, name=%s resume_path=%s", ckpt_name, resume_path)
             except Exception as e:
                 logger.warning("[Trainer] save_state failed (name=%s): %s", ckpt_name, e)

@@ -28,6 +28,7 @@ _DEFAULTS: dict = {
         "dir": str(Path.home() / ".metaclaw" / "skills"),
         "retrieval_mode": "template",
         "top_k": 6,
+        "task_specific_top_k": 10,
         "auto_evolve": True,
     },
     "rl": {
@@ -38,7 +39,8 @@ _DEFAULTS: dict = {
         "prm_model": "gpt-5.2",
         "prm_api_key": "",
         "lora_rank": 32,
-        "batch_size": 8,
+        "batch_size": 4,
+        "resume_from_ckpt": "",
         "evolver_api_base": "",
         "evolver_api_key": "",
         "evolver_model": "gpt-5.2",
@@ -156,12 +158,14 @@ class ConfigStore:
             skills_dir=skills_dir,
             retrieval_mode=skills.get("retrieval_mode", "template"),
             skill_top_k=int(skills.get("top_k", 6)),
+            task_specific_top_k=int(skills.get("task_specific_top_k", 10)),
             enable_skill_evolution=bool(skills.get("auto_evolve", True)),
             skill_evolution_history_path=str(Path(skills_dir) / "evolution_history.jsonl"),
             # RL training
             model_name=rl.get("model") or llm.get("model_id") or "Qwen/Qwen3-4B",
             lora_rank=int(rl.get("lora_rank", 32)),
-            batch_size=int(rl.get("batch_size", 8)),
+            batch_size=int(rl.get("batch_size", 4)),
+            resume_from_ckpt=str(rl.get("resume_from_ckpt", "") or ""),
             # PRM (only meaningful in rl mode)
             use_prm=bool(rl.get("prm_url")) and rl_enabled,
             prm_url=rl.get("prm_url", "https://api.openai.com/v1"),
@@ -196,5 +200,6 @@ class ConfigStore:
                 f"rl.model:        {rl.get('model', '?')}",
                 f"rl.prm_url:      {rl.get('prm_url', '?')}",
                 f"rl.evolver_model:{rl.get('evolver_model', '?')}",
+                f"rl.resume_ckpt:  {rl.get('resume_from_ckpt', '')}",
             ]
         return "\n".join(lines)

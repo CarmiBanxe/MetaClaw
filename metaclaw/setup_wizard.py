@@ -169,6 +169,10 @@ class SetupWizard:
                 hide=True,
             )
             lora_rank = _prompt_int("LoRA rank", default=rl_config.get("lora_rank", 32))
+            resume_from_ckpt = _prompt(
+                "Resume from checkpoint path (optional)",
+                default=rl_config.get("resume_from_ckpt", ""),
+            )
 
             use_custom_evolver = _prompt_bool(
                 "Use a separate model for skill evolution (default: same as LLM above)",
@@ -201,7 +205,8 @@ class SetupWizard:
                 "prm_model": prm_model,
                 "prm_api_key": prm_api_key,
                 "lora_rank": lora_rank,
-                "batch_size": rl_config.get("batch_size", 8),
+                "batch_size": rl_config.get("batch_size", 4),
+                "resume_from_ckpt": resume_from_ckpt,
                 "evolver_api_base": evolver_api_base,
                 "evolver_api_key": evolver_api_key,
                 "evolver_model": evolver_model,
@@ -225,6 +230,7 @@ class SetupWizard:
                 "dir": skills_dir,
                 "retrieval_mode": current_skills.get("retrieval_mode", "template"),
                 "top_k": current_skills.get("top_k", 6),
+                "task_specific_top_k": current_skills.get("task_specific_top_k", 10),
                 "auto_evolve": auto_evolve,
             },
             "rl": rl_config,

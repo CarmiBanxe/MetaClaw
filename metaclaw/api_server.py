@@ -101,6 +101,7 @@ def _normalize_assistant_content_parts(content: list[dict]) -> tuple[str, list[d
 
 
 _THINK_RE = re.compile(r"<think>.*?</think>", re.DOTALL)
+_TOOL_HANDLE_RE = re.compile(r"^call_(?:kimi|xml)_\d+$")
 _KIMI_TOOL_CALL_RE = re.compile(
     r"<\|tool_call_begin\|>\s*([a-zA-Z0-9_.-]+)(?::\d+)?\s*"
     r"<\|tool_call_argument_begin\|>\s*(\{.*?\})\s*"
@@ -109,6 +110,28 @@ _KIMI_TOOL_CALL_RE = re.compile(
 )
 _QWEN_TOOL_CALL_RE = re.compile(r"<tool_call>\s*(.*?)\s*</tool_call>", re.DOTALL)
 
+def _normalize_tool_name(raw_name: str, args_raw: str) -> str:
+    """
+    Normalize tool names from model output.
+    Fixes common drift where a call handle (e.g. call_kimi_0) is emitted as
+    function name instead of the actual tool name.
+    """
+    name = (raw_name or "").strip()
+    if name.startswith("functions."):
+        name = name.split(".", 1)[1]
+    if not _TOOL_HANDLE_RE.fullmatch(name):
+        return name or "unknown_tool"
+
+    try:
+        args_obj = json.loads(args_raw or "{}")
+    except Exception:
+        args_obj = {}
+    if isinstance(args_obj, dict):
+        if isinstance(args_obj.get("command"), str) and args_obj.get("command"):
+            return "exec"
+        if isinstance(args_obj.get("sessionId"), str) and args_obj.get("sessionId"):
+            return "process"
+    return "unknown_tool"
 
 def _extract_tool_calls_from_text(text: str) -> tuple[str, list[dict]]:
     """
@@ -123,7 +146,7 @@ def _extract_tool_calls_from_text(text: str) -> tuple[str, list[dict]]:
     for i, m in enumerate(_KIMI_TOOL_CALL_RE.finditer(text)):
         raw_name = (m.group(1) or "").strip()
         args_raw = (m.group(2) or "{}").strip()
-        tool_name = raw_name.split(".", 1)[1] if raw_name.startswith("functions.") else raw_name
+        tool_name = _normalize_tool_name(raw_name, args_raw)
         try:
             args_obj = json.loads(args_raw)
             args_str = json.dumps(args_obj, ensure_ascii=False)
@@ -155,6 +178,7 @@ def _extract_tool_calls_from_text(text: str) -> tuple[str, list[dict]]:
                 args = json.dumps(args, ensure_ascii=False)
             except Exception:
                 args = "{}"
+        name = _normalize_tool_name(str(name), args)
         tool_calls.append(
             {
                 "id": f"call_xml_{i}",
@@ -166,6 +190,8 @@ def _extract_tool_calls_from_text(text: str) -> tuple[str, list[dict]]:
     clean = text
     clean = _THINK_RE.sub("", clean)
     clean = clean.replace("</think>", "")
+    # Keep tool call data only in structured field; strip markup from plain text.
+    clean = re.sub(r"<\|tool_call_begin\|>.*?<\|tool_call_end\|>", "", clean, flags=re.DOTALL)
     clean = re.sub(r"<\|tool_calls_section_begin\|>.*?<\|tool_calls_section_end\|>", "", clean, flags=re.DOTALL)
     clean = _QWEN_TOOL_CALL_RE.sub("", clean)
     clean = clean.strip()
@@ -230,6 +256,40 @@ def _extract_logprobs_from_chat_response(choice: dict[str, Any]) -> list[float]:
     if not isinstance(content, list):
         return []
     return [float(item.get("logprob", 0.0)) for item in content if isinstance(item, dict)]
+
+
+def _rewrite_new_session_bootstrap_prompt(messages: list[dict]) -> tuple[list[dict], int]:
+    """Rewrite OpenClaw /new bootstrap user prompt to a safer variant.
+
+    Some upstream providers over-trigger policy filters on the stock bootstrap
+    text ("A new session was started via /new or /reset ..."). This keeps
+    behavior while avoiding brittle phrasing.
+    """
+    rewritten = 0
+    out: list[dict] = []
+    for msg in messages:
+        if not isinstance(msg, dict):
+            out.append(msg)
+            continue
+        if msg.get("role") != "user":
+            out.append(msg)
+            continue
+        text = _flatten_message_content(msg.get("content"))
+        lowered = text.lower()
+        if "a new session was started via /new or /reset" in lowered:
+            out.append(
+                {
+                    **msg,
+                    "content": (
+                        "A new chat session just started. "
+                        "Greet the user briefly in 1-3 sentences and ask what they want to do."
+                    ),
+                }
+            )
+            rewritten += 1
+            continue
+        out.append(msg)
+    return out, rewritten
 
 
 # ------------------------------------------------------------------ #
@@ -312,9 +372,9 @@ class MetaClawAPIServer:
             with open(self._prm_record_file, "w"):
                 pass
 
-        # Tokenizer is only needed for RL mode (tokenizes prompt+response for training).
-        # In skills_only mode skip loading to avoid heavy HuggingFace dependencies.
-        self._tokenizer = self._load_tokenizer() if config.mode == "rl" else None
+        # Tokenizer is used in both modes for prompt length accounting/truncation,
+        # and in RL mode additionally for training sample tokenization.
+        self._tokenizer = self._load_tokenizer()
         self.app = self._build_app()
 
         # Threading lifecycle (set by start())
@@ -368,6 +428,14 @@ class MetaClawAPIServer:
                     )
 
             body = await request.json()
+            incoming_messages = body.get("messages", [])
+            if isinstance(incoming_messages, list):
+                rewritten_messages, rewritten = _rewrite_new_session_bootstrap_prompt(
+                    incoming_messages
+                )
+                body["messages"] = rewritten_messages
+            else:
+                rewritten = 0
             _raw_sid = x_session_id or body.get("session_id") or ""
             # TUI mode: OpenClaw does not send X-Session-Id/X-Turn-Type.
             # Fall back to a model-derived session ID and treat as "main" so
@@ -382,6 +450,9 @@ class MetaClawAPIServer:
                 (x_session_done and x_session_done.strip().lower() in {"1", "true", "yes", "on"})
                 or str(body.get("session_done", "")).strip().lower() in {"1", "true", "yes", "on"}
             )
+            if not session_done and rewritten > 0:
+                session_done = True
+                logger.info("[OpenClaw] inferred session_done=true from /new bootstrap prompt")
 
             stream = bool(body.get("stream", False))
             result = await owner._handle_request(
@@ -537,6 +608,17 @@ class MetaClawAPIServer:
         messages = body.get("messages")
         if not isinstance(messages, list) or not messages:
             raise HTTPException(status_code=400, detail="messages must be a non-empty list")
+        rewritten = 0
+        for msg in messages:
+            if (
+                isinstance(msg, dict)
+                and msg.get("role") == "user"
+                and isinstance(msg.get("content"), str)
+                and msg.get("content", "").startswith("A new chat session just started.")
+            ):
+                rewritten += 1
+        if rewritten:
+            logger.info("[OpenClaw] rewrote %d /new bootstrap user prompt(s) for provider safety", rewritten)
 
         def _prompt_len(msgs):
             try:
@@ -567,16 +649,16 @@ class MetaClawAPIServer:
             for m in messages:
                 if isinstance(m, dict) and m.get("role") == "system":
                     m["content"] = cached_system
-            logger.info(
-                "[OpenClaw] system prompt cached len=%d",
-                _prompt_len([{"role": "system", "content": cached_system}]),
-            )
 
         tools = body.get("tools")
 
         # Inject skills into system message for main turns
         if self.skill_manager and turn_type == "main":
             messages = self._inject_skills(messages)
+        logger.info(
+            "[OpenClaw] system prompt cached len=%d",
+            _prompt_len([{"role": "system", "content": cached_system}]),
+        )
 
         # Truncate to fit within max_context_tokens (keep system + most-recent messages)
         max_prompt = self.config.max_context_tokens - int(body.get("max_tokens") or 2048)
@@ -692,6 +774,18 @@ class MetaClawAPIServer:
                 session_id, turn_num, len(prompt_ids), len(response_ids),
             )
             self._buffer_record(session_id, turn_num, messages, prompt_text, response_text, tool_calls)
+            # Keep skills_only auto-summarization working even when tokenizer is loaded.
+            if (
+                self.config.mode == "skills_only"
+                and self.skill_evolver
+                and self.config.enable_skill_evolution
+            ):
+                self._session_turns.setdefault(session_id, []).append(
+                    {
+                        "prompt_text": prompt_text,
+                        "response_text": response_text,
+                    }
+                )
             self._pending_turn_data.setdefault(session_id, {})[turn_num] = turn_data
             self._maybe_submit_ready_samples(session_id)
         else:
@@ -773,6 +867,11 @@ class MetaClawAPIServer:
             response_text = self._tokenizer.decode(seq.tokens, skip_special_tokens=True)
             normalized_text, parsed_tool_calls = _extract_tool_calls_from_text(response_text)
             logprobs_list = seq.logprobs or []
+            if parsed_tool_calls:
+                logger.info(
+                    "[OpenClaw] parsed tool_calls after extract: %s",
+                    json.dumps(parsed_tool_calls, ensure_ascii=False)[:800],
+                )
             logger.info(
                 "[OpenClaw] Tinker tokens=%d stop=%s decoded=%r",
                 len(seq.tokens), seq.stop_reason, response_text[:200],

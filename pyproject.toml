@@ -13,6 +13,7 @@ dependencies = [
     "fastapi",
     "uvicorn[standard]",
     "httpx",
+    "tiktoken",
 ]
 
 [project.optional-dependencies]
