@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/logo.jpg" alt="MetaClaw" width="600">
+<img src="logo.jpg" alt="MetaClaw" width="600">
 
 <br/>
 
@@ -17,7 +17,7 @@
 
 <br/>
 
-[🇺🇸 English](./README.md) • [🇯🇵 日本語](./README_JA.md) • [🇰🇷 한국어](./README_KO.md) • [🇫🇷 Français](./README_FR.md) • [🇩🇪 Deutsch](./README_DE.md) • [🇪🇸 Español](./README_ES.md)
+[🇺🇸 English](../README.md) • [🇯🇵 日本語](./README_JA.md) • [🇰🇷 한국어](./README_KO.md) • [🇫🇷 Français](./README_FR.md) • [🇩🇪 Deutsch](./README_DE.md) • [🇪🇸 Español](./README_ES.md)
 
 <br/>
 
@@ -32,11 +32,12 @@
 ### 两条命令，全部搞定。
 
 ```bash
-metaclaw setup   # 一次性配置向导
-metaclaw start   # 代理启动，Skills 注入，OpenClaw 自动接管
+metaclaw setup              # 一次性配置向导
+metaclaw start              # Skills 注入，OpenClaw 自动接管，开始对话
+metaclaw start --mode rl    # 可选：+ Tinker 云端实时 RL 训练
 ```
 
-<img src="assets/metaclaw.gif" alt="MetaClaw 演示" width="700">
+<img src="metaclaw.gif" alt="MetaClaw 演示" width="700">
 
 </div>
 
@@ -44,7 +45,7 @@ metaclaw start   # 代理启动，Skills 注入，OpenClaw 自动接管
 
 ## 🔥 最新动态
 
-- **[2026/03/10]** **v0.2** —— 发布 `metaclaw` CLI，支持一键部署。Skill 注入默认开启，RL 训练改为可选项。
+- **[2026/03/11]** **v0.2** —— 发布 `metaclaw` CLI，支持一键部署。Skill 注入默认开启，RL 训练改为可选项。
 - **[2026/03/09]** 正式发布 **MetaClaw** —— 基于 Tinker 云端 LoRA 的 CLI Agent 在线 RL 训练框架，内置 Skill 注入与自动进化能力。
 
 ---

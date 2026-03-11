@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/logo.jpg" alt="MetaClaw" width="600">
+<img src="logo.jpg" alt="MetaClaw" width="600">
 
 <br/>
 
@@ -17,7 +17,7 @@
 
 <br/>
 
-[🇺🇸 English](./README.md) • [🇨🇳 中文](./README_ZH.md) • [🇯🇵 日本語](./README_JA.md) • [🇫🇷 Français](./README_FR.md) • [🇩🇪 Deutsch](./README_DE.md) • [🇪🇸 Español](./README_ES.md)
+[🇺🇸 English](../README.md) • [🇨🇳 中文](./README_ZH.md) • [🇯🇵 日本語](./README_JA.md) • [🇫🇷 Français](./README_FR.md) • [🇩🇪 Deutsch](./README_DE.md) • [🇪🇸 Español](./README_ES.md)
 
 <br/>
 
@@ -32,11 +32,12 @@
 ### 명령어 두 개면 끝.
 
 ```bash
-metaclaw setup   # 최초 설정 마법사
-metaclaw start   # 프록시 실행 · 스킬 주입 · OpenClaw 자동 연결
+metaclaw setup              # 최초 설정 마법사
+metaclaw start              # 스킬 주입 · OpenClaw 자동 연결 · 대화 시작
+metaclaw start --mode rl    # 선택 사항: + Tinker 클라우드 실시간 RL 학습
 ```
 
-<img src="assets/metaclaw.gif" alt="MetaClaw 데모" width="700">
+<img src="metaclaw.gif" alt="MetaClaw 데모" width="700">
 
 </div>
 
@@ -44,7 +45,7 @@ metaclaw start   # 프록시 실행 · 스킬 주입 · OpenClaw 자동 연결
 
 ## 🔥 최신 소식
 
-- **[2026/03/10]** **v0.2** — `metaclaw` CLI를 통한 원클릭 배포. 스킬 주입 기본 활성화, RL은 선택 사항으로 변경.
+- **[2026/03/11]** **v0.2** — `metaclaw` CLI를 통한 원클릭 배포. 스킬 주입 기본 활성화, RL은 선택 사항으로 변경.
 - **[2026/03/09]** **MetaClaw** 공식 출시 — 에이전트와 대화하기만 하면 자동으로 진화. GPU 클러스터 불필요.
 
 ---

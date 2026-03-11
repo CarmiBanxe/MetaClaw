@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/logo.jpg" alt="MetaClaw" width="600">
+<img src="logo.jpg" alt="MetaClaw" width="600">
 
 <br/>
 
@@ -17,7 +17,7 @@
 
 <br/>
 
-[🇺🇸 English](./README.md) • [🇨🇳 中文](./README_ZH.md) • [🇰🇷 한국어](./README_KO.md) • [🇫🇷 Français](./README_FR.md) • [🇩🇪 Deutsch](./README_DE.md) • [🇪🇸 Español](./README_ES.md)
+[🇺🇸 English](../README.md) • [🇨🇳 中文](./README_ZH.md) • [🇰🇷 한국어](./README_KO.md) • [🇫🇷 Français](./README_FR.md) • [🇩🇪 Deutsch](./README_DE.md) • [🇪🇸 Español](./README_ES.md)
 
 <br/>
 
@@ -32,11 +32,12 @@
 ### コマンド 2 つで完了。
 
 ```bash
-metaclaw setup   # 初回設定ウィザード
-metaclaw start   # プロキシ起動・スキル注入・OpenClaw 自動設定
+metaclaw setup              # 初回設定ウィザード
+metaclaw start              # スキル注入・OpenClaw 自動設定・チャット開始
+metaclaw start --mode rl    # オプション：+ Tinker でライブ RL トレーニング
 ```
 
-<img src="assets/metaclaw.gif" alt="MetaClaw デモ" width="700">
+<img src="metaclaw.gif" alt="MetaClaw デモ" width="700">
 
 </div>
 
@@ -44,7 +45,7 @@ metaclaw start   # プロキシ起動・スキル注入・OpenClaw 自動設定
 
 ## 🔥 ニュース
 
-- **[2026/03/10]** **v0.2** — `metaclaw` CLI によるワンクリックデプロイ。スキル注入がデフォルト有効化、RL はオプション化。
+- **[2026/03/11]** **v0.2** — `metaclaw` CLI によるワンクリックデプロイ。スキル注入がデフォルト有効化、RL はオプション化。
 - **[2026/03/09]** **MetaClaw** 正式リリース — エージェントと話すだけで自動進化。GPU クラスタ不要。
 
 ---

@@ -30,9 +30,10 @@
 ### Two commands. That's it.
 </div>
 
-```
-metaclaw setup   # one-time config wizard
-metaclaw start   # proxy up, skills on, OpenClaw wired
+```bash
+metaclaw setup              # one-time config wizard
+metaclaw start              # skills on, OpenClaw wired — ready to chat
+metaclaw start --mode rl    # optional: + live RL training via Tinker
 ```
 
 <div align="center">

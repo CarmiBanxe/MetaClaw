@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/logo.jpg" alt="MetaClaw" width="600">
+<img src="logo.jpg" alt="MetaClaw" width="600">
 
 <br/>
 
@@ -17,7 +17,7 @@
 
 <br/>
 
-[🇺🇸 English](./README.md) • [🇨🇳 中文](./README_ZH.md) • [🇯🇵 日本語](./README_JA.md) • [🇰🇷 한국어](./README_KO.md) • [🇩🇪 Deutsch](./README_DE.md) • [🇪🇸 Español](./README_ES.md)
+[🇺🇸 English](../README.md) • [🇨🇳 中文](./README_ZH.md) • [🇯🇵 日本語](./README_JA.md) • [🇰🇷 한국어](./README_KO.md) • [🇩🇪 Deutsch](./README_DE.md) • [🇪🇸 Español](./README_ES.md)
 
 <br/>
 
@@ -32,11 +32,12 @@
 ### Deux commandes. C'est tout.
 
 ```bash
-metaclaw setup   # assistant de configuration initial
-metaclaw start   # proxy actif · skills injectés · OpenClaw configuré
+metaclaw setup              # assistant de configuration initial
+metaclaw start              # skills injectés · OpenClaw configuré · prêt à chatter
+metaclaw start --mode rl    # optionnel : + entraînement RL en direct via Tinker
 ```
 
-<img src="assets/metaclaw.gif" alt="Démo MetaClaw" width="700">
+<img src="metaclaw.gif" alt="Démo MetaClaw" width="700">
 
 </div>
 
@@ -44,7 +45,7 @@ metaclaw start   # proxy actif · skills injectés · OpenClaw configuré
 
 ## 🔥 Nouveautés
 
-- **[10/03/2026]** **v0.2** — Déploiement en un clic via le CLI `metaclaw`. Injection de skills activée par défaut, RL désormais optionnel.
+- **[11/03/2026]** **v0.2** — Déploiement en un clic via le CLI `metaclaw`. Injection de skills activée par défaut, RL désormais optionnel.
 - **[09/03/2026]** Lancement officiel de **MetaClaw** — Parlez à votre agent, il évolue automatiquement. Aucun cluster GPU requis.
 
 ---
