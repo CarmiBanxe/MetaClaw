@@ -55,6 +55,7 @@ class AsyncRolloutWorker:
         skill_manager=None,
         prm_scorer=None,
         skill_evolver=None,
+        last_request_tracker=None,
     ):
         self.config = config
         self.running = True
@@ -69,6 +70,7 @@ class AsyncRolloutWorker:
             skill_manager=skill_manager,
             prm_scorer=prm_scorer,
             skill_evolver=skill_evolver,
+            last_request_tracker=last_request_tracker,
         )
 
     async def continuous_worker_loop(self):
@@ -119,6 +121,30 @@ class AsyncRolloutWorker:
 
     def get_queue_size(self) -> int:
         return self.output_queue.qsize()
+
+    def clear_output_queue(self) -> int:
+        """Drain and discard all pending samples from the output queue.
+
+        Called by the trainer after a skill generation bump to prevent
+        pre-evolution samples from entering the RL training batch
+        (MAML support/query set separation).
+
+        Returns the number of discarded items.
+        """
+        discarded = 0
+        while True:
+            try:
+                self.output_queue.get_nowait()
+                discarded += 1
+            except queue.Empty:
+                break
+        if discarded:
+            print(
+                f"[RolloutWorker] cleared {discarded} stale samples from output queue "
+                f"(skill generation bumped)",
+                flush=True,
+            )
+        return discarded
 
 
 async def _drain_output_queue(

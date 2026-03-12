@@ -44,9 +44,25 @@ class MetaClawTrainer:
     ----------
     config:
         MetaClawConfig instance.
+    trigger_event:
+        asyncio.Event set by SlowUpdateScheduler when a valid idle/sleep/calendar
+        window is open.  When None (or scheduler disabled), an already-set event
+        is used so the trainer runs continuously (original behaviour).
+    pause_event:
+        asyncio.Event set by SlowUpdateScheduler when the user becomes active and
+        the trainer should stop collecting and wait for the next window.
+    scheduler:
+        SlowUpdateScheduler instance for two-way state callbacks.  None when the
+        scheduler is disabled.
     """
 
-    def __init__(self, config: MetaClawConfig):
+    def __init__(
+        self,
+        config: MetaClawConfig,
+        trigger_event: Optional[asyncio.Event] = None,
+        pause_event: Optional[asyncio.Event] = None,
+        scheduler=None,
+    ):
         self.config = config
         self.training_client = None
         self.sampling_client = None
@@ -55,6 +71,24 @@ class MetaClawTrainer:
         self.prm_scorer: Optional[PRMScorer] = None
         self.skill_evolver: Optional[SkillEvolver] = None
         self._wandb = None
+
+        # Scheduler integration
+        self._scheduler = scheduler
+        # When scheduler is disabled, use an already-set event so the loop
+        # runs immediately without waiting.
+        if trigger_event is None:
+            self._trigger_event = asyncio.Event()
+            self._trigger_event.set()
+        else:
+            self._trigger_event = trigger_event
+        self._pause_event = pause_event or asyncio.Event()
+
+        # Samples carried over from an interrupted collection window.
+        # Prepended to the next batch only if their skill_generation still matches.
+        self._pending_batch: list[ConversationSample] = []
+        # Tracks the skill generation active when the current batch started.
+        # Initialised to 0; updated from skill_manager.generation after setup().
+        self._current_skill_generation: int = 0
     # ------------------------------------------------------------------ #
     # Setup                                                                #
     # ------------------------------------------------------------------ #
@@ -157,6 +191,10 @@ class MetaClawTrainer:
         logger.info("[Trainer] rollout worker configured on %s:%d",
                     self.config.proxy_host, self.config.proxy_port)
 
+        # Sync skill generation baseline so the trainer knows which samples are fresh.
+        if self.skill_manager is not None:
+            self._current_skill_generation = self.skill_manager.generation
+
     # ------------------------------------------------------------------ #
     # Training step                                                        #
     # ------------------------------------------------------------------ #
@@ -242,12 +280,20 @@ class MetaClawTrainer:
     # ------------------------------------------------------------------ #
 
     async def _maybe_evolve_skills(self, batch: list[ConversationSample]):
-        """Trigger skill evolution if success rate is below threshold."""
+        """Trigger skill evolution if success rate is below threshold.
+
+        After evolution, if new skills were added (skill_manager.generation bumped),
+        the RL sample buffer is cleared so pre-evolution samples are not reused
+        for gradient updates.  This enforces the MAML support/query set separation:
+        samples that caused skill evolution (support set) are never fed into the
+        RL outer loop (query set).
+        """
         if not self.skill_evolver or not self.skill_manager:
             return
         if not self.skill_evolver.should_evolve(batch, self.config.skill_update_threshold):
             return
 
+        old_generation = self.skill_manager.generation
         failed = [s for s in batch if s.reward <= 0]
         logger.info("[SkillEvolver] evolving skills from %d failures …", len(failed))
         new_skills = await self.skill_evolver.evolve(failed, self.skill_manager.skills)
@@ -269,13 +315,87 @@ class MetaClawTrainer:
         if added_total > 0:
             logger.info("[SkillEvolver] skill evolution added %d new skills", added_total)
 
+        new_generation = self.skill_manager.generation
+        if new_generation > old_generation:
+            # Skill generation bumped — discard all pre-evolution samples to
+            # prevent stale reward signals from entering the RL update.
+            self._current_skill_generation = new_generation
+            discarded_pending = len(self._pending_batch)
+            self._pending_batch.clear()
+            discarded_queue = self.rollout_worker.clear_output_queue()
+            logger.info(
+                "[Trainer] skill_generation %d→%d: discarded %d pending + %d queued samples "
+                "(MAML support/query separation; next RL batch will use post-evolution data)",
+                old_generation, new_generation,
+                discarded_pending, discarded_queue,
+            )
+
     # ------------------------------------------------------------------ #
     # Main loop                                                            #
     # ------------------------------------------------------------------ #
 
+    async def _drain_with_pause_check(
+        self, batch_size: int
+    ) -> list[list[ConversationSample]]:
+        """Collect batch_size sample groups, aborting early if pause_event fires.
+
+        Also filters out samples whose skill_generation no longer matches
+        self._current_skill_generation to avoid using stale pre-evolution data.
+        """
+        data: list[list[ConversationSample]] = []
+        completed_groups: dict[int, list[ConversationSample]] = {}
+        import time as _time
+        start = _time.time()
+        last_progress = start
+
+        while len(data) < batch_size:
+            if self._pause_event.is_set():
+                logger.info("[Trainer] pause_event received — stopping batch collection early")
+                break
+
+            completed = self.rollout_worker.get_completed_groups()
+            if completed:
+                last_progress = _time.time()
+                for group_id, group in completed:
+                    # Filter out samples from a superseded skill generation.
+                    fresh = [
+                        s for s in group
+                        if s.skill_generation >= self._current_skill_generation
+                    ]
+                    if fresh:
+                        completed_groups[group_id] = fresh
+
+            for group_id in sorted(list(completed_groups.keys())):
+                if len(data) >= batch_size:
+                    break
+                data.append(completed_groups.pop(group_id))
+
+            if _time.time() - last_progress > 30:
+                logger.info(
+                    "[Trainer] waiting for samples: %d/%d, queue=%d",
+                    len(data), batch_size, self.rollout_worker.get_queue_size(),
+                )
+                last_progress = _time.time()
+
+            if len(data) < batch_size and not self._pause_event.is_set():
+                await asyncio.sleep(0.1)
+
+        return data
+
     async def run(self):
-        """Full training loop: setup → start worker → collect → train → [evolve] → repeat."""
+        """Full training loop: setup → start worker → collect → train → [evolve] → repeat.
+
+        When a SlowUpdateScheduler is active (scheduler_enabled=True), the loop
+        waits for trigger_event before each step and aborts collection if
+        pause_event fires (e.g. user became active again).  When the scheduler
+        is disabled, both events are pre-set so the loop runs continuously,
+        preserving the original behaviour.
+        """
         await self.setup()
+
+        external_trigger_mode = (
+            self._scheduler is not None and self.config.scheduler_enabled
+        )
 
         # Start rollout worker (starts proxy server in background thread)
         self.rollout_worker.start()
@@ -310,14 +430,55 @@ class MetaClawTrainer:
 
         step = 0
         while step < self.config.max_steps:
+            # Wait for scheduler permission before each step.
+            # When external_trigger_mode is False the event is always set,
+            # so this is a no-op and the loop runs continuously.
+            if external_trigger_mode:
+                logger.info(
+                    "[Trainer] step %d/%d — waiting for scheduler window …",
+                    step + 1, self.config.max_steps,
+                )
+                await self._trigger_event.wait()
+                if self._scheduler is not None:
+                    self._scheduler.notify_trainer_started()
+
             logger.info("[Trainer] step %d/%d — waiting for batch (size=%d) …",
                         step + 1, self.config.max_steps, self.config.batch_size)
 
-            # Resume collection → drain batch → pause
+            # Resume collection → drain batch (with pause support) → pause
             self.rollout_worker.resume_submission()
-            groups = await _drain_output_queue(self.config.batch_size, self.rollout_worker)
-            batch = [s for group in groups for s in group]  # flatten groups
+
+            # Prepend any samples carried over from an interrupted window.
+            # Only keep samples whose skill_generation still matches.
+            carried = [
+                s for s in self._pending_batch
+                if s.skill_generation >= self._current_skill_generation
+            ]
+            self._pending_batch.clear()
+
+            groups = await self._drain_with_pause_check(self.config.batch_size)
+            batch = carried + [s for group in groups for s in group]
+
             self.rollout_worker.pause_submission()
+
+            # Handle mid-collection pause: user became active before batch was full.
+            if self._pause_event.is_set():
+                self._pending_batch.extend(batch)
+                self._pause_event.clear()
+                self._trigger_event.clear()
+                if self._scheduler is not None:
+                    self._scheduler.notify_trainer_finished()
+                logger.info(
+                    "[Trainer] paused by scheduler — saved %d samples for next window",
+                    len(self._pending_batch),
+                )
+                continue
+
+            if not batch:
+                logger.warning("[Trainer] empty batch after drain — skipping step")
+                if self._scheduler is not None:
+                    self._scheduler.notify_trainer_finished()
+                continue
 
             try:
                 await self._train_on_batch(batch, step_idx=step + 1)
@@ -325,6 +486,9 @@ class MetaClawTrainer:
                     await self._maybe_evolve_skills(batch)
             finally:
                 self.rollout_worker.resume_submission()
+
+            if self._scheduler is not None:
+                self._scheduler.notify_trainer_finished()
 
             step += 1
 

@@ -215,6 +215,87 @@ class SetupWizard:
             rl_config = dict(rl_config)
             rl_config["enabled"] = False
 
+        # ---- Scheduler (only meaningful in RL mode) ----
+        current_sched = existing.get("scheduler", {})
+        current_sched_cal = current_sched.get("calendar", {})
+        scheduler_config: dict = {"enabled": False, "calendar": {"enabled": False}}
+
+        if rl_enabled:
+            print("\n--- Scheduler Configuration ---")
+            print(
+                "The scheduler lets MetaClaw run slow RL weight updates only when\n"
+                "you are away from your computer (sleeping, idle, or in a meeting).\n"
+                "This avoids interrupting your OpenClaw sessions."
+            )
+            sched_enabled = _prompt_bool(
+                "Enable smart update scheduler",
+                default=bool(current_sched.get("enabled", False)),
+            )
+
+            if sched_enabled:
+                sleep_start = _prompt(
+                    "Sleep start time (HH:MM, 24h)",
+                    default=current_sched.get("sleep_start", "23:00"),
+                )
+                sleep_end = _prompt(
+                    "Sleep end time   (HH:MM, 24h)",
+                    default=current_sched.get("sleep_end", "07:00"),
+                )
+                idle_mins = _prompt_int(
+                    "Idle threshold (minutes before RL may start)",
+                    default=current_sched.get("idle_threshold_minutes", 30),
+                )
+                min_window = _prompt_int(
+                    "Minimum window required for one RL step (minutes)",
+                    default=current_sched.get("min_window_minutes", 15),
+                )
+
+                use_calendar = _prompt_bool(
+                    "Use Google Calendar to detect meeting times (optional)",
+                    default=bool(current_sched_cal.get("enabled", False)),
+                )
+                cal_config: dict = {"enabled": False}
+                if use_calendar:
+                    creds_path = _prompt(
+                        "Path to Google Calendar client_secrets.json",
+                        default=current_sched_cal.get("credentials_path", ""),
+                    )
+                    token_path = str(CONFIG_DIR / "calendar_token.json")
+                    cal_config = {
+                        "enabled": True,
+                        "credentials_path": creds_path,
+                        "token_path": token_path,
+                    }
+                    if creds_path:
+                        print("\nAuthenticating with Google Calendar…")
+                        try:
+                            from .calendar_client import GoogleCalendarClient
+                            gcal = GoogleCalendarClient(creds_path, token_path)
+                            gcal.authenticate()
+                            print("Google Calendar authenticated successfully.")
+                        except ImportError:
+                            print(
+                                "  [!] Google Calendar packages not installed.\n"
+                                "      Run: pip install metaclaw[scheduler]\n"
+                                "      Then re-run 'metaclaw setup' to authenticate."
+                            )
+                        except Exception as exc:
+                            print(
+                                f"  [!] Calendar auth failed: {exc}\n"
+                                "      You can retry by re-running 'metaclaw setup'."
+                            )
+
+                scheduler_config = {
+                    "enabled": True,
+                    "sleep_start": sleep_start,
+                    "sleep_end": sleep_end,
+                    "idle_threshold_minutes": idle_mins,
+                    "min_window_minutes": min_window,
+                    "calendar": cal_config,
+                }
+            else:
+                scheduler_config = {"enabled": False, "calendar": {"enabled": False}}
+
         # ---- Write config ----
         data = {
             "mode": mode,
@@ -234,6 +315,7 @@ class SetupWizard:
                 "auto_evolve": auto_evolve,
             },
             "rl": rl_config,
+            "scheduler": scheduler_config,
         }
 
         cs.save(data)

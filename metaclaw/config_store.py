@@ -45,6 +45,18 @@ _DEFAULTS: dict = {
         "evolver_api_key": "",
         "evolver_model": "gpt-5.2",
     },
+    "scheduler": {
+        "enabled": False,
+        "idle_threshold_minutes": 30,
+        "sleep_start": "23:00",
+        "sleep_end": "07:00",
+        "min_window_minutes": 15,
+        "calendar": {
+            "enabled": False,
+            "credentials_path": "",
+            "token_path": str(Path.home() / ".metaclaw" / "calendar_token.json"),
+        },
+    },
 }
 
 
@@ -130,6 +142,8 @@ class ConfigStore:
         proxy = data.get("proxy", {})
         skills = data.get("skills", {})
         rl = data.get("rl", {})
+        sched = data.get("scheduler", {})
+        sched_cal = sched.get("calendar", {})
         mode = data.get("mode", "skills_only")
         rl_enabled = bool(rl.get("enabled", False))
 
@@ -175,6 +189,18 @@ class ConfigStore:
             evolver_api_base=evolver_api_base,
             evolver_api_key=evolver_api_key,
             evolver_model_id=evolver_model,
+            # Scheduler
+            scheduler_enabled=bool(sched.get("enabled", False)),
+            scheduler_idle_threshold_minutes=int(sched.get("idle_threshold_minutes", 30)),
+            scheduler_sleep_start=str(sched.get("sleep_start", "23:00")),
+            scheduler_sleep_end=str(sched.get("sleep_end", "07:00")),
+            scheduler_min_window_minutes=int(sched.get("min_window_minutes", 15)),
+            scheduler_calendar_enabled=bool(sched_cal.get("enabled", False)),
+            scheduler_calendar_credentials_path=str(sched_cal.get("credentials_path", "")),
+            scheduler_calendar_token_path=str(
+                sched_cal.get("token_path", "")
+                or str(Path.home() / ".metaclaw" / "calendar_token.json")
+            ),
         )
 
     def describe(self) -> str:

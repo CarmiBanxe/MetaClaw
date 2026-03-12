@@ -152,6 +152,24 @@ def status():
     else:
         click.echo(f"MetaClaw: starting (PID={pid}, mode={mode}, proxy=:{port})")
 
+    # Show scheduler state if available.
+    state_file = Path.home() / ".metaclaw" / "scheduler_state.json"
+    if state_file.exists():
+        try:
+            import json
+            sched = json.loads(state_file.read_text())
+            state_val  = sched.get("state", "?")
+            sleep_win  = sched.get("sleep_window", "?")
+            idle_min   = sched.get("idle_threshold_minutes", "?")
+            updated_at = sched.get("updated_at", "?")
+            click.echo(
+                f"scheduler:  state={state_val}  "
+                f"sleep={sleep_win}  idle≥{idle_min}min  "
+                f"(updated {updated_at})"
+            )
+        except Exception:
+            pass
+
 
 @metaclaw.command(name="config")
 @click.argument("key_or_action")
@@ -184,3 +202,67 @@ def config_cmd(key_or_action: str, value: str | None):
 
     cs.set(key_or_action, value)
     click.echo(f"Set {key_or_action} = {cs.get(key_or_action)}")
+
+
+@metaclaw.group()
+def scheduler():
+    """Scheduler management commands."""
+
+
+@scheduler.command(name="status")
+def scheduler_status():
+    """Show the current slow-update scheduler state."""
+    import json
+    from pathlib import Path
+
+    state_file = Path.home() / ".metaclaw" / "scheduler_state.json"
+    if not state_file.exists():
+        click.echo("Scheduler not running or not enabled.")
+        return
+    try:
+        data = json.loads(state_file.read_text())
+        click.echo(f"state:              {data.get('state', '?')}")
+        click.echo(f"sleep window:       {data.get('sleep_window', '?')}")
+        click.echo(f"idle threshold:     {data.get('idle_threshold_minutes', '?')} min")
+        click.echo(f"last updated:       {data.get('updated_at', '?')}")
+    except Exception as exc:
+        click.echo(f"Error reading scheduler state: {exc}", err=True)
+
+
+@scheduler.command(name="next-window")
+def scheduler_next_window():
+    """Estimate when the next slow-update window will open.
+
+    Reads live scheduler state and configuration to give an approximate
+    time until the next eligible idle/sleep/calendar window.
+    """
+    import json
+    from pathlib import Path
+
+    state_file = Path.home() / ".metaclaw" / "scheduler_state.json"
+    if not state_file.exists():
+        click.echo("Scheduler not running or not enabled.")
+        return
+
+    try:
+        data = json.loads(state_file.read_text())
+    except Exception as exc:
+        click.echo(f"Error reading scheduler state: {exc}", err=True)
+        return
+
+    state = data.get("state", "?")
+    click.echo(f"Current state:   {state}")
+    click.echo(f"Sleep window:    {data.get('sleep_window', '?')}")
+    click.echo(f"Idle threshold:  {data.get('idle_threshold_minutes', '?')} min")
+
+    if state in ("window_open", "updating"):
+        click.echo("→ A window is OPEN right now — RL update may be in progress.")
+    elif state == "pausing":
+        click.echo("→ Pausing current update (user became active).")
+    else:
+        click.echo(
+            "→ Waiting for next idle/sleep/calendar window.\n"
+            "  The scheduler checks every 60 seconds.\n"
+            "  Next window opens when: sleep hours begin, "
+            "or idle exceeds threshold, or a calendar event starts."
+        )

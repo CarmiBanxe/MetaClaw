@@ -148,18 +148,71 @@ class MetaClawLauncher:
         if tinker_key:
             os.environ.setdefault("TINKER_API_KEY", tinker_key)
 
-        trainer = MetaClawTrainer(cfg)
-        self._trainer_task = asyncio.create_task(trainer.run())
+        # ------------------------------------------------------------------ #
+        # Scheduler setup (optional — gated on scheduler_enabled config flag) #
+        # ------------------------------------------------------------------ #
+        trigger_event = asyncio.Event()
+        pause_event   = asyncio.Event()
+        scheduler = None
+
+        if cfg.scheduler_enabled:
+            from .idle_detector import IdleDetector, LastRequestTracker
+            from .scheduler import SlowUpdateScheduler
+
+            request_tracker = LastRequestTracker()
+            idle_detector   = IdleDetector(fallback_tracker=request_tracker)
+
+            calendar_client = None
+            if cfg.scheduler_calendar_enabled and cfg.scheduler_calendar_credentials_path:
+                try:
+                    from .calendar_client import GoogleCalendarClient
+                    calendar_client = GoogleCalendarClient(
+                        credentials_path=cfg.scheduler_calendar_credentials_path,
+                        token_path=cfg.scheduler_calendar_token_path,
+                    )
+                    calendar_client.authenticate()
+                    logger.info("[Launcher] Google Calendar client authenticated")
+                except ImportError:
+                    logger.warning(
+                        "[Launcher] Google Calendar dependencies not installed. "
+                        "Install with: pip install metaclaw[scheduler]"
+                    )
+                except Exception as exc:
+                    logger.warning("[Launcher] Calendar auth failed: %s — skipping calendar", exc)
+                    calendar_client = None
+
+            scheduler = SlowUpdateScheduler(
+                config=cfg,
+                trigger_event=trigger_event,
+                pause_event=pause_event,
+                idle_detector=idle_detector,
+                calendar_client=calendar_client,
+            )
+            logger.info(
+                "[Launcher] scheduler enabled — RL updates restricted to idle/sleep/calendar windows"
+            )
+        else:
+            # No scheduler: set trigger immediately so the trainer runs continuously
+            # (original v0.2 behaviour, fully backward compatible).
+            trigger_event.set()
+
+        trainer = MetaClawTrainer(cfg, trigger_event, pause_event, scheduler)
 
         # Configure openclaw once the proxy is about to be ready
         await asyncio.sleep(3)
         self._configure_openclaw(cfg)
 
+        tasks = [asyncio.create_task(trainer.run())]
+        if scheduler is not None:
+            tasks.append(asyncio.create_task(scheduler.run()))
+
         try:
-            await self._trainer_task
+            await asyncio.gather(*tasks)
         except asyncio.CancelledError:
             pass
         finally:
+            if scheduler is not None:
+                scheduler.stop()
             _PID_FILE.unlink(missing_ok=True)
 
     # ------------------------------------------------------------------ #

@@ -44,6 +44,7 @@ metaclaw start --mode rl    # optional: + live RL training via Tinker
 
 ## 🔥 News
 
+- **[03/11/2026]** **v0.3** — Meta-learning scheduler: slow RL updates now only run during sleep hours, idle time, or Google Calendar meetings. Added MAML-inspired support/query set separation to prevent stale reward signals from polluting model updates.
 - **[03/10/2026]** **v0.2** — One-click deployment via `metaclaw` CLI. Skills enabled by default, RL is now opt-in.
 - **[03/09/2026]** We release **MetaClaw** — Just talk to your agent and let it evolve automatically. **NO** GPU deployment required; just plug into the **API**.
 
@@ -76,6 +77,23 @@ Configure once with `metaclaw setup`, then `metaclaw start` brings up the proxy,
 | `skills_only` | ✅ | Proxy → your LLM API. Skills injected, auto-summarized after each session. No GPU/Tinker required. |
 | `rl` | off | Proxy → Tinker cloud RL. Full training loop with PRM scoring and skill evolution from failures. |
 
+### **Meta-learning update scheduler** *(v0.3, RL mode only)*
+
+Slow RL weight updates (which pause the agent for several minutes) are now gated by a smart scheduler inspired by the MAML meta-learning framework:
+
+- **Inner loop (fast)** — skill files are updated immediately after each session, always on
+- **Outer loop (slow)** — RL gradient updates only run during user-inactive windows
+
+Three conditions trigger an update window (any one is sufficient):
+
+| Trigger | How it works |
+|---------|-------------|
+| Sleep hours | Configurable start/end time (e.g. `23:00–07:00`) |
+| System idle | User has been away from keyboard for N minutes (macOS: `ioreg`; Linux: `xprintidle`) |
+| Google Calendar | Current time falls inside a calendar event — user is in a meeting |
+
+The agent continues running and serving requests throughout; only the expensive `save_weights` step is deferred to idle windows.
+
 ### **Skill injection**
 At every turn, MetaClaw retrieves the most relevant skill instructions and injects them into the agent's system prompt. Immediate behavior improvement without retraining.
 
@@ -102,9 +120,11 @@ Serving, reward modeling, and training are fully decoupled. The agent continues 
 ### 1. Install
 
 ```bash
-pip install -e .            # skills_only mode (lightweight)
-pip install -e ".[rl]"      # + RL training support (torch, transformers, tinker)
-pip install -e ".[evolve]"  # + skill evolution via OpenAI-compatible LLM
+pip install -e .                        # skills_only mode (lightweight)
+pip install -e ".[rl]"                  # + RL training support (torch, transformers, tinker)
+pip install -e ".[evolve]"              # + skill evolution via OpenAI-compatible LLM
+pip install -e ".[scheduler]"           # + Google Calendar integration for scheduler
+pip install -e ".[rl,evolve,scheduler]" # recommended for full RL + scheduler setup
 ```
 
 ### 2. Configure
@@ -128,13 +148,15 @@ That's it. MetaClaw starts the proxy, automatically configures OpenClaw to use i
 ## 🛠️ CLI Reference
 
 ```
-metaclaw setup              # Interactive first-time configuration wizard
-metaclaw start              # Start MetaClaw (proxy + optional RL)
-metaclaw start --mode rl    # Force RL mode for this session
-metaclaw stop               # Stop a running MetaClaw instance
-metaclaw status             # Check proxy health and running mode
-metaclaw config show        # View current configuration
-metaclaw config KEY VALUE   # Set a config value
+metaclaw setup                  # Interactive first-time configuration wizard
+metaclaw start                  # Start MetaClaw (proxy + optional RL)
+metaclaw start --mode rl        # Force RL mode for this session
+metaclaw stop                   # Stop a running MetaClaw instance
+metaclaw status                 # Check proxy health, running mode, and scheduler state
+metaclaw config show            # View current configuration
+metaclaw config KEY VALUE       # Set a config value
+metaclaw scheduler status       # Show current slow-update scheduler state
+metaclaw scheduler next-window  # Show when the next RL update window will open
 ```
 
 **Common config keys:**
@@ -194,6 +216,17 @@ opd:
   kl_penalty_coef: 1.0      # KL penalty coefficient for OPD
 
 max_context_tokens: 20000   # prompt token cap before truncation
+
+scheduler:                  # v0.3: meta-learning scheduler (RL mode only)
+  enabled: false            # set to true to restrict RL updates to idle windows
+  sleep_start: "23:00"      # HH:MM local time — start of sleep window
+  sleep_end: "07:00"        # HH:MM local time — end of sleep window
+  idle_threshold_minutes: 30  # trigger RL after N minutes of keyboard inactivity
+  min_window_minutes: 15    # minimum window length required to start an RL step
+  calendar:
+    enabled: false          # use Google Calendar to detect meeting slots
+    credentials_path: ""    # path to client_secrets.json from Google Cloud Console
+    token_path: ""          # saved OAuth token (default: ~/.metaclaw/calendar_token.json)
 ```
 
 ---
@@ -256,7 +289,73 @@ See `examples/run_conversation_opd.py` for a programmatic example and `scripts/r
 
 ---
 
-## 📚 Citation
+## 🧠 Advanced: Meta-Learning Scheduler (v0.3)
+
+### Motivation
+
+In RL mode, `save_weights_and_get_sampling_client` (the weight hot-swap step) pauses the agent for several minutes. Running this during active usage degrades the user experience. v0.3 introduces a scheduler that defers this step to idle windows.
+
+### How to enable
+
+Run `metaclaw setup` and answer yes to the scheduler questions, or set config values directly:
+
+```bash
+# Enable scheduler
+metaclaw config scheduler.enabled true
+metaclaw config scheduler.sleep_start "23:00"
+metaclaw config scheduler.sleep_end   "07:00"
+metaclaw config scheduler.idle_threshold_minutes 30
+
+# Optional: Google Calendar (detect meeting windows)
+pip install -e ".[scheduler]"
+metaclaw config scheduler.calendar.enabled true
+metaclaw config scheduler.calendar.credentials_path ~/.metaclaw/client_secrets.json
+metaclaw setup   # triggers Google Calendar device flow OAuth
+```
+
+Once running in RL mode, you can monitor the scheduler:
+
+```bash
+metaclaw status                 # shows scheduler state inline
+metaclaw scheduler status       # detailed state + sleep window + idle threshold
+metaclaw scheduler next-window  # explains when the next window will open
+```
+
+### Architecture
+
+The scheduler runs as an `asyncio` task alongside the trainer, checking conditions every 60 seconds:
+
+```
+IDLE_WAIT ──(sleep / idle / meeting)──► WINDOW_OPEN
+WINDOW_OPEN ──(trainer acks)──────────► UPDATING
+UPDATING ──(user becomes active)──────► PAUSING
+PAUSING ──(trainer stops)─────────────► IDLE_WAIT
+```
+
+When a window opens, the trainer collects a batch and runs `forward_backward → optim_step → save_weights`. If the user returns mid-collection, the partial batch is saved and resumed at the next window.
+
+### MAML support/query set separation
+
+MetaClaw v0.3 also fixes a subtle data leakage issue present in earlier versions:
+
+- **Inner loop** (skill evolution): analyzes failed samples and generates new skill files
+- **Outer loop** (RL update): updates model weights via gradient descent
+
+If the same failed samples are used for *both* loops, the RL gradient receives a stale negative signal for behavior that the new skills have already corrected. This is equivalent to violating the MAML principle that support set ≠ query set.
+
+**Fix**: Each `ConversationSample` is tagged with a `skill_generation` version number. When skill evolution adds new skills and bumps the generation counter, the RL sample buffer is immediately cleared. Only samples collected *after* the new skills are in place are used for the RL gradient update.
+
+```
+Session 1, 2, 3  →  skill evolution fires  →  new skills written
+                                               ↓
+                              stale samples discarded from RL buffer
+                                               ↓
+Session 4, 5, 6  →  fresh samples (with new skills injected)  →  RL update
+```
+
+---
+
+
 
 ```bibtex
 @misc{xia2026metaclaw,

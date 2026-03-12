@@ -96,6 +96,18 @@ class MetaClawConfig:
     mode: str = "rl"  # "skills_only" | "rl"
 
     # ------------------------------------------------------------------ #
+    # Scheduler (meta-learning: gate slow RL updates to idle windows)     #
+    # ------------------------------------------------------------------ #
+    scheduler_enabled: bool = False
+    scheduler_idle_threshold_minutes: int = 30
+    scheduler_sleep_start: str = "23:00"   # HH:MM 24h local time
+    scheduler_sleep_end: str = "07:00"
+    scheduler_min_window_minutes: int = 15  # minimum window needed for one RL step
+    scheduler_calendar_enabled: bool = False
+    scheduler_calendar_credentials_path: str = ""
+    scheduler_calendar_token_path: str = ""  # default set in config_store
+
+    # ------------------------------------------------------------------ #
     # LLM for skills_only forwarding (OpenAI-compatible)                 #
     # ------------------------------------------------------------------ #
     llm_api_base: str = ""      # e.g. https://api.moonshot.cn/v1

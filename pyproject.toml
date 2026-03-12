@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "metaclaw"
-version = "0.2.0"
+version = "0.3.0"
 description = "OpenClaw skill injection and RL training — one-click deployment"
 requires-python = ">=3.10"
 dependencies = [
@@ -36,9 +36,15 @@ evolve = [
 wandb = [
     "wandb",
 ]
+# Idle-window scheduler + Google Calendar integration
+scheduler = [
+    "google-api-python-client>=2.0",
+    "google-auth-oauthlib>=1.0",
+    "google-auth-httplib2",
+]
 # Everything
 all = [
-    "metaclaw[rl,embedding,evolve,wandb]",
+    "metaclaw[rl,embedding,evolve,wandb,scheduler]",
 ]
 
 [project.scripts]

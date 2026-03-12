@@ -170,6 +170,12 @@ class SkillManager:
         self._embedding_model = None
         self._skill_embeddings_cache: Optional[Dict] = None
 
+        # Monotonically-increasing counter. Incremented each time new skills are
+        # successfully added via add_skills(). Used by the RL trainer to discard
+        # training samples collected before a skill evolution (MAML support/query
+        # separation: samples that triggered evolution are not reused for RL updates).
+        self.generation: int = 0
+
         self.skills = self._load_skills()
 
         n_gen = len(self.skills.get("general_skills", []))
@@ -394,13 +400,19 @@ class SkillManager:
         return True
 
     def add_skills(self, new_skills: list[dict], category: str = "general") -> int:
-        """Add multiple skills; returns count actually added."""
+        """Add multiple skills; returns count actually added.
+
+        Increments ``self.generation`` when at least one skill is successfully
+        added, signalling the RL trainer to discard pre-evolution samples.
+        """
         added = 0
         for skill in new_skills:
             if "category" not in skill:
                 skill = {**skill, "category": category}
             if self.add_skill(skill):
                 added += 1
+        if added > 0:
+            self.generation += 1
         return added
 
     def _write_skill_md(self, skill: dict) -> None:

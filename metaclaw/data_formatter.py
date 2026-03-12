@@ -44,6 +44,9 @@ class ConversationSample:
     prompt_text: str = ""             # for logging / skill evolution
     response_text: str = ""           # for logging / skill evolution
     teacher_logprobs: Optional[list[float]] = None  # OPD only
+    # Skill generation at collection time. Used by the RL trainer to discard
+    # samples whose skills have since been superseded (MAML support/query separation).
+    skill_generation: int = 0
 
 
 # ------------------------------------------------------------------ #
