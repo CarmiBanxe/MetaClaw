@@ -57,7 +57,7 @@ metaclaw start --mode rl    # 선택 사항: + Tinker 클라우드 실시간 RL 
 
 모델을 OpenAI 호환 프록시로 감싸고, OpenClaw를 통해 인터랙션을 인터셉트하며, 매 턴마다 관련 스킬을 주입하고, 세션 종료 후 새로운 스킬을 자동 요약합니다. 선택적으로 Tinker 클라우드 RL을 활성화하면 서비스 중단 없이 가중치를 핫스왑할 수 있습니다.
 
-GPU 클러스터가 필요 없습니다. `skills_only` 모드는 LLM API만으로 동작하며, RL 학습은 [Tinker](https://www.thinkingmachines.ai/tinker/) 클라우드에 오프로드됩니다.
+GPU 클러스터가 필요 없습니다. MetaClaw는 OpenAI 호환 LLM API와 함께 동작하며, 선택적으로 **Kimi-K2.5**를 [Tinker](https://www.thinkingmachines.ai/tinker/)를 통해 클라우드 기반 LoRA 학습에 통합합니다.
 
 ---
 

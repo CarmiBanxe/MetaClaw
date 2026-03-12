@@ -57,7 +57,7 @@ Sprich einfach wie gewohnt mit deinem Agenten, MetaClaw übernimmt den Lernkreis
 
 Es kapselt dein Modell hinter einem OpenAI-kompatiblen Proxy, fängt Interaktionen über OpenClaw ab, injiziert relevante Skills bei jedem Schritt und fasst nach jeder Session automatisch neue Skills zusammen. Optional kann Tinker Cloud RL aktiviert werden — Gewichte werden hot-geswappt ohne Dienstunterbrechung.
 
-Kein GPU-Cluster nötig. Der `skills_only`-Modus funktioniert mit jeder LLM-API, und RL-Training wird an [Tinker](https://www.thinkingmachines.ai/tinker/) Cloud ausgelagert.
+Kein GPU-Cluster nötig. MetaClaw funktioniert mit jeder OpenAI-kompatiblen LLM-API und integriert optional **Kimi-K2.5** via [Tinker](https://www.thinkingmachines.ai/tinker/) für Cloud-basiertes LoRA-Training.
 
 ---
 

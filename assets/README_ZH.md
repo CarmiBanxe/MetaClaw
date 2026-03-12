@@ -63,7 +63,7 @@ https://github.com/user-attachments/assets/1c2919fc-5612-40f7-bb97-c74ab50619d5
 
 它将你的模型封装为 OpenAI 兼容代理，通过 OpenClaw 拦截实时对话，在每轮对话时注入相关 Skill，并在会话结束后自动总结新 Skill。可选开启 Tinker 云端 RL 持续微调，新权重热更新，无需重启。
 
-无需 GPU 集群。`skills_only` 模式只需一个 LLM API 即可运行；RL 模式通过 [Tinker](https://www.thinkingmachines.ai/tinker/) 在云端完成训练。
+无需 GPU 集群。MetaClaw 兼容任意 OpenAI 格式的 LLM API，并可选通过 [Tinker](https://www.thinkingmachines.ai/tinker/) 接入 **Kimi-K2.5**进行云端 LoRA 微调。
 
 ## 🤖 核心特性
 
