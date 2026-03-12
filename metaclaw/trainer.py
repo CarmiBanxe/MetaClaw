@@ -156,6 +156,15 @@ class MetaClawTrainer:
 
         # 4. PRMScorer
         if self.config.use_prm:
+            prm_client = None
+            if self.config.prm_provider == "bedrock":
+                from .bedrock_client import BedrockChatClient
+                prm_client = BedrockChatClient(
+                    model_id=self.config.prm_model,
+                    region=self.config.bedrock_region,
+                )
+                logger.info("[Trainer] PRMScorer using Bedrock: model=%s region=%s",
+                            self.config.prm_model, self.config.bedrock_region)
             self.prm_scorer = PRMScorer(
                 prm_url=self.config.prm_url,
                 prm_model=self.config.prm_model,
@@ -163,25 +172,38 @@ class MetaClawTrainer:
                 prm_m=self.config.prm_m,
                 temperature=self.config.prm_temperature,
                 max_new_tokens=self.config.prm_max_new_tokens,
+                llm_client=prm_client,
             )
-            logger.info("[Trainer] PRMScorer ready: url=%s m=%d", self.config.prm_url, self.config.prm_m)
+            logger.info("[Trainer] PRMScorer ready: provider=%s model=%s m=%d",
+                        self.config.prm_provider, self.config.prm_model, self.config.prm_m)
 
         # 5. SkillEvolver
         if self.config.enable_skill_evolution:
-            # Set evolver env vars from config (fallback to llm.* if evolver.* not set)
-            evolver_base = self.config.evolver_api_base or self.config.llm_api_base
-            evolver_key = self.config.evolver_api_key or self.config.llm_api_key
-            if evolver_base:
-                os.environ.setdefault("OPENAI_BASE_URL", evolver_base)
-            if evolver_key:
-                os.environ.setdefault("OPENAI_API_KEY", evolver_key)
-            if self.config.evolver_model_id:
-                os.environ.setdefault("SKILL_EVOLVER_MODEL", self.config.evolver_model_id)
+            evolver_client = None
+            if self.config.evolver_provider == "bedrock":
+                from .bedrock_client import BedrockChatClient
+                evolver_client = BedrockChatClient(
+                    model_id=self.config.evolver_model_id,
+                    region=self.config.bedrock_region,
+                )
+                logger.info("[Trainer] SkillEvolver using Bedrock: model=%s",
+                            self.config.evolver_model_id)
+            else:
+                # Set evolver env vars from config (fallback to llm.* if evolver.* not set)
+                evolver_base = self.config.evolver_api_base or self.config.llm_api_base
+                evolver_key = self.config.evolver_api_key or self.config.llm_api_key
+                if evolver_base:
+                    os.environ.setdefault("OPENAI_BASE_URL", evolver_base)
+                if evolver_key:
+                    os.environ.setdefault("OPENAI_API_KEY", evolver_key)
+                if self.config.evolver_model_id:
+                    os.environ.setdefault("SKILL_EVOLVER_MODEL", self.config.evolver_model_id)
             self.skill_evolver = SkillEvolver(
                 max_new_skills=self.config.max_new_skills,
                 history_path=self.config.skill_evolution_history_path,
+                llm_client=evolver_client,
             )
-            logger.info("[Trainer] SkillEvolver ready")
+            logger.info("[Trainer] SkillEvolver ready: provider=%s", self.config.evolver_provider)
 
         # 6. Rollout worker (owns MetaClawAPIServer)
         self.rollout_worker = AsyncRolloutWorker(

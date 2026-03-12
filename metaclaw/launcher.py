@@ -101,7 +101,14 @@ class MetaClawLauncher:
 
         # PRM is optional in skills_only mode
         prm_scorer = None
-        if cfg.use_prm and cfg.prm_url and cfg.prm_api_key:
+        if cfg.use_prm and (cfg.prm_provider == "bedrock" or (cfg.prm_url and cfg.prm_api_key)):
+            prm_client = None
+            if cfg.prm_provider == "bedrock":
+                from .bedrock_client import BedrockChatClient
+                prm_client = BedrockChatClient(
+                    model_id=cfg.prm_model,
+                    region=cfg.bedrock_region,
+                )
             prm_scorer = PRMScorer(
                 prm_url=cfg.prm_url,
                 prm_model=cfg.prm_model,
@@ -109,6 +116,7 @@ class MetaClawLauncher:
                 prm_m=cfg.prm_m,
                 temperature=cfg.prm_temperature,
                 max_new_tokens=cfg.prm_max_new_tokens,
+                llm_client=prm_client,
             )
 
         worker = AsyncRolloutWorker(

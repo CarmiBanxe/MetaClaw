@@ -30,13 +30,12 @@ class MetaClawConfig:
     # Reward / PRM                                                        #
     # ------------------------------------------------------------------ #
     use_prm: bool = True
-    # Any OpenAI-compatible base URL, e.g.:
-    #   "https://api.anthropic.com/v1"   → Anthropic
-    #   "https://api.openai.com/v1"      → OpenAI
-    #   "http://localhost:8081/v1"       → local vLLM
+    # Provider: "openai" (any OpenAI-compatible URL) | "bedrock" (AWS Bedrock)
+    prm_provider: str = "openai"
+    # Any OpenAI-compatible base URL (ignored when prm_provider="bedrock"):
     prm_url: str = "https://api.openai.com/v1"
     prm_model: str = "gpt-5.2"  # judge model
-    prm_api_key: str = ""                    # set via env var or directly
+    prm_api_key: str = ""                    # set via env var or directly (ignored for bedrock)
     prm_m: int = 3                           # majority-vote count
     prm_temperature: float = 0.6
     prm_max_new_tokens: int = 1024
@@ -117,8 +116,12 @@ class MetaClawConfig:
     # ------------------------------------------------------------------ #
     # LLM for skill evolution                                             #
     # ------------------------------------------------------------------ #
+    # Provider: "openai" | "bedrock"
+    evolver_provider: str = "openai"
     azure_openai_deployment: str = "o3"  # kept for backward compat
     evolver_api_base: str = ""           # leave empty to reuse llm_api_base
     evolver_api_key: str = ""            # leave empty to reuse llm_api_key
     evolver_model_id: str = "gpt-5.2"
+    # AWS Bedrock region (used when prm_provider or evolver_provider = "bedrock")
+    bedrock_region: str = "us-east-1"
     skill_evolution_history_path: str = "memory_data/skills/evolution_history.jsonl"

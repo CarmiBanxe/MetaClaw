@@ -166,13 +166,16 @@ class PRMScorer:
         prm_m: int = 3,
         temperature: float = 0.6,
         max_new_tokens: int = 1024,
+        llm_client=None,
     ):
-        base_url = prm_url.rstrip("/")
-        client_kwargs: dict[str, Any] = {"api_key": api_key}
-        client_kwargs["base_url"] = base_url
-        self._client = OpenAI(**client_kwargs)
+        if llm_client is not None:
+            self._client = llm_client
+        else:
+            base_url = prm_url.rstrip("/")
+            client_kwargs: dict[str, Any] = {"api_key": api_key}
+            client_kwargs["base_url"] = base_url
+            self._client = OpenAI(**client_kwargs)
 
-        self._endpoint = base_url + "/chat/completions"
         self.prm_model = prm_model
         self.prm_m = prm_m
         self.temperature = temperature
