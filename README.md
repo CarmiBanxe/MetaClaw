@@ -157,6 +157,9 @@ metaclaw config show            # View current configuration
 metaclaw config KEY VALUE       # Set a config value
 metaclaw scheduler status       # Show current slow-update scheduler state
 metaclaw scheduler next-window  # Show when the next RL update window will open
+metaclaw skills log             # Show skill evolution history (last 10 events)
+metaclaw skills log --n 30      # Show last 30 events
+metaclaw skills log --full      # Include full skill content and failure excerpts
 ```
 
 **Common config keys:**

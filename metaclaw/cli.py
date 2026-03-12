@@ -205,6 +205,111 @@ def config_cmd(key_or_action: str, value: str | None):
 
 
 @metaclaw.group()
+def skills():
+    """Skill management commands."""
+
+
+@skills.command(name="log")
+@click.option(
+    "--n", default=10, show_default=True,
+    help="Number of most recent evolution events to show.",
+)
+@click.option(
+    "--full", is_flag=True, default=False,
+    help="Show full skill content (default: names and descriptions only).",
+)
+@click.option(
+    "--file", "history_file", default="",
+    help="Path to evolution_history.jsonl (default: auto-detect from config).",
+)
+def skills_log(n: int, full: bool, history_file: str):
+    """Show the skill evolution history.
+
+    Reads evolution_history.jsonl and prints a readable summary of each
+    evolution event: when it happened, which failures triggered it, and
+    what new skills were generated.
+    """
+    import json
+    from pathlib import Path
+
+    # Resolve history file path
+    if not history_file:
+        cs = ConfigStore()
+        cfg = cs.to_metaclaw_config()
+        history_file = cfg.skill_evolution_history_path
+
+    path = Path(history_file).expanduser()
+    if not path.exists():
+        click.echo(
+            f"No evolution history found at: {path}\n"
+            "Skills evolve automatically after sessions. "
+            "Make sure skills.auto_evolve is enabled.",
+            err=True,
+        )
+        return
+
+    try:
+        lines = path.read_text(encoding="utf-8").strip().splitlines()
+    except Exception as exc:
+        click.echo(f"Error reading history file: {exc}", err=True)
+        return
+
+    if not lines:
+        click.echo("Evolution history file is empty — no evolutions have run yet.")
+        return
+
+    records = []
+    for line in lines:
+        try:
+            records.append(json.loads(line))
+        except json.JSONDecodeError:
+            continue
+
+    total = len(records)
+    shown = records[-n:]  # most recent N
+
+    click.echo(f"\n{'='*60}")
+    click.echo(f"  Skill Evolution Log  ({total} total events, showing last {len(shown)})")
+    click.echo(f"{'='*60}\n")
+
+    for i, rec in enumerate(shown, start=total - len(shown) + 1):
+        ts        = rec.get("timestamp", "unknown time")
+        n_fail    = rec.get("num_failures_analyzed", "?")
+        n_gen     = rec.get("num_skills_generated", "?")
+        names     = rec.get("skill_names", [])
+        skills_detail = rec.get("skills", [])
+        failure_prompts = rec.get("failure_prompts", [])
+
+        click.echo(f"[#{i}]  {ts}")
+        click.echo(f"  Failures analyzed: {n_fail}   Skills generated: {n_gen}")
+
+        if names:
+            click.echo(f"  New skills: {', '.join(names)}")
+
+        if full and skills_detail:
+            for sk in skills_detail:
+                click.echo(f"\n  ── {sk['name']} ({sk.get('category','general')})")
+                click.echo(f"     {sk.get('description','')}")
+                content = sk.get("content", "")
+                if content:
+                    # Indent content lines
+                    for line in content.splitlines():
+                        click.echo(f"     {line}")
+
+        if full and failure_prompts:
+            click.echo(f"\n  ── Failure context (last 300 chars each):")
+            for j, fp in enumerate(failure_prompts, 1):
+                excerpt = fp.replace("\n", " ").strip()
+                click.echo(f"     [{j}] ...{excerpt}")
+
+        click.echo()
+
+    total_skills = sum(r.get("num_skills_generated", 0) for r in records)
+    click.echo(f"Total skills ever generated: {total_skills}")
+    click.echo(f"History file: {path}\n")
+
+
+@metaclaw.group()
 def scheduler():
     """Scheduler management commands."""
 
