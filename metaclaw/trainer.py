@@ -62,8 +62,10 @@ class MetaClawTrainer:
         trigger_event: Optional[asyncio.Event] = None,
         pause_event: Optional[asyncio.Event] = None,
         scheduler=None,
+        last_request_tracker=None,
     ):
         self.config = config
+        self._last_request_tracker = last_request_tracker
         self.training_client = None
         self.sampling_client = None
         self.rollout_worker: Optional[AsyncRolloutWorker] = None
@@ -187,6 +189,7 @@ class MetaClawTrainer:
             sampling_client=self.sampling_client,
             skill_manager=self.skill_manager,
             prm_scorer=self.prm_scorer,
+            last_request_tracker=self._last_request_tracker,
         )
         logger.info("[Trainer] rollout worker configured on %s:%d",
                     self.config.proxy_host, self.config.proxy_port)
@@ -304,13 +307,8 @@ class MetaClawTrainer:
         added_total = 0
         for skill in new_skills:
             category = skill.get("category", "general")
-            if category == "common_mistakes":
-                self.skill_manager.skills.setdefault("common_mistakes", []).append(skill)
-                added_total += 1
-                logger.info("[SkillEvolver] added common_mistake skill: %s", skill.get("name"))
-            else:
-                added = self.skill_manager.add_skills([skill], category=category)
-                added_total += added
+            added = self.skill_manager.add_skills([skill], category=category)
+            added_total += added
 
         if added_total > 0:
             logger.info("[SkillEvolver] skill evolution added %d new skills", added_total)

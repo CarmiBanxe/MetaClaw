@@ -196,7 +196,10 @@ class MetaClawLauncher:
             # (original v0.2 behaviour, fully backward compatible).
             trigger_event.set()
 
-        trainer = MetaClawTrainer(cfg, trigger_event, pause_event, scheduler)
+        trainer = MetaClawTrainer(
+            cfg, trigger_event, pause_event, scheduler,
+            last_request_tracker=request_tracker if cfg.scheduler_enabled else None,
+        )
 
         # Configure openclaw once the proxy is about to be ready
         await asyncio.sleep(3)
