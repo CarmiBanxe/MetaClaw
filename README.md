@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/logo.jpg" alt="MetaClaw" width="600">
+<img src="assets/new_logo.png" alt="MetaClaw" width="600">
 
 <br/>
 
