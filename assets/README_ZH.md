@@ -41,6 +41,12 @@
   <sub><a href="https://openai.com"><b>OpenAI</b></a></sub>
 </td>
 <td align="center" width="100">
+  <a href="https://gemini.google.com">
+    <img src="https://cdn.simpleicons.org/googlegemini/8E75B2" width="48" height="48" alt="Gemini" />
+  </a><br/>
+  <sub><a href="https://gemini.google.com"><b>Gemini</b></a></sub>
+</td>
+<td align="center" width="100">
   <sub><b>+ Much<br/>More</b></sub>
 </td>
 </tr>
