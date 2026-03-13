@@ -21,7 +21,7 @@
 
 <br/>
 
-[概述](#-概述) • [快速开始](#-快速开始) • [CLI 命令](#️-cli-命令) • [配置说明](#️-配置说明) • [Skills](#-skills) • [RL 模式](#-进阶rl-模式) • [OPD 模式](#-进阶opd-模式) • [引用](#-引用)
+[概述](#-概述) • [快速开始](#-快速开始) • [CLI 命令](#️-cli-命令) • [配置说明](#️-配置说明) • [Skills](#-skills) • [RL 模式](#-进阶rl-模式) • [OPD 模式](#-进阶opd-模式) • [元学习调度器](#-进阶元学习调度器-v03) • [引用](#-引用)
 
 </div>
 
@@ -34,8 +34,9 @@
 
 ```bash
 metaclaw setup              # 首次配置向导
-metaclaw start              # 启动代理 + 注入 Skill，接入 OpenClaw
-metaclaw start --mode rl    # 可选：+ Tinker 云端实时 RL 训练
+metaclaw start              # 默认 auto 模式：Skills + 定时 RL 训练
+metaclaw start --mode rl    # 无调度器 RL（batch 满即训练）
+metaclaw start --mode skills_only  # 仅 Skills，无 RL（无需 Tinker）
 ```
 
 <div align="center">
@@ -46,6 +47,7 @@ metaclaw start --mode rl    # 可选：+ Tinker 云端实时 RL 训练
 
 ## 🔥 最新动态
 
+- **[2026/03/13]** **v0.3** —— 元学习调度器：慢速 RL 更新仅在睡眠时间、空闲期间或 Google Calendar 会议期间运行。新增 MAML 风格的 support/query 集分离，防止过时的奖励信号污染模型更新。
 - **[2026/03/11]** **v0.2** —— 通过 `metaclaw` CLI 一键部署。Skill 默认开启，RL 现为可选。
 - **[2026/03/09]** 正式发布 **MetaClaw** —— 只需与 Agent 对话，即可让其自动进化。**无需** GPU 部署，直接接入 **API** 即可。
 
@@ -59,24 +61,25 @@ https://github.com/user-attachments/assets/d86a41a8-4181-4e3a-af0e-dc453a6b8594
 
 ## 📖 概述
 
-**MetaClaw 将实时对话自动转化为持续训练数据。**
-只需像平时一样与 Agent 对话，MetaClaw 在后台自动完成学习闭环。
+**MetaClaw 是一个在真实场景中元学习并持续进化的 Agent。**
+只需像平时一样与 Agent 对话 —— MetaClaw 将每一次实时对话转化为学习信号，让 Agent 在真实部署中持续进化，而非仅依赖离线训练。
 
-它将你的模型封装为 OpenAI 兼容代理，通过 OpenClaw 拦截实时对话，在每轮对话时注入相关 Skill，并在会话结束后自动总结新 Skill。可选开启 Tinker 云端 RL 持续微调，新权重热更新，无需重启。
+在底层，它将你的模型封装为 OpenAI 兼容代理，通过 OpenClaw 拦截实时对话，在每轮对话中注入相关 Skill，并从积累的交互经验中元学习。每次会话结束后自动总结新 Skill；开启 RL 后，元学习调度器会将权重更新推迟到空闲窗口，确保活跃使用期间不受干扰。
 
-无需 GPU 集群。MetaClaw 兼容任意 OpenAI 格式的 LLM API，并可选通过 [Tinker](https://www.thinkingmachines.ai/tinker/) 接入 **Kimi-K2.5** 进行云端 LoRA 微调。
+无需 GPU 集群。MetaClaw 兼容任意 OpenAI 格式的 LLM API，并可选通过 [Tinker](https://www.thinkingmachines.ai/tinker/) 接入 **Kimi-K2.5** (1T MoE) 进行云端 LoRA 微调。
 
 ## 🤖 核心功能
 
 ### **一键部署**
 使用 `metaclaw setup` 完成一次性配置，再执行 `metaclaw start` 即可自动启动代理、注入 Skill 并接入 OpenClaw。无需手动编写 Shell 脚本。
 
-### **两种运行模式**
+### **三种运行模式**
 
 | 模式 | 默认 | 功能说明 |
 |------|------|----------|
-| `skills_only` | ✅ | 代理 → 你的 LLM API。注入 Skill，会话结束后自动总结。无需 GPU / Tinker。 |
-| `rl` | 关闭 | 代理 → Tinker 云端 RL。完整训练循环，PRM 打分 + Skill 自动进化。 |
+| `auto` | ✅ | RL + 智能调度器。Skill 持续注入；RL 权重更新只在睡眠/空闲/会议窗口进行。 |
+| `rl` | — | 无调度器 RL。batch 满后立即训练（v0.2 行为）。 |
+| `skills_only` | — | 代理 → 你的 LLM API。注入 Skill，会话结束后自动总结。无需 GPU / Tinker。 |
 
 ### **Skill 注入**
 每轮对话时，MetaClaw 检索最相关的 Skill 指令并注入 Agent 的 system prompt，无需重新训练即可立即提升行为表现。
@@ -104,9 +107,11 @@ MetaClaw 同时支持：
 ### 1. 安装
 
 ```bash
-pip install -e .            # skills_only 模式（轻量）
-pip install -e ".[rl]"      # + RL 训练支持（torch、transformers、tinker）
-pip install -e ".[evolve]"  # + 通过 OpenAI 兼容 LLM 进行 Skill 进化
+pip install -e .                        # skills_only 模式（轻量）
+pip install -e ".[rl]"                  # + RL 训练支持（torch、transformers、tinker）
+pip install -e ".[evolve]"              # + 通过 OpenAI 兼容 LLM 进行 Skill 进化
+pip install -e ".[scheduler]"           # + Google Calendar 调度器集成
+pip install -e ".[rl,evolve,scheduler]" # 推荐：完整 RL + 调度器配置
 ```
 
 ### 2. 配置
@@ -130,13 +135,14 @@ metaclaw start
 ## 🛠️ CLI 命令
 
 ```
-metaclaw setup              # 首次交互式配置向导
-metaclaw start              # 启动 MetaClaw（代理 + 可选 RL）
-metaclaw start --mode rl    # 本次会话强制启用 RL 模式
-metaclaw stop               # 停止正在运行的 MetaClaw 实例
-metaclaw status             # 查看代理健康状态与运行模式
-metaclaw config show        # 查看当前配置
-metaclaw config KEY VALUE   # 设置配置项
+metaclaw setup                  # 首次交互式配置向导
+metaclaw start                  # 启动 MetaClaw（默认 auto 模式）
+metaclaw start --mode rl        # 本次会话强制启用 RL 模式（无调度器）
+metaclaw start --mode skills_only  # 本次会话强制仅 Skills 模式
+metaclaw stop                   # 停止正在运行的 MetaClaw 实例
+metaclaw status                 # 查看代理健康状态、运行模式与调度器状态
+metaclaw config show            # 查看当前配置
+metaclaw config KEY VALUE       # 设置配置项
 ```
 
 **常用配置项：**
@@ -155,7 +161,7 @@ metaclaw config proxy.port 31000          # 修改代理端口
 配置文件位于 `~/.metaclaw/config.yaml`，由 `metaclaw setup` 自动生成。
 
 ```yaml
-mode: skills_only          # "skills_only" | "rl"
+mode: auto                 # "auto" | "rl" | "skills_only"
 
 llm:
   provider: kimi            # kimi | qwen | openai | minimax | custom
@@ -196,6 +202,17 @@ opd:
   kl_penalty_coef: 1.0      # OPD 的 KL 惩罚系数
 
 max_context_tokens: 20000   # 截断前的 prompt token 上限
+
+scheduler:                  # v0.3：元学习调度器（auto 模式下自动启用）
+  enabled: false            # auto 模式自动启用；rl 模式需手动设置
+  sleep_start: "23:00"
+  sleep_end: "07:00"
+  idle_threshold_minutes: 30
+  min_window_minutes: 15
+  calendar:
+    enabled: false
+    credentials_path: ""
+    token_path: ""
 ```
 
 ---
@@ -255,6 +272,27 @@ metaclaw start --mode rl
 教师模型需部署在 OpenAI 兼容的 `/v1/completions` 端点（如 vLLM、SGLang）。OPD 可与 PRM 打分同时使用，两者均异步运行。
 
 参考 `examples/run_conversation_opd.py` 获取程序化示例，`scripts/run_openclaw_tinker_opd.sh` 提供现成的启动脚本。
+
+---
+
+## 🧠 进阶：元学习调度器 (v0.3)
+
+RL 模式下，权重热更新会暂停 Agent 数分钟。调度器（`auto` 模式默认启用）将 RL 更新推迟到用户不活跃的窗口，确保活跃使用期间不受干扰。
+
+```bash
+metaclaw config scheduler.sleep_start "23:00"
+metaclaw config scheduler.sleep_end   "07:00"
+metaclaw config scheduler.idle_threshold_minutes 30
+
+# 可选：Google Calendar 集成
+pip install -e ".[scheduler]"
+metaclaw config scheduler.calendar.enabled true
+metaclaw config scheduler.calendar.credentials_path ~/.metaclaw/client_secrets.json
+```
+
+三种条件触发更新窗口（满足任一即可）：配置的睡眠时间、系统键盘空闲、Google Calendar 活跃事件。若用户在更新中途返回，部分 batch 会被保存并在下次窗口恢复。
+
+每个 `ConversationSample` 带有 `skill_generation` 版本标签。当 Skill 进化增加 generation 时，RL buffer 被清空，仅使用进化后的样本进行梯度更新（MAML support/query 集分离）。
 
 ---
 

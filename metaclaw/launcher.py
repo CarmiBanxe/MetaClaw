@@ -49,7 +49,11 @@ class MetaClawLauncher:
         self._write_pid()
         self._setup_signal_handlers()
 
-        if mode == "skills_only":
+        # "auto" mode = RL with scheduler enabled
+        if mode == "auto":
+            cfg.scheduler_enabled = True
+            await self._start_rl(cfg)
+        elif mode == "skills_only":
             await self._start_skills_only(cfg)
         else:
             await self._start_rl(cfg)
@@ -85,6 +89,7 @@ class MetaClawLauncher:
                 skills_dir=cfg.skills_dir,
                 retrieval_mode=cfg.retrieval_mode,
                 embedding_model_path=cfg.embedding_model_path,
+                task_specific_top_k=cfg.task_specific_top_k,
             )
             logger.info("[Launcher] SkillManager loaded: %s skills", skill_manager.get_skill_count())
 
@@ -101,7 +106,14 @@ class MetaClawLauncher:
 
         # PRM is optional in skills_only mode
         prm_scorer = None
-        if cfg.use_prm and cfg.prm_url and cfg.prm_api_key:
+        if cfg.use_prm and (cfg.prm_provider == "bedrock" or (cfg.prm_url and cfg.prm_api_key)):
+            prm_client = None
+            if cfg.prm_provider == "bedrock":
+                from .bedrock_client import BedrockChatClient
+                prm_client = BedrockChatClient(
+                    model_id=cfg.prm_model,
+                    region=cfg.bedrock_region,
+                )
             prm_scorer = PRMScorer(
                 prm_url=cfg.prm_url,
                 prm_model=cfg.prm_model,
@@ -109,6 +121,7 @@ class MetaClawLauncher:
                 prm_m=cfg.prm_m,
                 temperature=cfg.prm_temperature,
                 max_new_tokens=cfg.prm_max_new_tokens,
+                llm_client=prm_client,
             )
 
         worker = AsyncRolloutWorker(
@@ -148,18 +161,74 @@ class MetaClawLauncher:
         if tinker_key:
             os.environ.setdefault("TINKER_API_KEY", tinker_key)
 
-        trainer = MetaClawTrainer(cfg)
-        self._trainer_task = asyncio.create_task(trainer.run())
+        # ------------------------------------------------------------------ #
+        # Scheduler setup (optional — gated on scheduler_enabled config flag) #
+        # ------------------------------------------------------------------ #
+        trigger_event = asyncio.Event()
+        pause_event   = asyncio.Event()
+        scheduler = None
+
+        if cfg.scheduler_enabled:
+            from .idle_detector import IdleDetector, LastRequestTracker
+            from .scheduler import SlowUpdateScheduler
+
+            request_tracker = LastRequestTracker()
+            idle_detector   = IdleDetector(fallback_tracker=request_tracker)
+
+            calendar_client = None
+            if cfg.scheduler_calendar_enabled and cfg.scheduler_calendar_credentials_path:
+                try:
+                    from .calendar_client import GoogleCalendarClient
+                    calendar_client = GoogleCalendarClient(
+                        credentials_path=cfg.scheduler_calendar_credentials_path,
+                        token_path=cfg.scheduler_calendar_token_path,
+                    )
+                    calendar_client.authenticate()
+                    logger.info("[Launcher] Google Calendar client authenticated")
+                except ImportError:
+                    logger.warning(
+                        "[Launcher] Google Calendar dependencies not installed. "
+                        "Install with: pip install metaclaw[scheduler]"
+                    )
+                except Exception as exc:
+                    logger.warning("[Launcher] Calendar auth failed: %s — skipping calendar", exc)
+                    calendar_client = None
+
+            scheduler = SlowUpdateScheduler(
+                config=cfg,
+                trigger_event=trigger_event,
+                pause_event=pause_event,
+                idle_detector=idle_detector,
+                calendar_client=calendar_client,
+            )
+            logger.info(
+                "[Launcher] scheduler enabled — RL updates restricted to idle/sleep/calendar windows"
+            )
+        else:
+            # No scheduler: set trigger immediately so the trainer runs continuously
+            # (original v0.2 behaviour, fully backward compatible).
+            trigger_event.set()
+
+        trainer = MetaClawTrainer(
+            cfg, trigger_event, pause_event, scheduler,
+            last_request_tracker=request_tracker if cfg.scheduler_enabled else None,
+        )
 
         # Configure openclaw once the proxy is about to be ready
         await asyncio.sleep(3)
         self._configure_openclaw(cfg)
 
+        tasks = [asyncio.create_task(trainer.run())]
+        if scheduler is not None:
+            tasks.append(asyncio.create_task(scheduler.run()))
+
         try:
-            await self._trainer_task
+            await asyncio.gather(*tasks)
         except asyncio.CancelledError:
             pass
         finally:
+            if scheduler is not None:
+                scheduler.stop()
             _PID_FILE.unlink(missing_ok=True)
 
     # ------------------------------------------------------------------ #

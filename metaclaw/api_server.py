@@ -334,6 +334,7 @@ class MetaClawAPIServer:
         skill_manager: Optional[SkillManager] = None,
         prm_scorer: Optional[PRMScorer] = None,
         skill_evolver=None,
+        last_request_tracker=None,
     ):
         self.config = config
         self.output_queue = output_queue
@@ -342,6 +343,8 @@ class MetaClawAPIServer:
         self.skill_manager = skill_manager
         self.prm_scorer = prm_scorer
         self.skill_evolver = skill_evolver
+        # Optional LastRequestTracker for scheduler idle detection
+        self._last_request_tracker = last_request_tracker
 
         self._served_model = config.served_model_name
         self._expected_api_key = config.api_key
@@ -430,6 +433,9 @@ class MetaClawAPIServer:
             x_session_done: Optional[str] = Header(default=None),
         ):
             owner: MetaClawAPIServer = request.app.state.owner
+            # Update idle tracker so the scheduler knows the user is active
+            if owner._last_request_tracker is not None:
+                owner._last_request_tracker.touch()
             await owner._check_auth(authorization)
             if not owner.submission_enabled.is_set():
                 # Queue requests while submission is paused instead of returning 503.
@@ -464,9 +470,7 @@ class MetaClawAPIServer:
                 (x_session_done and x_session_done.strip().lower() in {"1", "true", "yes", "on"})
                 or str(body.get("session_done", "")).strip().lower() in {"1", "true", "yes", "on"}
             )
-            if not session_done and rewritten > 0:
-                session_done = True
-                logger.info("[OpenClaw] inferred session_done=true from /new bootstrap prompt")
+            # Do not infer session_done from bootstrap text — only explicit X-Session-Done or body session_done trigger evolution.
 
             stream = bool(body.get("stream", False))
             result = await owner._handle_request(
@@ -1243,6 +1247,9 @@ class MetaClawAPIServer:
             prompt_text=turn_data.get("prompt_text", ""),
             response_text=turn_data.get("response_text", ""),
             teacher_logprobs=teacher_logprobs,
+            # Tag with current skill generation so the trainer can discard
+            # pre-evolution samples (MAML support/query set separation).
+            skill_generation=self.skill_manager.generation if self.skill_manager else 0,
         )
 
         if not exclude:
@@ -1312,7 +1319,7 @@ class MetaClawAPIServer:
 
     def _print_ready_banner(self):
         time.sleep(3)
-        backend = "Tinker cloud RL" if self.config.mode == "rl" else f"LLM ({self.config.llm_model_id or 'upstream'})"
+        backend = "Tinker cloud RL" if self.config.mode in ("rl", "auto") else f"LLM ({self.config.llm_model_id or 'upstream'})"
         banner = (
             f"\n{'=' * 70}\n"
             f"  MetaClaw proxy ready  [mode={self.config.mode}]\n"

@@ -22,6 +22,7 @@ import json
 import logging
 import os
 import re
+from datetime import datetime
 from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
@@ -155,9 +156,25 @@ class SkillEvolver:
             skills = skills[: self.max_new_skills]
 
             record = {
+                "timestamp": datetime.now().isoformat(timespec="seconds"),
                 "num_failures_analyzed": len(failed_samples),
                 "num_skills_generated": len(skills),
                 "skill_names": [s.get("name") for s in skills],
+                # Full skill content so the history file is self-contained
+                "skills": [
+                    {
+                        "name": s.get("name"),
+                        "category": s.get("category", "general"),
+                        "description": s.get("description", ""),
+                        "content": s.get("content", ""),
+                    }
+                    for s in skills
+                ],
+                # Failure summaries for traceability (first 300 chars of each)
+                "failure_prompts": [
+                    getattr(s, "prompt_text", "")[-300:]
+                    for s in failed_samples[:6]
+                ],
             }
             self.update_history.append(record)
             if self.history_path:

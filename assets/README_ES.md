@@ -21,7 +21,7 @@
 
 <br/>
 
-[Descripción](#-descripción) • [Inicio rápido](#-inicio-rápido) • [Referencia CLI](#️-referencia-cli) • [Configuración](#️-configuración) • [Skills](#-skills) • [Modo RL](#-avanzado-modo-rl) • [Modo OPD](#-avanzado-modo-opd) • [Cita](#-cita)
+[Descripción](#-descripción) • [Inicio rápido](#-inicio-rápido) • [Referencia CLI](#️-referencia-cli) • [Configuración](#️-configuración) • [Skills](#-skills) • [Modo RL](#-avanzado-modo-rl) • [Modo OPD](#-avanzado-modo-opd) • [Planificador](#-avanzado-planificador-de-meta-aprendizaje-v03) • [Cita](#-cita)
 
 </div>
 
@@ -34,8 +34,9 @@
 
 ```bash
 metaclaw setup              # asistente de configuración inicial
-metaclaw start              # skills activados, OpenClaw conectado — listo para chatear
-metaclaw start --mode rl    # opcional: + entrenamiento RL en vivo via Tinker
+metaclaw start              # por defecto: modo auto — skills + entrenamiento RL programado
+metaclaw start --mode rl    # RL sin planificador (entrena inmediatamente al llenar batch)
+metaclaw start --mode skills_only  # solo skills, sin RL (no requiere Tinker)
 ```
 
 <div align="center">
@@ -46,6 +47,7 @@ metaclaw start --mode rl    # opcional: + entrenamiento RL en vivo via Tinker
 
 ## 🔥 Noticias
 
+- **[13/03/2026]** **v0.3** — Planificador de meta-aprendizaje: las actualizaciones RL solo se ejecutan durante horas de sueño, periodos de inactividad o reuniones de Google Calendar. Se agrega separación de conjuntos support/query estilo MAML para evitar que señales de recompensa obsoletas contaminen las actualizaciones del modelo.
 - **[11/03/2026]** **v0.2** — Despliegue en un clic mediante la CLI `metaclaw`. Skills activados por defecto, RL ahora es opcional.
 - **[09/03/2026]** Lanzamos **MetaClaw** — Habla con tu agente y deja que evolucione automáticamente. **Sin** necesidad de despliegue de GPU; conéctate directamente a la **API**.
 
@@ -59,24 +61,25 @@ https://github.com/user-attachments/assets/d86a41a8-4181-4e3a-af0e-dc453a6b8594
 
 ## 📖 Descripción
 
-**MetaClaw convierte automáticamente las conversaciones en vivo en datos de entrenamiento continuos.**
-Habla con tu agente como de costumbre, y MetaClaw gestiona el bucle de aprendizaje en segundo plano.
+**MetaClaw es un agente que meta-aprende y evoluciona en entornos reales.**
+Habla con tu agente como de costumbre — MetaClaw convierte cada conversación en vivo en una señal de aprendizaje, permitiendo que el agente mejore continuamente a través del despliegue real en lugar de depender únicamente del entrenamiento offline.
 
-Envuelve tu modelo detrás de un proxy compatible con OpenAI, intercepta interacciones desde OpenClaw, inyecta skills relevantes en cada turno y resume automáticamente nuevas skills al final de cada sesión. Opcionalmente, activa el RL en la nube de Tinker para fine-tuning continuo con hot-swap de pesos sin interrumpir el servicio.
+Internamente, envuelve tu modelo detrás de un proxy compatible con OpenAI, intercepta interacciones desde OpenClaw, inyecta skills relevantes en cada turno y meta-aprende de la experiencia acumulada. Las skills se resumen automáticamente tras cada sesión; con RL activado, un planificador de meta-aprendizaje posterga las actualizaciones de pesos a ventanas de inactividad para no interrumpir al agente durante el uso activo.
 
-No se necesita cluster GPU. MetaClaw funciona con cualquier API de LLM compatible con OpenAI e integra opcionalmente **Kimi-K2.5** via [Tinker](https://www.thinkingmachines.ai/tinker/) para entrenamiento LoRA en la nube.
+No se necesita cluster GPU. MetaClaw funciona con cualquier API de LLM compatible con OpenAI e integra opcionalmente **Kimi-K2.5** (1T MoE) via [Tinker](https://www.thinkingmachines.ai/tinker/) para entrenamiento LoRA en la nube.
 
 ## 🤖 Características principales
 
 ### **Despliegue en un clic**
 Configura una vez con `metaclaw setup`, luego `metaclaw start` levanta el proxy, inyecta skills y conecta OpenClaw automáticamente. Sin necesidad de scripts de shell manuales.
 
-### **Dos modos de operación**
+### **Tres modos de operación**
 
 | Modo | Por defecto | Función |
 |------|------------|---------|
-| `skills_only` | ✅ | Proxy → tu API LLM. Skills inyectados, resumidos automáticamente tras cada sesión. Sin GPU/Tinker requerido. |
-| `rl` | desactivado | Proxy → Tinker cloud RL. Bucle de entrenamiento completo con scoring PRM y evolución de skills. |
+| `auto` | ✅ | RL + planificador inteligente. Skills siempre activos; actualizaciones de pesos RL solo durante ventanas de sueño/inactividad/reunión. |
+| `rl` | — | RL sin planificador. Entrena inmediatamente cuando un batch está lleno (comportamiento v0.2). |
+| `skills_only` | — | Proxy → tu API LLM. Skills inyectados, resumidos automáticamente tras cada sesión. Sin GPU/Tinker requerido. |
 
 ### **Inyección de skills**
 En cada turno, MetaClaw recupera las instrucciones de skills más relevantes y las inyecta en el prompt del sistema del agente. Mejora inmediata del comportamiento sin reentrenamiento.
@@ -104,9 +107,11 @@ El serving, el modelado de recompensas y el entrenamiento están completamente d
 ### 1. Instalación
 
 ```bash
-pip install -e .            # modo skills_only (ligero)
-pip install -e ".[rl]"      # + soporte de entrenamiento RL (torch, transformers, tinker)
-pip install -e ".[evolve]"  # + evolución de skills via LLM compatible con OpenAI
+pip install -e .                        # modo skills_only (ligero)
+pip install -e ".[rl]"                  # + soporte de entrenamiento RL (torch, transformers, tinker)
+pip install -e ".[evolve]"              # + evolución de skills via LLM compatible con OpenAI
+pip install -e ".[scheduler]"           # + integración Google Calendar para planificador
+pip install -e ".[rl,evolve,scheduler]" # recomendado: configuración completa RL + planificador
 ```
 
 ### 2. Configuración
@@ -130,13 +135,14 @@ Eso es todo. MetaClaw inicia el proxy, configura automáticamente OpenClaw y rei
 ## 🛠️ Referencia CLI
 
 ```
-metaclaw setup              # Asistente de configuración inicial interactivo
-metaclaw start              # Iniciar MetaClaw (proxy + RL opcional)
-metaclaw start --mode rl    # Forzar modo RL para esta sesión
-metaclaw stop               # Detener una instancia de MetaClaw en ejecución
-metaclaw status             # Verificar estado del proxy y modo en ejecución
-metaclaw config show        # Ver configuración actual
-metaclaw config KEY VALUE   # Establecer un valor de configuración
+metaclaw setup                  # Asistente de configuración inicial interactivo
+metaclaw start                  # Iniciar MetaClaw (por defecto: modo auto)
+metaclaw start --mode rl        # Forzar modo RL para esta sesión (sin planificador)
+metaclaw start --mode skills_only  # Forzar modo solo skills para esta sesión
+metaclaw stop                   # Detener una instancia de MetaClaw en ejecución
+metaclaw status                 # Verificar estado del proxy, modo en ejecución y planificador
+metaclaw config show            # Ver configuración actual
+metaclaw config KEY VALUE       # Establecer un valor de configuración
 ```
 
 **Claves de configuración comunes:**
@@ -155,7 +161,7 @@ metaclaw config proxy.port 31000          # Cambiar puerto del proxy
 La configuración se encuentra en `~/.metaclaw/config.yaml`, creada por `metaclaw setup`.
 
 ```yaml
-mode: skills_only          # "skills_only" | "rl"
+mode: auto                 # "auto" | "rl" | "skills_only"
 
 llm:
   provider: kimi            # kimi | qwen | openai | minimax | custom
@@ -196,6 +202,17 @@ opd:
   kl_penalty_coef: 1.0      # coeficiente de penalización KL para OPD
 
 max_context_tokens: 20000   # límite de tokens de prompt antes del truncamiento
+
+scheduler:                  # v0.3: planificador de meta-aprendizaje (auto-habilitado en modo auto)
+  enabled: false            # modo auto lo habilita automáticamente; configurar manualmente para rl
+  sleep_start: "23:00"
+  sleep_end: "07:00"
+  idle_threshold_minutes: 30
+  min_window_minutes: 15
+  calendar:
+    enabled: false
+    credentials_path: ""
+    token_path: ""
 ```
 
 ---
@@ -255,6 +272,27 @@ metaclaw start --mode rl
 El profesor debe servirse detrás de un endpoint `/v1/completions` compatible con OpenAI (p. ej. vLLM, SGLang). OPD puede combinarse con scoring PRM — ambos se ejecutan de forma asíncrona.
 
 Consulta `examples/run_conversation_opd.py` para un ejemplo programático y `scripts/run_openclaw_tinker_opd.sh` para un script de lanzamiento listo para usar.
+
+---
+
+## 🧠 Avanzado: Planificador de meta-aprendizaje (v0.3)
+
+En modo RL, el paso de hot-swap de pesos pausa el agente durante varios minutos. El planificador (habilitado por defecto en modo `auto`) pospone las actualizaciones RL a ventanas de inactividad del usuario para que el agente nunca se interrumpa durante el uso activo.
+
+```bash
+metaclaw config scheduler.sleep_start "23:00"
+metaclaw config scheduler.sleep_end   "07:00"
+metaclaw config scheduler.idle_threshold_minutes 30
+
+# Opcional: integración con Google Calendar
+pip install -e ".[scheduler]"
+metaclaw config scheduler.calendar.enabled true
+metaclaw config scheduler.calendar.credentials_path ~/.metaclaw/client_secrets.json
+```
+
+Tres condiciones activan una ventana de actualización (cualquiera es suficiente): horas de sueño configuradas, inactividad del teclado del sistema, o un evento activo de Google Calendar. Si el usuario regresa durante una actualización, el batch parcial se guarda y se retoma en la siguiente ventana.
+
+Cada `ConversationSample` se etiqueta con una versión `skill_generation`. Cuando la evolución de skills incrementa la generación, el buffer RL se vacía para que solo las muestras post-evolución se usen en las actualizaciones de gradiente (separación de conjuntos support/query MAML).
 
 ---
 
