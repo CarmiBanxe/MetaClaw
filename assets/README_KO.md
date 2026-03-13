@@ -41,7 +41,7 @@
   <sub><a href="https://openai.com"><b>OpenAI</b></a></sub>
 </td>
 <td align="center" width="100">
-  <sub><b>+ 모든 OpenAI<br/>호환 API</b></sub>
+  <sub><b>+ Much<br/>More</b></sub>
 </td>
 </tr>
 </table>

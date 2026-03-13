@@ -41,7 +41,7 @@
   <sub><a href="https://openai.com"><b>OpenAI</b></a></sub>
 </td>
 <td align="center" width="100">
-  <sub><b>+ 任何 OpenAI<br/>兼容 API</b></sub>
+  <sub><b>+ Much<br/>More</b></sub>
 </td>
 </tr>
 </table>
