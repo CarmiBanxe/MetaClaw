@@ -89,6 +89,7 @@ class MetaClawLauncher:
                 skills_dir=cfg.skills_dir,
                 retrieval_mode=cfg.retrieval_mode,
                 embedding_model_path=cfg.embedding_model_path,
+                task_specific_top_k=cfg.task_specific_top_k,
             )
             logger.info("[Launcher] SkillManager loaded: %s skills", skill_manager.get_skill_count())
 
