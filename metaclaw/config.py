@@ -55,8 +55,7 @@ class MetaClawConfig:
     skill_top_k: int = 6                      # General skills to inject
     task_specific_top_k: int = 10    # Task-specific skills cap; None means no cap
     enable_skill_evolution: bool = False
-    skill_evolution_every_n_turns: int = 10  # Every N conversation turns (main turns), run skill evolution on those turns (RL and skills_only)
-    skill_update_threshold: float = 0.4       # Evolve when success rate < threshold (trainer batch evolution)
+    skill_update_threshold: float = 0.4       # Evolve when success rate < threshold
     max_new_skills: int = 3
 
     # ------------------------------------------------------------------ #

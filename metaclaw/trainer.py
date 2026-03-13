@@ -513,6 +513,8 @@ class MetaClawTrainer:
 
             try:
                 await self._train_on_batch(batch, step_idx=step + 1)
+                if self.config.enable_skill_evolution:
+                    await self._maybe_evolve_skills(batch)
             finally:
                 self.rollout_worker.resume_submission()
 

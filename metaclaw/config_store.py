@@ -30,7 +30,6 @@ _DEFAULTS: dict = {
         "top_k": 6,
         "task_specific_top_k": 10,
         "auto_evolve": True,
-        "evolution_every_n_turns": 10,
     },
     "rl": {
         "enabled": False,
@@ -175,7 +174,6 @@ class ConfigStore:
             skill_top_k=int(skills.get("top_k", 6)),
             task_specific_top_k=int(skills.get("task_specific_top_k", 10)),
             enable_skill_evolution=bool(skills.get("auto_evolve", True)),
-            skill_evolution_every_n_turns=int(skills.get("evolution_every_n_turns", 10)),
             skill_evolution_history_path=str(Path(skills_dir) / "evolution_history.jsonl"),
             # RL training
             model_name=rl.get("model") or llm.get("model_id") or "Qwen/Qwen3-4B",
@@ -221,7 +219,6 @@ class ConfigStore:
             f"skills.enabled:  {skills.get('enabled', True)}",
             f"skills.dir:      {skills.get('dir', '?')}",
             f"skills.evolve:   {skills.get('auto_evolve', True)}",
-            f"skills.evolution_every_n_turns: {skills.get('evolution_every_n_turns', 10)}",
             f"rl.enabled:      {rl.get('enabled', False)}",
         ]
         if rl.get("enabled"):

@@ -313,7 +313,6 @@ class SetupWizard:
                 "top_k": current_skills.get("top_k", 6),
                 "task_specific_top_k": current_skills.get("task_specific_top_k", 10),
                 "auto_evolve": auto_evolve,
-                "evolution_every_n_turns": current_skills.get("evolution_every_n_turns", 10),
             },
             "rl": rl_config,
             "scheduler": scheduler_config,

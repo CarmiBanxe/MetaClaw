@@ -800,17 +800,11 @@ class MetaClawAPIServer:
                     session_id, turn_num, messages,
                     prompt_text_simple, response_text_simple, tool_calls,
                 )
-                evolution_every_n = getattr(self.config, "skill_evolution_every_n_turns", 10)
-                if self.skill_evolver and self.config.enable_skill_evolution and evolution_every_n > 0:
+                if self.skill_evolver and self.config.enable_skill_evolution:
                     self._session_turns.setdefault(session_id, []).append({
                         "prompt_text": prompt_text_simple,
                         "response_text": response_text_simple,
                     })
-                    buf = self._session_turns.get(session_id, [])
-                    if len(buf) >= evolution_every_n:
-                        turns = self._session_turns.pop(session_id, [])
-                        if turns:
-                            self._safe_create_task(self._evolve_skills_for_session(turns))
                 output["session_id"] = session_id
                 return {"response": output}
 
@@ -857,17 +851,18 @@ class MetaClawAPIServer:
                 session_id, turn_num, len(prompt_ids), len(response_ids),
             )
             self._buffer_record(session_id, turn_num, messages, prompt_text, response_text, tool_calls)
-            # Skill evolution: every N conversation turns (same in RL and skills_only).
-            evolution_every_n = getattr(self.config, "skill_evolution_every_n_turns", 10)
-            if self.skill_evolver and self.config.enable_skill_evolution and evolution_every_n > 0:
+            # Keep skills_only auto-summarization working even when tokenizer is loaded.
+            if (
+                self.config.mode == "skills_only"
+                and self.skill_evolver
+                and self.config.enable_skill_evolution
+            ):
                 self._session_turns.setdefault(session_id, []).append(
-                    {"prompt_text": prompt_text, "response_text": response_text}
+                    {
+                        "prompt_text": prompt_text,
+                        "response_text": response_text,
+                    }
                 )
-                buf = self._session_turns.get(session_id, [])
-                if len(buf) >= evolution_every_n:
-                    turns = self._session_turns.pop(session_id, [])
-                    if turns:
-                        self._safe_create_task(self._evolve_skills_for_session(turns))
             self._pending_turn_data.setdefault(session_id, {})[turn_num] = turn_data
             if self.config.use_opd and self._teacher_client:
                 self._fire_teacher_query(
@@ -884,6 +879,10 @@ class MetaClawAPIServer:
             self._turn_counts.pop(session_id, None)
             self._teacher_tasks.pop(session_id, None)
             logger.info("[OpenClaw] session=%s done → cleaned up (effective_samples=%d)", session_id, eff)
+            # skills_only: trigger async skill evolution from this session's turns
+            turns = self._session_turns.pop(session_id, [])
+            if turns and self.skill_evolver and self.config.enable_skill_evolution:
+                self._safe_create_task(self._evolve_skills_for_session(turns))
 
         output["session_id"] = session_id
         return {"response": output}
