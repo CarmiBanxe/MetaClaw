@@ -97,6 +97,9 @@ class MetaClawTrainer:
 
     async def setup(self):
         """Initialise Tinker clients, SkillManager, PRMScorer, and rollout worker."""
+        from .log_color import setup_logging
+        setup_logging()
+
         import tinker
 
         # Optional Weights & Biases logging.
@@ -106,12 +109,17 @@ class MetaClawTrainer:
         }
         if not wandb_disabled:
             try:
+                os.environ.setdefault("WANDB_SILENT", "true")
                 wandb = importlib.import_module("wandb")
                 wandb_project = os.environ.get("WANDB_PROJECT", "metaclaw")
                 wandb_run_name = os.environ.get("WANDB_RUN_NAME", "")
-                init_kwargs = {"project": wandb_project}
+                init_kwargs: dict = {"project": wandb_project}
                 if wandb_run_name:
                     init_kwargs["name"] = wandb_run_name
+                try:
+                    init_kwargs["settings"] = wandb.Settings(silent=True)
+                except Exception:
+                    pass
                 self._wandb = wandb.init(**init_kwargs)
                 logger.info("[Trainer] wandb enabled: project=%s", wandb_project)
             except Exception as e:
@@ -211,6 +219,7 @@ class MetaClawTrainer:
             sampling_client=self.sampling_client,
             skill_manager=self.skill_manager,
             prm_scorer=self.prm_scorer,
+            skill_evolver=self.skill_evolver,
             last_request_tracker=self._last_request_tracker,
         )
         logger.info("[Trainer] rollout worker configured on %s:%d",
@@ -270,14 +279,12 @@ class MetaClawTrainer:
             return
 
         logger.info("[Trainer] weights saved, sampling client updated")
-        if step_idx % 1 == 0:
+        if step_idx % 5 == 0:
             ckpt_name = f"step_{step_idx:04d}"
             try:
-                resolved = await self.training_client.save_state_async(name=ckpt_name)
-                resume_path = getattr(resolved, "path", None)
-                if not resume_path:
-                    raise RuntimeError("save_state returned no checkpoint path")
-                logger.info("[Trainer] save_state done, name=%s resume_path=%s", ckpt_name, resume_path)
+                save_future = self.training_client.save_state_async(name=ckpt_name)
+                result = await save_future
+                logger.info("[Trainer] save_state done, name=%s resume_path=%s", ckpt_name, result.path)
             except Exception as e:
                 logger.warning("[Trainer] save_state failed (name=%s): %s", ckpt_name, e)
         self.rollout_worker.update_sampling_client(self.sampling_client)
@@ -419,6 +426,10 @@ class MetaClawTrainer:
 
         # Start rollout worker (starts proxy server in background thread)
         self.rollout_worker.start()
+        # Accept inference and queue samples from the start. Only pause during drain+train.
+        # Without this, when scheduler is on we stay at _trigger_event.wait() and never
+        # reach resume_submission() below, so inference would get 503 until first window.
+        self.rollout_worker.resume_submission()
         logger.info(
             "[Trainer] proxy server starting at http://%s:%d",
             self.config.proxy_host, self.config.proxy_port,
@@ -502,8 +513,6 @@ class MetaClawTrainer:
 
             try:
                 await self._train_on_batch(batch, step_idx=step + 1)
-                if self.config.enable_skill_evolution:
-                    await self._maybe_evolve_skills(batch)
             finally:
                 self.rollout_worker.resume_submission()
 

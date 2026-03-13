@@ -51,12 +51,9 @@ def setup():
 def start(mode: str | None, port: int | None):
     """Start MetaClaw (proxy + optional RL training)."""
     import asyncio
-    import logging
+    from .log_color import setup_logging
 
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s | %(levelname)-8s | %(name)s | %(message)s",
-    )
+    setup_logging()
 
     cs = ConfigStore()
     if not cs.exists():
