@@ -301,7 +301,7 @@ Jedes `ConversationSample` wird mit einer `skill_generation`-Version getaggt. We
 ```bibtex
 @misc{xia2026metaclaw,
   author       = {Xia, Peng and Chen, Jianwen and Yang, Xinyu and Tu, Haoqin and Han, Siwei and Qiu, Shi and Zheng, Zeyu and Xie, Cihang and Yao, Huaxiu},
-  title        = {MetaClaw},
+  title        = {MetaClaw: Just Talk --- An Agent That Meta-Learns and Evolves in the Wild},
   year         = {2026},
   organization = {GitHub},
   url          = {https://github.com/aiming-lab/MetaClaw},
