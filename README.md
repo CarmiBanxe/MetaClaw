@@ -110,7 +110,7 @@ Just talk to your agent as you normally would — MetaClaw turns every live conv
 
 Under the hood, it places your model behind an OpenAI-compatible proxy that intercepts interactions from OpenClaw, injects relevant skills at each turn, and meta-learns from accumulated experience. Skills are summarized automatically after each session; with RL enabled, a meta-learning scheduler defers weight updates to idle windows so the agent is never interrupted during active use.
 
-No GPU cluster required. MetaClaw works with any OpenAI-compatible LLM API out of the box, and optionally integrates **Kimi-K2.5** (1T MoE) via [Tinker](https://www.thinkingmachines.ai/tinker/) for cloud-based LoRA training.
+No GPU cluster required. MetaClaw works with any OpenAI-compatible LLM API out of the box, and uses a Tinker-compatible backend for cloud-based LoRA training. [Tinker](https://www.thinkingmachines.ai/tinker/) is the default reference path, and MinT can be enabled through a separate compatibility package when needed.
 
 ## 🤖 Key Features
 
@@ -132,7 +132,7 @@ At every turn, MetaClaw retrieves the most relevant skill instructions and injec
 After each conversation, the same LLM you're already using analyzes the session and distills new skills automatically. With RL enabled, a dedicated judge model extracts skills from failed episodes.
 
 ### **No GPU cluster required**
-In `skills_only` mode, only a network connection is needed. RL training is offloaded to Tinker cloud.
+In `skills_only` mode, only a network connection is needed. RL training is offloaded to a Tinker-compatible backend.
 
 ### **Two learning modes**
 MetaClaw supports both:
@@ -158,6 +158,8 @@ pip install -e ".[scheduler]"           # + Google Calendar integration for sche
 pip install -e ".[rl,evolve,scheduler]" # recommended for full RL + scheduler setup
 ```
 
+If you want to run `rl.backend=mint`, install the MinT compatibility package separately in the same environment, for example [`mindlab-toolkit`](https://github.com/MindLab-Research/mindlab-toolkit). MetaClaw keeps that dependency out of the default package so RL users can choose Tinker or MinT explicitly.
+
 ### 2. Configure
 
 ```bash
@@ -165,6 +167,17 @@ metaclaw setup
 ```
 
 The interactive wizard will ask you to choose your LLM provider (Kimi, Qwen, MiniMax, or custom), enter your API key, and optionally enable RL training.
+
+MetaClaw's RL path can switch explicitly between `tinker` and `mint`. `auto` is the recommended default and will still infer MinT from Mint-like credentials or base URLs when the MinT package is installed.
+
+```bash
+metaclaw config rl.backend mint
+metaclaw config rl.api_key sk-mint-...
+metaclaw config rl.base_url https://mint.macaron.xin/
+metaclaw config rl.model Qwen/Qwen3-4B-Instruct-2507
+```
+
+Legacy aliases `rl.tinker_api_key` and `rl.tinker_base_url` are still accepted for backward compatibility.
 
 ### 3. Start
 
@@ -193,7 +206,9 @@ metaclaw config KEY VALUE       # Set a config value
 
 ```bash
 metaclaw config rl.enabled true           # Enable RL training
-metaclaw config rl.tinker_api_key sk-...  # Set Tinker key
+metaclaw config rl.backend auto           # auto | tinker | mint
+metaclaw config rl.api_key sk-...         # Set RL backend key
+metaclaw config rl.base_url https://mint.macaron.xin/  # Optional backend endpoint, e.g. MinT
 metaclaw config skills.auto_evolve false  # Disable auto skill summarization
 metaclaw config proxy.port 31000          # Change proxy port
 ```
@@ -215,6 +230,7 @@ llm:
 
 proxy:
   port: 30000
+  api_key: ""              # optional bearer token for the local MetaClaw proxy
 
 skills:
   enabled: true
@@ -226,8 +242,12 @@ skills:
 
 rl:
   enabled: false            # set to true to enable RL training
+  backend: auto             # "auto" | "tinker" | "mint"
   model: moonshotai/Kimi-K2.5
-  tinker_api_key: ""
+  api_key: ""
+  base_url: ""              # optional backend endpoint, e.g. https://mint.macaron.xin/ for MinT
+  tinker_api_key: ""        # legacy alias for api_key
+  tinker_base_url: ""       # legacy alias for base_url
   prm_url: https://api.openai.com/v1
   prm_model: gpt-5.2
   prm_api_key: ""
@@ -277,11 +297,14 @@ cp -r memory_data/skills/* ~/.metaclaw/skills/
 
 ## 🔬 Advanced: RL Mode
 
-Enable RL training to continuously fine-tune the model from live conversations:
+Enable RL training to continuously fine-tune the model from live conversations with either Tinker or MinT:
 
 ```bash
 metaclaw config rl.enabled true
-metaclaw config rl.tinker_api_key sk-...
+metaclaw config rl.backend mint
+metaclaw config rl.api_key sk-...
+metaclaw config rl.base_url https://mint.macaron.xin/
+metaclaw config rl.model Qwen/Qwen3-4B-Instruct-2507
 metaclaw config rl.prm_url https://api.openai.com/v1
 metaclaw config rl.prm_api_key sk-...
 metaclaw start
@@ -290,8 +313,10 @@ metaclaw start
 In RL mode:
 - Each conversation turn is tokenized and submitted as a training sample
 - A judge LLM (PRM) scores responses asynchronously
-- Tinker cloud runs LoRA fine-tuning; updated weights are hot-swapped every `batch_size` samples
+- A Tinker-compatible backend such as Tinker cloud or MinT runs LoRA fine-tuning; updated weights are hot-swapped every `batch_size` samples
 - A dedicated evolver LLM extracts new skills from failed episodes
+
+If you prefer Tinker cloud, switch `rl.backend` to `tinker` or leave it on `auto` and omit the MinT endpoint.
 
 **Programmatic rollout** (no OpenClaw TUI needed): set `openclaw_env_data_dir` to a directory of JSONL task files:
 
