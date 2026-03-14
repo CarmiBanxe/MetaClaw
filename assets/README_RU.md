@@ -181,6 +181,16 @@ metaclaw setup
 
 RL-путь MetaClaw позволяет явно переключаться между `tinker` и `mint`. Рекомендуемое значение по умолчанию: `auto`. При установленном пакете MinT он по-прежнему способен распознать MinT по учетным данным или base URL в стиле Mint.
 
+**Tinker** (по умолчанию):
+
+```bash
+metaclaw config rl.backend tinker
+metaclaw config rl.api_key sk-...
+metaclaw config rl.model moonshotai/Kimi-K2.5
+```
+
+**MinT**:
+
 ```bash
 metaclaw config rl.backend mint
 metaclaw config rl.api_key sk-mint-...
@@ -306,10 +316,22 @@ cp -r memory_data/skills/* ~/.metaclaw/skills/
 
 Все возможности режима навыков плюс непрерывное RL-дообучение на основе живых диалогов. Каждый шаг диалога токенизируется и отправляется как обучающий пример. Модель-судья (PRM) асинхронно оценивает ответы, а Tinker-совместимый бэкенд (Tinker cloud или MinT) выполняет LoRA-дообучение с горячей заменой весов.
 
+**Tinker** (по умолчанию):
+
 ```bash
-metaclaw config rl.enabled true
-metaclaw config rl.backend mint          # или tinker, или auto
+metaclaw config rl.backend tinker
 metaclaw config rl.api_key sk-...
+metaclaw config rl.model moonshotai/Kimi-K2.5
+metaclaw config rl.prm_url https://api.openai.com/v1
+metaclaw config rl.prm_api_key sk-...
+metaclaw start --mode rl
+```
+
+**MinT**:
+
+```bash
+metaclaw config rl.backend mint
+metaclaw config rl.api_key sk-mint-...
 metaclaw config rl.base_url https://mint.macaron.xin/
 metaclaw config rl.model Qwen/Qwen3-4B-Instruct-2507
 metaclaw config rl.prm_url https://api.openai.com/v1

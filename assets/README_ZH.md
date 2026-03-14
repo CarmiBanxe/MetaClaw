@@ -181,6 +181,16 @@ metaclaw setup
 
 MetaClaw 的 RL 路径可以显式切换 `tinker` 和 `mint`。推荐默认值是 `auto`；当环境里安装了 MinT 兼容包时,它仍然可以根据 Mint 风格的凭证或 base URL 自动识别 MinT。
 
+**Tinker**（默认）:
+
+```bash
+metaclaw config rl.backend tinker
+metaclaw config rl.api_key sk-...
+metaclaw config rl.model moonshotai/Kimi-K2.5
+```
+
+**MinT**:
+
 ```bash
 metaclaw config rl.backend mint
 metaclaw config rl.api_key sk-mint-...
@@ -306,10 +316,22 @@ cp -r memory_data/skills/* ~/.metaclaw/skills/
 
 在 Skills 模式基础上,增加基于实时对话的持续 RL 微调。每轮对话被 tokenize 并作为训练样本提交。裁判 LLM（PRM）异步为回复打分,Tinker 兼容后端（Tinker 云端或 MinT）执行 LoRA 微调并热更新权重。
 
+**Tinker**（默认）:
+
 ```bash
-metaclaw config rl.enabled true
-metaclaw config rl.backend mint          # 或 tinker, 或 auto
+metaclaw config rl.backend tinker
 metaclaw config rl.api_key sk-...
+metaclaw config rl.model moonshotai/Kimi-K2.5
+metaclaw config rl.prm_url https://api.openai.com/v1
+metaclaw config rl.prm_api_key sk-...
+metaclaw start --mode rl
+```
+
+**MinT**:
+
+```bash
+metaclaw config rl.backend mint
+metaclaw config rl.api_key sk-mint-...
 metaclaw config rl.base_url https://mint.macaron.xin/
 metaclaw config rl.model Qwen/Qwen3-4B-Instruct-2507
 metaclaw config rl.prm_url https://api.openai.com/v1

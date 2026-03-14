@@ -181,6 +181,16 @@ Trinh huong dan tuong tac se yeu cau ban chon nha cung cap LLM (Kimi, Qwen, Mini
 
 Duong dan RL cua MetaClaw co the chuyen doi ro rang giua `tinker` va `mint`. `auto` la gia tri mac dinh duoc khuyen nghi va van se tu dong nhan dien MinT tu cac thong tin xac thuc hoac base URL kieu Mint khi goi MinT da duoc cai dat.
 
+**Tinker** (mặc định):
+
+```bash
+metaclaw config rl.backend tinker
+metaclaw config rl.api_key sk-...
+metaclaw config rl.model moonshotai/Kimi-K2.5
+```
+
+**MinT**:
+
 ```bash
 metaclaw config rl.backend mint
 metaclaw config rl.api_key sk-mint-...
@@ -306,10 +316,22 @@ cp -r memory_data/skills/* ~/.metaclaw/skills/
 
 Tat ca tinh nang cua Che do Skills, cong them tinh chinh RL lien tuc tu cac cuoc hoi thoai truc tiep. Moi luot hoi thoai duoc tokenize va gui di lam mau huan luyen. LLM giam khao (PRM) cham diem phan hoi bat dong bo, va backend tuong thich Tinker (Tinker cloud hoac MinT) thuc hien tinh chinh LoRA voi cap nhat nong trong so.
 
+**Tinker** (mặc định):
+
 ```bash
-metaclaw config rl.enabled true
-metaclaw config rl.backend mint          # hoac tinker, hoac auto
+metaclaw config rl.backend tinker
 metaclaw config rl.api_key sk-...
+metaclaw config rl.model moonshotai/Kimi-K2.5
+metaclaw config rl.prm_url https://api.openai.com/v1
+metaclaw config rl.prm_api_key sk-...
+metaclaw start --mode rl
+```
+
+**MinT**:
+
+```bash
+metaclaw config rl.backend mint
+metaclaw config rl.api_key sk-mint-...
 metaclaw config rl.base_url https://mint.macaron.xin/
 metaclaw config rl.model Qwen/Qwen3-4B-Instruct-2507
 metaclaw config rl.prm_url https://api.openai.com/v1

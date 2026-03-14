@@ -181,6 +181,16 @@ metaclaw setup
 
 يمكن لمسار RL في MetaClaw التبديل صراحةً بين `tinker` و`mint`. القيمة الافتراضية الموصى بها هي `auto` وستظل تستنتج MinT من بيانات الاعتماد أو عناوين URL ذات النمط المشابه لـ Mint عندما تكون حزمة MinT مثبّتة.
 
+**Tinker** (الافتراضي):
+
+```bash
+metaclaw config rl.backend tinker
+metaclaw config rl.api_key sk-...
+metaclaw config rl.model moonshotai/Kimi-K2.5
+```
+
+**MinT**:
+
 ```bash
 metaclaw config rl.backend mint
 metaclaw config rl.api_key sk-mint-...
@@ -306,10 +316,22 @@ cp -r memory_data/skills/* ~/.metaclaw/skills/
 
 كل ما في وضع المهارات، بالإضافة إلى الضبط الدقيق المستمر بالتعلّم المعزّز من المحادثات الحيّة. يتم تحويل كل دور محادثة إلى رموز وإرساله كعيّنة تدريب. يقوم نموذج LLM حكم (PRM) بتقييم الاستجابات بشكل غير متزامن، وتُجري واجهة خلفية متوافقة مع Tinker (مثل Tinker السحابي أو MinT) ضبطًا دقيقًا لـ LoRA مع تبديل الأوزان تلقائيًا.
 
+**Tinker** (الافتراضي):
+
 ```bash
-metaclaw config rl.enabled true
-metaclaw config rl.backend mint          # أو tinker، أو auto
+metaclaw config rl.backend tinker
 metaclaw config rl.api_key sk-...
+metaclaw config rl.model moonshotai/Kimi-K2.5
+metaclaw config rl.prm_url https://api.openai.com/v1
+metaclaw config rl.prm_api_key sk-...
+metaclaw start --mode rl
+```
+
+**MinT**:
+
+```bash
+metaclaw config rl.backend mint
+metaclaw config rl.api_key sk-mint-...
 metaclaw config rl.base_url https://mint.macaron.xin/
 metaclaw config rl.model Qwen/Qwen3-4B-Instruct-2507
 metaclaw config rl.prm_url https://api.openai.com/v1

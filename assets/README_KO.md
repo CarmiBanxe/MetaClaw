@@ -181,6 +181,16 @@ metaclaw setup
 
 MetaClaw의 RL 경로는 `tinker`와 `mint`를 명시적으로 전환할 수 있습니다. 권장 기본값은 `auto`이며, MinT 패키지가 설치되어 있으면 Mint 스타일 credentials나 base URL로 MinT를 계속 추론할 수 있습니다.
 
+**Tinker** (기본값):
+
+```bash
+metaclaw config rl.backend tinker
+metaclaw config rl.api_key sk-...
+metaclaw config rl.model moonshotai/Kimi-K2.5
+```
+
+**MinT**:
+
 ```bash
 metaclaw config rl.backend mint
 metaclaw config rl.api_key sk-mint-...
@@ -306,10 +316,22 @@ cp -r memory_data/skills/* ~/.metaclaw/skills/
 
 스킬 모드의 모든 기능에 더해, 실시간 대화로부터 지속적인 RL 파인튜닝을 수행합니다. 각 대화 턴이 토크나이즈되어 학습 샘플로 제출됩니다. 심판 LLM(PRM)이 비동기로 응답을 채점하고, Tinker 호환 백엔드(Tinker 클라우드 또는 MinT)가 가중치 핫스왑과 함께 LoRA 파인튜닝을 실행합니다.
 
+**Tinker** (기본값):
+
 ```bash
-metaclaw config rl.enabled true
-metaclaw config rl.backend mint          # 또는 tinker, 또는 auto
+metaclaw config rl.backend tinker
 metaclaw config rl.api_key sk-...
+metaclaw config rl.model moonshotai/Kimi-K2.5
+metaclaw config rl.prm_url https://api.openai.com/v1
+metaclaw config rl.prm_api_key sk-...
+metaclaw start --mode rl
+```
+
+**MinT**:
+
+```bash
+metaclaw config rl.backend mint
+metaclaw config rl.api_key sk-mint-...
 metaclaw config rl.base_url https://mint.macaron.xin/
 metaclaw config rl.model Qwen/Qwen3-4B-Instruct-2507
 metaclaw config rl.prm_url https://api.openai.com/v1

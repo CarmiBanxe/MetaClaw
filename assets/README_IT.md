@@ -181,6 +181,16 @@ La procedura guidata interattiva ti chiedera di scegliere il tuo provider LLM (K
 
 Il percorso RL di MetaClaw puo commutare esplicitamente tra `tinker` e `mint`. `auto` e il valore predefinito consigliato e inferira comunque MinT da credenziali o base URL in stile Mint quando il pacchetto MinT e installato.
 
+**Tinker** (predefinito):
+
+```bash
+metaclaw config rl.backend tinker
+metaclaw config rl.api_key sk-...
+metaclaw config rl.model moonshotai/Kimi-K2.5
+```
+
+**MinT**:
+
 ```bash
 metaclaw config rl.backend mint
 metaclaw config rl.api_key sk-mint-...
@@ -306,10 +316,22 @@ cp -r memory_data/skills/* ~/.metaclaw/skills/
 
 Tutto cio che offre la Modalita Skills, piu il fine-tuning RL continuo dalle conversazioni in tempo reale. Ogni turno di conversazione viene tokenizzato e inviato come campione di addestramento. Un LLM giudice (PRM) valuta le risposte in modo asincrono, e un backend compatibile con Tinker (Tinker cloud o MinT) esegue il fine-tuning LoRA con sostituzione a caldo dei pesi.
 
+**Tinker** (predefinito):
+
 ```bash
-metaclaw config rl.enabled true
-metaclaw config rl.backend mint          # oppure tinker, oppure auto
+metaclaw config rl.backend tinker
 metaclaw config rl.api_key sk-...
+metaclaw config rl.model moonshotai/Kimi-K2.5
+metaclaw config rl.prm_url https://api.openai.com/v1
+metaclaw config rl.prm_api_key sk-...
+metaclaw start --mode rl
+```
+
+**MinT**:
+
+```bash
+metaclaw config rl.backend mint
+metaclaw config rl.api_key sk-mint-...
 metaclaw config rl.base_url https://mint.macaron.xin/
 metaclaw config rl.model Qwen/Qwen3-4B-Instruct-2507
 metaclaw config rl.prm_url https://api.openai.com/v1
