@@ -8,7 +8,7 @@
 
 <p>脳の学習メカニズムに着想を得て。あなたの 🦞 を日常の会話からメタ学習・進化させます。GPU不要。Kimi、Qwen、Claude、MiniMax など対応。</p>
 
-<sub>⚡ Supported LLM APIs</sub>
+⚡ Supported LLM Providers & Platforms
 
 <table>
 <tr>
@@ -54,7 +54,7 @@
 </tr>
 </table>
 
-<sub>🧬 RL Training Backends</sub>
+🧬 RL Training Backends for Weight Evolution
 
 <table>
 <tr>
@@ -87,7 +87,7 @@
 
 <br/>
 
-[🇺🇸 English](../README.md) • [🇨🇳 中文](./README_ZH.md) • [🇰🇷 한국어](./README_KO.md) • [🇫🇷 Français](./README_FR.md) • [🇩🇪 Deutsch](./README_DE.md) • [🇪🇸 Español](./README_ES.md)
+[🇺🇸 English](../README.md) • [🇨🇳 中文](./README_ZH.md) • [🇰🇷 한국어](./README_KO.md) • [🇫🇷 Français](./README_FR.md) • [🇩🇪 Deutsch](./README_DE.md) • [🇪🇸 Español](./README_ES.md) • [🇧🇷 Português](./README_PT.md) • [🇷🇺 Русский](./README_RU.md) • [🇮🇹 Italiano](./README_IT.md) • [🇻🇳 Tiếng Việt](./README_VI.md) • [🇦🇪 العربية](./README_AR.md) • [🇮🇳 हिन्दी](./README_HI.md)
 
 <br/>
 
