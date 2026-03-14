@@ -89,6 +89,8 @@
 
 <br/>
 
+[Overview](#-overview) • [Quick Start](#-quick-start) • [Configuration](#️-configuration) • [Skills Mode](#-skills-mode) • [RL Mode](#-rl-mode) • [MadMax Mode](#-madmax-mode-default) • [Citation](#-citation)
+
 </div>
 
 ---
@@ -144,25 +146,9 @@ Configure once with `metaclaw setup`, then `metaclaw start` brings up the proxy,
 
 | Mode | Default | What it does |
 |------|---------|--------------|
-| `madmax` | ✅ | RL + smart scheduler. Skills always on; RL weight updates only run during sleep/idle/meeting windows. |
-| `rl` | — | RL without scheduler. Trains immediately when a batch is full (original v0.2 behavior). |
-| `skills_only` | — | Proxy → your LLM API. Skills injected, auto-summarized after each session. No GPU/Tinker required. |
-
-### **Skill injection**
-At every turn, MetaClaw retrieves the most relevant skill instructions and injects them into the agent's system prompt. Immediate behavior improvement without retraining.
-
-### **Automatic skill summarization**
-After each conversation, the same LLM you're already using analyzes the session and distills new skills automatically. With RL enabled, a dedicated judge model extracts skills from failed episodes.
-
-### **No GPU cluster required**
-In `skills_only` mode, only a network connection is needed. RL training is offloaded to a Tinker-compatible backend.
-
-### **Two learning modes**
-MetaClaw supports both:
-- **RL (GRPO)** for learning from implicit feedback signals
-- **On-Policy Distillation (OPD)** for distilling a larger teacher model into the student on-policy
-
-In OPD mode, the student generates responses as usual, and a teacher model provides per-token log-probabilities on those same responses. The teacher logprobs are passed to the loss function (e.g., `cispo`) so the student learns to match the teacher's distribution. The teacher must be served behind an OpenAI-compatible `/v1/completions` endpoint (e.g., vLLM, SGLang).
+| `skills_only` | | Proxy your LLM API. Skills injected and auto-summarized after each session. No GPU/Tinker required. |
+| `rl` | | Skills + RL training (GRPO). Trains immediately when a batch is full. Optional OPD for teacher distillation. |
+| `madmax` | ✅ | Skills + RL + smart scheduler. RL weight updates only run during sleep/idle/meeting windows. |
 
 ### **Asynchronous by design**
 Serving, reward modeling, and training are fully decoupled. The agent continues responding while scoring and optimization run in parallel.
@@ -212,7 +198,11 @@ That's it. MetaClaw starts the proxy, automatically configures OpenClaw to use i
 
 ---
 
-## 🛠️ CLI Reference
+## ⚙️ Configuration
+
+Configuration lives in `~/.metaclaw/config.yaml`, created by `metaclaw setup`.
+
+**CLI commands:**
 
 ```
 metaclaw setup                  # Interactive first-time configuration wizard
@@ -225,22 +215,8 @@ metaclaw config show            # View current configuration
 metaclaw config KEY VALUE       # Set a config value
 ```
 
-**Common config keys:**
-
-```bash
-metaclaw config rl.enabled true           # Enable RL training
-metaclaw config rl.backend auto           # auto | tinker | mint
-metaclaw config rl.api_key sk-...         # Set RL backend key
-metaclaw config rl.base_url https://mint.macaron.xin/  # Optional backend endpoint, e.g. MinT
-metaclaw config skills.auto_evolve false  # Disable auto skill summarization
-metaclaw config proxy.port 31000          # Change proxy port
-```
-
----
-
-## ⚙️ Configuration
-
-Configuration lives in `~/.metaclaw/config.yaml`, created by `metaclaw setup`.
+<details>
+<summary><b>Full config reference (click to expand)</b></summary>
 
 ```yaml
 mode: madmax               # "madmax" | "rl" | "skills_only"
@@ -292,23 +268,27 @@ max_context_tokens: 20000   # prompt token cap before truncation
 
 scheduler:                  # v0.3: meta-learning scheduler (auto-enabled in madmax mode)
   enabled: false            # madmax mode enables this automatically; set manually for rl mode
-  sleep_start: "23:00"      # HH:MM local time — start of sleep window
-  sleep_end: "07:00"        # HH:MM local time — end of sleep window
-  idle_threshold_minutes: 30  # trigger RL after N minutes of keyboard inactivity
-  min_window_minutes: 15    # minimum window length required to start an RL step
+  sleep_start: "23:00"
+  sleep_end: "07:00"
+  idle_threshold_minutes: 30
+  min_window_minutes: 15
   calendar:
-    enabled: false          # use Google Calendar to detect meeting slots
-    credentials_path: ""    # path to client_secrets.json from Google Cloud Console
-    token_path: ""          # saved OAuth token (default: ~/.metaclaw/calendar_token.json)
+    enabled: false
+    credentials_path: ""
+    token_path: ""
 ```
+
+</details>
 
 ---
 
-## 💪 Skills
+## 💪 Skills Mode
 
-Skills are short Markdown instructions injected into the agent's system prompt at each turn. They live in your skills directory (`~/.metaclaw/skills/` by default), organized as individual `SKILL.md` files.
+**`metaclaw start --mode skills_only`**
 
-**Skill auto-summarization** runs after each conversation. The LLM you configured analyzes what happened and generates new skills automatically. No manual curation needed — the library grows with your usage.
+The lightest mode. No GPU, no RL backend needed. MetaClaw places your LLM behind a proxy that injects relevant skills at every turn, then auto-summarizes new skills after each conversation.
+
+Skills are short Markdown instructions stored in `~/.metaclaw/skills/` as individual `SKILL.md` files. The library grows automatically with your usage.
 
 To pre-load the built-in skill bank (40+ skills across coding, security, agentic tasks, etc.):
 
@@ -318,28 +298,24 @@ cp -r memory_data/skills/* ~/.metaclaw/skills/
 
 ---
 
-## 🔬 Advanced: RL Mode
+## 🔬 RL Mode
 
-Enable RL training to continuously fine-tune the model from live conversations with either Tinker or MinT:
+**`metaclaw start --mode rl`**
+
+Everything in Skills Mode, plus continuous RL fine-tuning from live conversations. Each conversation turn is tokenized and submitted as a training sample. A judge LLM (PRM) scores responses asynchronously, and a Tinker-compatible backend (Tinker cloud or MinT) runs LoRA fine-tuning with hot-swapped weights.
 
 ```bash
 metaclaw config rl.enabled true
-metaclaw config rl.backend mint
+metaclaw config rl.backend mint          # or tinker, or auto
 metaclaw config rl.api_key sk-...
 metaclaw config rl.base_url https://mint.macaron.xin/
 metaclaw config rl.model Qwen/Qwen3-4B-Instruct-2507
 metaclaw config rl.prm_url https://api.openai.com/v1
 metaclaw config rl.prm_api_key sk-...
-metaclaw start
+metaclaw start --mode rl
 ```
 
-In RL mode:
-- Each conversation turn is tokenized and submitted as a training sample
-- A judge LLM (PRM) scores responses asynchronously
-- A Tinker-compatible backend such as Tinker cloud or MinT runs LoRA fine-tuning; updated weights are hot-swapped every `batch_size` samples
-- A dedicated evolver LLM extracts new skills from failed episodes
-
-If you prefer Tinker cloud, switch `rl.backend` to `tinker` or leave it on `auto` and omit the MinT endpoint.
+A dedicated evolver LLM also extracts new skills from failed episodes, feeding them back into the skill library.
 
 **Programmatic rollout** (no OpenClaw TUI needed): set `openclaw_env_data_dir` to a directory of JSONL task files:
 
@@ -347,29 +323,34 @@ If you prefer Tinker cloud, switch `rl.backend` to `tinker` or leave it on `auto
 {"task_id": "task_1", "instruction": "Register the webhook at https://example.com/hook"}
 ```
 
----
+### On-Policy Distillation (OPD)
 
-## 🔬 Advanced: OPD Mode
-
-On-Policy Distillation (OPD) lets you distill a larger teacher model into the student while it trains on-policy. The student generates responses as usual; the teacher provides per-token log-probabilities on those same responses. A KL penalty steers the student toward the teacher's distribution.
+OPD is an optional add-on for RL Mode. It distills a larger teacher model into the student on-policy: the student generates responses as usual, and the teacher provides per-token log-probabilities on those same responses. A KL penalty steers the student toward the teacher's distribution.
 
 ```bash
 metaclaw config opd.enabled true
 metaclaw config opd.teacher_url http://localhost:8082/v1
 metaclaw config opd.teacher_model Qwen/Qwen3-32B
 metaclaw config opd.kl_penalty_coef 1.0
-metaclaw start --mode rl
 ```
 
-The teacher must be served behind an OpenAI-compatible `/v1/completions` endpoint (e.g., vLLM, SGLang). OPD can be combined with PRM scoring — both run asynchronously.
-
-See `examples/run_conversation_opd.py` for a programmatic example and `scripts/run_openclaw_tinker_opd.sh` for a ready-made launch script.
+The teacher must be served behind an OpenAI-compatible `/v1/completions` endpoint (e.g., vLLM, SGLang). OPD can be combined with PRM scoring, both run asynchronously. See `examples/run_conversation_opd.py` and `scripts/run_openclaw_tinker_opd.sh`.
 
 ---
 
-## 🧠 Advanced: Meta-Learning Scheduler (v0.3)
+## 🧠 MadMax Mode (Default)
 
-In RL mode, the weight hot-swap step pauses the agent for several minutes. The scheduler (enabled by default in `madmax` mode) defers RL updates to user-inactive windows so the agent is never interrupted during active use.
+**`metaclaw start`**
+
+Everything in RL Mode, plus a meta-learning scheduler that defers weight updates to user-inactive windows so the agent is never interrupted during active use. This is the default mode.
+
+The RL weight hot-swap step pauses the agent for several minutes. Instead of training immediately when a batch is full (like RL Mode does), MadMax waits for an appropriate window.
+
+Three conditions trigger an update window (any one is sufficient):
+
+- **Sleep hours**: configurable start/end time (e.g., 23:00 to 07:00)
+- **Keyboard inactivity**: triggers after N minutes of idle time
+- **Google Calendar events**: detects meetings so updates can run while you're away
 
 ```bash
 metaclaw config scheduler.sleep_start "23:00"
@@ -382,7 +363,7 @@ metaclaw config scheduler.calendar.enabled true
 metaclaw config scheduler.calendar.credentials_path ~/.metaclaw/client_secrets.json
 ```
 
-Three conditions trigger an update window (any one is sufficient): configured sleep hours, system keyboard inactivity, or an active Google Calendar event. If the user returns mid-update, the partial batch is saved and resumed at the next window.
+If the user returns mid-update, the partial batch is saved and resumed at the next window.
 
 Each `ConversationSample` is tagged with a `skill_generation` version. When skill evolution bumps the generation, the RL buffer is flushed so only post-evolution samples are used for gradient updates (MAML support/query set separation).
 

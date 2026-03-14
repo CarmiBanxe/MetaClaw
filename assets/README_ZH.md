@@ -4,7 +4,7 @@
 
 <br/>
 
-# 只需与你的 Agent 对话 —— 它会不断学习，持续进化。
+# 只需与你的 Agent 对话,它会不断学习,持续进化。
 
 <p>受大脑学习方式启发。让你的 🦞 在真实对话中持续元学习与进化。无需 GPU。支持 Kimi、Qwen、Claude、MiniMax 等。</p>
 
@@ -91,7 +91,7 @@
 
 <br/>
 
-[概述](#-概述) • [快速开始](#-快速开始) • [CLI 命令](#️-cli-命令) • [配置说明](#️-配置说明) • [Skills](#-skills) • [RL 模式](#-进阶rl-模式) • [OPD 模式](#-进阶opd-模式) • [元学习调度器](#-进阶元学习调度器-v03) • [引用](#-引用)
+[概述](#-概述) • [快速开始](#-快速开始) • [配置说明](#️-配置说明) • [Skills 模式](#-skills-模式) • [RL 模式](#-rl-模式) • [MadMax 模式](#-madmax-模式默认) • [引用](#-引用)
 
 </div>
 
@@ -99,7 +99,7 @@
 
 <div align="center">
 
-### 两条命令，搞定一切。
+### 两条命令,搞定一切。
 </div>
 
 ```bash
@@ -117,10 +117,10 @@ metaclaw start --mode skills_only  # 仅 Skills，无 RL（无需 Tinker）
 
 ## 🔥 最新动态
 
-- **[2026/03/13]** **v0.3.1** —— MinT 后端支持：RL 训练现同时支持 Tinker 和 MinT。通过 `rl.backend`（auto/tinker/mint）配置。
-- **[2026/03/13]** **v0.3** —— 持续元学习支持：慢速 RL 更新仅在睡眠时间、空闲期间或 Google Calendar 会议期间运行。新增 support/query 集分离，防止过时的奖励信号污染模型更新。
-- **[2026/03/11]** **v0.2** —— 通过 `metaclaw` CLI 一键部署。Skill 默认开启，RL 现为可选。
-- **[2026/03/09]** 正式发布 **MetaClaw** —— 只需与 Agent 对话，即可让其自动进化。**无需** GPU 部署，直接接入 **API** 即可。
+- **[2026/03/13]** **v0.3.1** MinT 后端支持：RL 训练现同时支持 Tinker 和 MinT。通过 `rl.backend`（auto/tinker/mint）配置。
+- **[2026/03/13]** **v0.3** 持续元学习支持：慢速 RL 更新仅在睡眠时间、空闲期间或 Google Calendar 会议期间运行。新增 support/query 集分离,防止过时的奖励信号污染模型更新。
+- **[2026/03/11]** **v0.2** 通过 `metaclaw` CLI 一键部署。Skill 默认开启,RL 现为可选。
+- **[2026/03/09]** 正式发布 **MetaClaw**,只需与 Agent 对话,即可让其自动进化。**无需** GPU 部署,直接接入 **API** 即可。
 
 ---
 
@@ -133,43 +133,27 @@ https://github.com/user-attachments/assets/d86a41a8-4181-4e3a-af0e-dc453a6b8594
 ## 📖 概述
 
 **MetaClaw 是一个在真实场景中元学习并持续进化的 Agent。**
-只需像平时一样与 Agent 对话 —— MetaClaw 将每一次实时对话转化为学习信号，让 Agent 在真实部署中持续进化，而非仅依赖离线训练。
+只需像平时一样与 Agent 对话, MetaClaw 将每一次实时对话转化为学习信号,让 Agent 在真实部署中持续进化,而非仅依赖离线训练。
 
-在底层，它将你的模型封装为 OpenAI 兼容代理，通过 OpenClaw 拦截实时对话，在每轮对话中注入相关 Skill，并从积累的交互经验中元学习。每次会话结束后自动总结新 Skill；开启 RL 后，元学习调度器会将权重更新推迟到空闲窗口，确保活跃使用期间不受干扰。
+在底层,它将你的模型封装为 OpenAI 兼容代理,通过 OpenClaw 拦截实时对话,在每轮对话中注入相关 Skill,并从积累的交互经验中元学习。每次会话结束后自动总结新 Skill；开启 RL 后,元学习调度器会将权重更新推迟到空闲窗口,确保活跃使用期间不受干扰。
 
-无需 GPU 集群。MetaClaw 兼容任意 OpenAI 格式的 LLM API，并通过 Tinker 兼容后端进行云端 LoRA 微调。[Tinker](https://www.thinkingmachines.ai/tinker/) 是默认参考路径；如果需要，也可以通过单独安装的兼容包接入 MinT。
+无需 GPU 集群。MetaClaw 兼容任意 OpenAI 格式的 LLM API,并通过 Tinker 兼容后端进行云端 LoRA 微调。[Tinker](https://www.thinkingmachines.ai/tinker/) 是默认参考路径；如果需要,也可以通过单独安装的兼容包接入 MinT。
 
 ## 🤖 核心功能
 
 ### **一键部署**
-使用 `metaclaw setup` 完成一次性配置，再执行 `metaclaw start` 即可自动启动代理、注入 Skill 并接入 OpenClaw。无需手动编写 Shell 脚本。
+使用 `metaclaw setup` 完成一次性配置,再执行 `metaclaw start` 即可自动启动代理、注入 Skill 并接入 OpenClaw。无需手动编写 Shell 脚本。
 
 ### **三种运行模式**
 
 | 模式 | 默认 | 功能说明 |
 |------|------|----------|
-| `madmax` | ✅ | RL + 智能调度器。Skill 持续注入；RL 权重更新只在睡眠/空闲/会议窗口进行。 |
-| `rl` | — | 无调度器 RL。batch 满后立即训练（v0.2 行为）。 |
-| `skills_only` | — | 代理 → 你的 LLM API。注入 Skill，会话结束后自动总结。无需 GPU / Tinker。 |
-
-### **Skill 注入**
-每轮对话时，MetaClaw 检索最相关的 Skill 指令并注入 Agent 的 system prompt，无需重新训练即可立即提升行为表现。
-
-### **Skill 自动总结**
-每次对话结束后，你正在使用的同一个 LLM 会自动分析会话内容并提炼新 Skill。开启 RL 后，专属裁判模型会从失败的 episode 中提取 Skill。
-
-### **无需 GPU 集群**
-`skills_only` 模式只需网络连接。RL 训练完全交给 Tinker 兼容后端处理。
-
-### **两种学习模式**
-MetaClaw 同时支持：
-- **RL（GRPO）**：从隐式反馈信号中学习
-- **在线策略蒸馏（OPD）**：将更大的教师模型在线蒸馏到学生模型
-
-在 OPD 模式下，学生模型正常生成回复，教师模型对相同回复提供每个 token 的对数概率。教师的 logprob 传入损失函数（如 `cispo`），引导学生学习教师的分布。教师模型需部署在 OpenAI 兼容的 `/v1/completions` 端点（如 vLLM、SGLang）。
+| `skills_only` | | 代理你的 LLM API。注入 Skill,会话结束后自动总结。无需 GPU / Tinker。 |
+| `rl` | | Skills + RL 训练（GRPO）。batch 满后立即训练。可选 OPD 进行教师蒸馏。 |
+| `madmax` | ✅ | Skills + RL + 智能调度器。RL 权重更新只在睡眠/空闲/会议窗口进行。 |
 
 ### **完全异步设计**
-推理服务、奖励建模与训练完全解耦。Agent 持续响应的同时，打分与优化在后台并行进行。
+推理服务、奖励建模与训练完全解耦。Agent 持续响应的同时,打分与优化在后台并行进行。
 
 ---
 
@@ -185,7 +169,7 @@ pip install -e ".[scheduler]"           # + Google Calendar 调度器集成
 pip install -e ".[rl,evolve,scheduler]" # 推荐：完整 RL + 调度器配置
 ```
 
-如果你要使用 `rl.backend=mint`，请在同一环境里额外安装 MinT 兼容包，例如 [`mindlab-toolkit`](https://github.com/MindLab-Research/mindlab-toolkit)。MetaClaw 不会把这个依赖放进默认安装中，这样 RL 用户可以明确选择 Tinker 或 MinT。
+如果你要使用 `rl.backend=mint`,请在同一环境里额外安装 MinT 兼容包,例如 [`mindlab-toolkit`](https://github.com/MindLab-Research/mindlab-toolkit)。MetaClaw 不会把这个依赖放进默认安装中,这样 RL 用户可以明确选择 Tinker 或 MinT。
 
 ### 2. 配置
 
@@ -193,9 +177,9 @@ pip install -e ".[rl,evolve,scheduler]" # 推荐：完整 RL + 调度器配置
 metaclaw setup
 ```
 
-交互式向导会引导你选择 LLM 提供商（Kimi、Qwen、MiniMax 或自定义），填写 API Key，并可选开启 RL 训练。
+交互式向导会引导你选择 LLM 提供商（Kimi、Qwen、MiniMax 或自定义）,填写 API Key,并可选开启 RL 训练。
 
-MetaClaw 的 RL 路径可以显式切换 `tinker` 和 `mint`。推荐默认值是 `auto`；当环境里安装了 MinT 兼容包时，它仍然可以根据 Mint 风格的凭证或 base URL 自动识别 MinT。
+MetaClaw 的 RL 路径可以显式切换 `tinker` 和 `mint`。推荐默认值是 `auto`；当环境里安装了 MinT 兼容包时,它仍然可以根据 Mint 风格的凭证或 base URL 自动识别 MinT。
 
 ```bash
 metaclaw config rl.backend mint
@@ -212,11 +196,15 @@ metaclaw config rl.model Qwen/Qwen3-4B-Instruct-2507
 metaclaw start
 ```
 
-就这些。MetaClaw 启动代理，自动配置 OpenClaw 并重启网关。打开 OpenClaw 开始对话 —— 每轮都会注入 Skill，对话结束后自动总结为新 Skill。
+就这些。MetaClaw 启动代理,自动配置 OpenClaw 并重启网关。打开 OpenClaw 开始对话,每轮都会注入 Skill,对话结束后自动总结为新 Skill。
 
 ---
 
-## 🛠️ CLI 命令
+## ⚙️ 配置说明
+
+配置文件位于 `~/.metaclaw/config.yaml`,由 `metaclaw setup` 自动生成。
+
+**CLI 命令：**
 
 ```
 metaclaw setup                  # 首次交互式配置向导
@@ -229,22 +217,8 @@ metaclaw config show            # 查看当前配置
 metaclaw config KEY VALUE       # 设置配置项
 ```
 
-**常用配置项：**
-
-```bash
-metaclaw config rl.enabled true           # 开启 RL 训练
-metaclaw config rl.backend auto           # auto | tinker | mint
-metaclaw config rl.api_key sk-...         # 设置 RL 后端 Key
-metaclaw config rl.base_url https://mint.macaron.xin/  # 可选后端 endpoint，例如 MinT
-metaclaw config skills.auto_evolve false  # 关闭 Skill 自动总结
-metaclaw config proxy.port 31000          # 修改代理端口
-```
-
----
-
-## ⚙️ 配置说明
-
-配置文件位于 `~/.metaclaw/config.yaml`，由 `metaclaw setup` 自动生成。
+<details>
+<summary><b>完整配置参考（点击展开）</b></summary>
 
 ```yaml
 mode: madmax               # "madmax" | "rl" | "skills_only"
@@ -306,13 +280,17 @@ scheduler:                  # v0.3：元学习调度器（madmax 模式下自动
     token_path: ""
 ```
 
+</details>
+
 ---
 
-## 💪 Skills
+## 💪 Skills 模式
 
-Skill 是注入 Agent system prompt 的简短 Markdown 指令，存放在 Skill 目录（默认 `~/.metaclaw/skills/`），以独立的 `SKILL.md` 文件组织。
+**`metaclaw start --mode skills_only`**
 
-**Skill 自动总结**在每次对话结束后运行。配置的 LLM 自动分析发生了什么并生成新 Skill，无需人工整理 —— Skill 库随使用自动增长。
+最轻量的模式。无需 GPU,无需 RL 后端。MetaClaw 将你的 LLM 封装在代理后面,每轮注入相关 Skill,对话结束后自动总结新 Skill。
+
+Skill 是存放在 `~/.metaclaw/skills/` 中的简短 Markdown 指令,以独立的 `SKILL.md` 文件组织。Skill 库随使用自动增长。
 
 预加载内置 Skill 库（涵盖编码、安全、Agent 任务等 40+ 个 Skill）：
 
@@ -322,28 +300,24 @@ cp -r memory_data/skills/* ~/.metaclaw/skills/
 
 ---
 
-## 🔬 进阶：RL 模式
+## 🔬 RL 模式
 
-开启 RL 训练，从实时对话中持续微调模型。你可以使用 Tinker，也可以切到兼容的 MinT 后端：
+**`metaclaw start --mode rl`**
+
+在 Skills 模式基础上,增加基于实时对话的持续 RL 微调。每轮对话被 tokenize 并作为训练样本提交。裁判 LLM（PRM）异步为回复打分,Tinker 兼容后端（Tinker 云端或 MinT）执行 LoRA 微调并热更新权重。
 
 ```bash
 metaclaw config rl.enabled true
-metaclaw config rl.backend mint
+metaclaw config rl.backend mint          # 或 tinker, 或 auto
 metaclaw config rl.api_key sk-...
 metaclaw config rl.base_url https://mint.macaron.xin/
 metaclaw config rl.model Qwen/Qwen3-4B-Instruct-2507
 metaclaw config rl.prm_url https://api.openai.com/v1
 metaclaw config rl.prm_api_key sk-...
-metaclaw start
+metaclaw start --mode rl
 ```
 
-RL 模式下：
-- 每轮对话被 tokenize 并作为训练样本提交
-- 裁判 LLM（PRM）异步为回复打分
-- Tinker 兼容后端（例如 Tinker 云端或 MinT）执行 LoRA 微调，并在每累积 `batch_size` 个样本后热更新权重
-- 专属进化器 LLM 从失败的 episode 中提取新 Skill
-
-如果你继续使用 Tinker 云端，可以把 `rl.backend` 设为 `tinker`，或者保留 `auto` 并省略 MinT endpoint。
+专属进化器 LLM 还会从失败的 episode 中提取新 Skill,反馈到 Skill 库中。
 
 **程序化 rollout**（无需 OpenClaw TUI）：将 `openclaw_env_data_dir` 设为包含 JSONL 任务文件的目录：
 
@@ -351,29 +325,34 @@ RL 模式下：
 {"task_id": "task_1", "instruction": "Register the webhook at https://example.com/hook"}
 ```
 
----
+### 在线策略蒸馏（OPD）
 
-## 🔬 进阶：OPD 模式
-
-在线策略蒸馏（OPD）允许在学生模型在线训练的同时，将更大的教师模型蒸馏进来。学生模型正常生成回复，教师模型对相同回复提供每个 token 的对数概率，KL 惩罚引导学生向教师分布靠拢。
+OPD 是 RL 模式的可选附加功能。它将更大的教师模型在线蒸馏到学生模型：学生模型正常生成回复,教师模型对相同回复提供每个 token 的对数概率。KL 惩罚引导学生向教师分布靠拢。
 
 ```bash
 metaclaw config opd.enabled true
 metaclaw config opd.teacher_url http://localhost:8082/v1
 metaclaw config opd.teacher_model Qwen/Qwen3-32B
 metaclaw config opd.kl_penalty_coef 1.0
-metaclaw start --mode rl
 ```
 
-教师模型需部署在 OpenAI 兼容的 `/v1/completions` 端点（如 vLLM、SGLang）。OPD 可与 PRM 打分同时使用，两者均异步运行。
-
-参考 `examples/run_conversation_opd.py` 获取程序化示例，`scripts/run_openclaw_tinker_opd.sh` 提供现成的启动脚本。
+教师模型需部署在 OpenAI 兼容的 `/v1/completions` 端点（如 vLLM、SGLang）。OPD 可与 PRM 打分同时使用,两者均异步运行。参考 `examples/run_conversation_opd.py` 和 `scripts/run_openclaw_tinker_opd.sh`。
 
 ---
 
-## 🧠 进阶：元学习调度器 (v0.3)
+## 🧠 MadMax 模式（默认）
 
-RL 模式下，权重热更新会暂停 Agent 数分钟。调度器（madmax 模式默认启用）将 RL 更新推迟到用户不活跃的窗口，确保活跃使用期间不受干扰。
+**`metaclaw start`**
+
+在 RL 模式基础上,增加元学习调度器,将权重更新推迟到用户不活跃的窗口,确保活跃使用期间不受干扰。这是默认模式。
+
+RL 权重热更新会暂停 Agent 数分钟。MadMax 不像 RL 模式那样 batch 满后立即训练,而是等待合适的窗口。
+
+三种条件触发更新窗口（满足任一即可）：
+
+- **睡眠时间**：可配置的起止时间（如 23:00 到 07:00）
+- **键盘空闲**：空闲 N 分钟后触发
+- **Google Calendar 事件**：检测到会议时运行更新
 
 ```bash
 metaclaw config scheduler.sleep_start "23:00"
@@ -386,9 +365,9 @@ metaclaw config scheduler.calendar.enabled true
 metaclaw config scheduler.calendar.credentials_path ~/.metaclaw/client_secrets.json
 ```
 
-三种条件触发更新窗口（满足任一即可）：配置的睡眠时间、系统键盘空闲、Google Calendar 活跃事件。若用户在更新中途返回，部分 batch 会被保存并在下次窗口恢复。
+若用户在更新中途返回,部分 batch 会被保存并在下次窗口恢复。
 
-每个 `ConversationSample` 带有 `skill_generation` 版本标签。当 Skill 进化增加 generation 时，RL buffer 被清空，仅使用进化后的样本进行梯度更新（MAML support/query 集分离）。
+每个 `ConversationSample` 带有 `skill_generation` 版本标签。当 Skill 进化增加 generation 时,RL buffer 被清空,仅使用进化后的样本进行梯度更新（MAML support/query 集分离）。
 
 ---
 
@@ -410,12 +389,12 @@ metaclaw config scheduler.calendar.credentials_path ~/.metaclaw/client_secrets.j
 
 MetaClaw 基于以下开源项目构建：
 
-- [OpenClaw](https://openclaw.ai) —— 核心 Agent 框架。
-- [SkillRL](https://github.com/aiming-lab/SkillRL) —— 我们的 Skill 增强 RL 框架。
-- [Tinker](https://www.thinkingmachines.ai/tinker/) —— 用于在线 RL 训练。
-- [MinT](https://github.com/MindLab-Research/mindlab-toolkit) —— 在线 RL 训练的备选后端。
-- [OpenClaw-RL](https://github.com/Gen-Verse/OpenClaw-RL) —— 我们 RL 设计的灵感来源。
-- [awesome-openclaw-skills](https://github.com/VoltAgent/awesome-openclaw-skills) —— 为我们的 Skill 库提供基础。
+- [OpenClaw](https://openclaw.ai), 核心 Agent 框架。
+- [SkillRL](https://github.com/aiming-lab/SkillRL), 我们的 Skill 增强 RL 框架。
+- [Tinker](https://www.thinkingmachines.ai/tinker/), 用于在线 RL 训练。
+- [MinT](https://github.com/MindLab-Research/mindlab-toolkit), 在线 RL 训练的备选后端。
+- [OpenClaw-RL](https://github.com/Gen-Verse/OpenClaw-RL), 我们 RL 设计的灵感来源。
+- [awesome-openclaw-skills](https://github.com/VoltAgent/awesome-openclaw-skills), 为我们的 Skill 库提供基础。
 
 ---
 

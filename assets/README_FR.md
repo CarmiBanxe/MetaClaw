@@ -4,9 +4,9 @@
 
 <br/>
 
-# Parlez simplement à votre agent — il apprend et *ÉVOLUE*.
+# Parlez simplement a votre agent, il apprend et *EVOLUE*.
 
-<p>Inspiré par l'apprentissage du cerveau. Méta-apprenez et faites évoluer votre 🦞 à partir de chaque conversation. Sans GPU. Compatible Kimi, Qwen, Claude, MiniMax, et plus.</p>
+<p>Inspire par l'apprentissage du cerveau. Meta-apprenez et faites evoluer votre 🦞 a partir de chaque conversation. Sans GPU. Compatible Kimi, Qwen, Claude, MiniMax, et plus.</p>
 
 ⚡ Supported LLM Providers & Platforms
 
@@ -91,7 +91,7 @@
 
 <br/>
 
-[Aperçu](#-aperçu) • [Démarrage rapide](#-démarrage-rapide) • [Référence CLI](#️-référence-cli) • [Configuration](#️-configuration) • [Skills](#-skills) • [Mode RL](#-avancé-mode-rl) • [Mode OPD](#-avancé-mode-opd) • [Planificateur](#-avancé-planificateur-de-méta-apprentissage-v03) • [Citation](#-citation)
+[Apercu](#-aperçu) • [Demarrage rapide](#-démarrage-rapide) • [Configuration](#️-configuration) • [Mode Skills](#-mode-skills) • [Mode RL](#-mode-rl) • [Mode MadMax](#-mode-madmax-par-défaut) • [Citation](#-citation)
 
 </div>
 
@@ -104,8 +104,8 @@
 
 ```bash
 metaclaw setup              # assistant de configuration unique
-metaclaw start              # par défaut : mode madmax — skills + entraînement RL planifié
-metaclaw start --mode rl    # RL sans planificateur (entraîne dès qu'un batch est plein)
+metaclaw start              # par defaut : mode madmax, skills + entrainement RL planifie
+metaclaw start --mode rl    # RL sans planificateur (entraine des qu'un batch est plein)
 metaclaw start --mode skills_only  # skills uniquement, pas de RL (Tinker non requis)
 ```
 
@@ -115,77 +115,61 @@ metaclaw start --mode skills_only  # skills uniquement, pas de RL (Tinker non re
 
 ---
 
-## 🔥 Actualités
+## 🔥 Actualites
 
-- **[13/03/2026]** **v0.3.1** — Support du backend MinT : l'entraînement RL fonctionne désormais avec Tinker et MinT. Configurable via `rl.backend` (auto/tinker/mint).
-- **[13/03/2026]** **v0.3** — Support continu de méta-apprentissage : les mises à jour RL ne s'exécutent que pendant les heures de sommeil, les périodes d'inactivité ou les réunions Google Calendar. Ajout de la séparation support/query pour éviter que des signaux de récompense périmés ne polluent les mises à jour du modèle.
-- **[11/03/2026]** **v0.2** — Déploiement en un clic via la CLI `metaclaw`. Les skills sont activés par défaut, le RL est désormais optionnel.
-- **[09/03/2026]** Lancement de **MetaClaw** — Parlez simplement à votre agent et laissez-le évoluer automatiquement. **Aucun** déploiement GPU requis ; connectez-vous simplement à l'**API**.
+- **[13/03/2026]** **v0.3.1** Support du backend MinT : l'entrainement RL fonctionne desormais avec Tinker et MinT. Configurable via `rl.backend` (auto/tinker/mint).
+- **[13/03/2026]** **v0.3** Support continu de meta-apprentissage : les mises a jour RL ne s'executent que pendant les heures de sommeil, les periodes d'inactivite ou les reunions Google Calendar. Ajout de la separation support/query pour eviter que des signaux de recompense perimes ne polluent les mises a jour du modele.
+- **[11/03/2026]** **v0.2** Deploiement en un clic via la CLI `metaclaw`. Les skills sont actives par defaut, le RL est desormais optionnel.
+- **[09/03/2026]** Lancement de **MetaClaw**. Parlez simplement a votre agent et laissez-le evoluer automatiquement. **Aucun** deploiement GPU requis, connectez-vous simplement a l'**API**.
 
 ---
 
-## 🎥 Démo
+## 🎥 Demo
 
 https://github.com/user-attachments/assets/d86a41a8-4181-4e3a-af0e-dc453a6b8594
 
 ---
 
-## 📖 Aperçu
+## 📖 Apercu
 
-**MetaClaw est un agent qui méta-apprend et évolue en conditions réelles.**
-Parlez simplement à votre agent comme d'habitude — MetaClaw transforme chaque conversation en direct en signal d'apprentissage, permettant à l'agent de s'améliorer continuellement en déploiement réel plutôt que par entraînement hors ligne seul.
+**MetaClaw est un agent qui meta-apprend et evolue en conditions reelles.**
+Parlez simplement a votre agent comme d'habitude. MetaClaw transforme chaque conversation en direct en signal d'apprentissage, permettant a l'agent de s'ameliorer continuellement en deploiement reel plutot que par entrainement hors ligne seul.
 
-Sous le capot, il encapsule votre modèle derrière un proxy compatible OpenAI, intercepte les interactions via OpenClaw, injecte les skills pertinents à chaque tour, et méta-apprend à partir de l'expérience accumulée. Les skills sont résumés automatiquement après chaque session ; avec le RL activé, un planificateur de méta-apprentissage reporte les mises à jour des poids aux fenêtres d'inactivité pour ne jamais interrompre l'agent pendant l'utilisation active.
+Sous le capot, il encapsule votre modele derriere un proxy compatible OpenAI, intercepte les interactions via OpenClaw, injecte les skills pertinents a chaque tour, et meta-apprend a partir de l'experience accumulee. Les skills sont resumes automatiquement apres chaque session ; avec le RL active, un planificateur de meta-apprentissage reporte les mises a jour des poids aux fenetres d'inactivite pour ne jamais interrompre l'agent pendant l'utilisation active.
 
-Aucun cluster GPU nécessaire. MetaClaw fonctionne avec n'importe quelle API LLM compatible OpenAI et utilise un backend compatible Tinker pour l'entraînement LoRA dans le cloud. [Tinker](https://www.thinkingmachines.ai/tinker/) reste le chemin de référence par défaut ; MinT peut être activé via un paquet de compatibilité séparé si nécessaire.
+Aucun cluster GPU necessaire. MetaClaw fonctionne avec n'importe quelle API LLM compatible OpenAI et utilise un backend compatible Tinker pour l'entrainement LoRA dans le cloud. [Tinker](https://www.thinkingmachines.ai/tinker/) reste le chemin de reference par defaut ; MinT peut etre active via un paquet de compatibilite separe si necessaire.
 
-## 🤖 Fonctionnalités principales
+## 🤖 Fonctionnalites principales
 
-### **Déploiement en un clic**
-Configurez une fois avec `metaclaw setup`, puis `metaclaw start` lance le proxy, injecte les skills et connecte OpenClaw automatiquement. Aucun script shell manuel nécessaire.
+### **Deploiement en un clic**
+Configurez une fois avec `metaclaw setup`, puis `metaclaw start` lance le proxy, injecte les skills et connecte OpenClaw automatiquement. Aucun script shell manuel necessaire.
 
 ### **Trois modes de fonctionnement**
 
-| Mode | Par défaut | Fonctionnement |
+| Mode | Par defaut | Fonctionnement |
 |------|-----------|----------------|
-| `madmax` | ✅ | RL + planificateur intelligent. Skills toujours actifs ; mises à jour RL uniquement pendant les fenêtres de sommeil/inactivité/réunion. |
-| `rl` | — | RL sans planificateur. Entraîne immédiatement quand un batch est plein (comportement v0.2). |
-| `skills_only` | — | Proxy → votre API LLM. Skills injectés, résumés automatiquement après chaque session. Pas de GPU/Tinker requis. |
-
-### **Injection de skills**
-À chaque tour, MetaClaw récupère les instructions de skills les plus pertinentes et les injecte dans le prompt système de l'agent. Amélioration immédiate du comportement sans réentraînement.
-
-### **Résumé automatique des skills**
-Après chaque conversation, le même LLM que vous utilisez déjà analyse la session et distille automatiquement de nouveaux skills. Avec RL activé, un modèle juge dédié extrait les skills des épisodes échoués.
-
-### **Aucun cluster GPU requis**
-En mode `skills_only`, seule une connexion réseau est nécessaire. L'entraînement RL est délégué à un backend compatible Tinker.
-
-### **Deux modes d'apprentissage**
-MetaClaw supporte les deux :
-- **RL (GRPO)** : apprentissage à partir de signaux de feedback implicites
-- **Distillation On-Policy (OPD)** : distillation d'un modèle enseignant plus grand dans l'étudiant on-policy
-
-En mode OPD, le modèle étudiant génère des réponses normalement, et le modèle enseignant fournit des log-probabilités par token sur ces mêmes réponses. Les logprobs de l'enseignant sont passés à la fonction de perte (ex. `cispo`) pour que l'étudiant apprenne la distribution de l'enseignant. L'enseignant doit être servi derrière un endpoint `/v1/completions` compatible OpenAI (ex. vLLM, SGLang).
+| `skills_only` | | Proxy vers votre API LLM. Skills injectes, resumes automatiquement apres chaque session. Pas de GPU/Tinker requis. |
+| `rl` | | Skills + entrainement RL (GRPO). Entraine immediatement quand un batch est plein. OPD optionnel pour la distillation enseignant. |
+| `madmax` | ✅ | Skills + RL + planificateur intelligent. Mises a jour RL uniquement pendant les fenetres de sommeil/inactivite/reunion. |
 
 ### **Asynchrone par conception**
-Le serving, la modélisation des récompenses et l'entraînement sont entièrement découplés. L'agent continue de répondre pendant que le scoring et l'optimisation s'exécutent en parallèle.
+Le serving, la modelisation des recompenses et l'entrainement sont entierement decouples. L'agent continue de repondre pendant que le scoring et l'optimisation s'executent en parallele.
 
 ---
 
-## 🚀 Démarrage rapide
+## 🚀 Demarrage rapide
 
 ### 1. Installation
 
 ```bash
-pip install -e .                        # mode skills_only (léger)
-pip install -e ".[rl]"                  # + support d'entraînement RL (torch, transformers, tinker)
-pip install -e ".[evolve]"              # + évolution des skills via LLM compatible OpenAI
-pip install -e ".[scheduler]"           # + intégration Google Calendar pour le planificateur
-pip install -e ".[rl,evolve,scheduler]" # recommandé : configuration complète RL + planificateur
+pip install -e .                        # mode skills_only (leger)
+pip install -e ".[rl]"                  # + support d'entrainement RL (torch, transformers, tinker)
+pip install -e ".[evolve]"              # + evolution des skills via LLM compatible OpenAI
+pip install -e ".[scheduler]"           # + integration Google Calendar pour le planificateur
+pip install -e ".[rl,evolve,scheduler]" # recommande : configuration complete RL + planificateur
 ```
 
-Si vous voulez utiliser `rl.backend=mint`, installez séparément le paquet de compatibilité MinT dans le même environnement, par exemple [`mindlab-toolkit`](https://github.com/MindLab-Research/mindlab-toolkit). MetaClaw garde volontairement cette dépendance hors du paquet par défaut afin que les utilisateurs RL choisissent explicitement entre Tinker et MinT.
+Si vous voulez utiliser `rl.backend=mint`, installez separement le paquet de compatibilite MinT dans le meme environnement, par exemple [`mindlab-toolkit`](https://github.com/MindLab-Research/mindlab-toolkit). MetaClaw garde volontairement cette dependance hors du paquet par defaut afin que les utilisateurs RL choisissent explicitement entre Tinker et MinT.
 
 ### 2. Configuration
 
@@ -193,9 +177,9 @@ Si vous voulez utiliser `rl.backend=mint`, installez séparément le paquet de c
 metaclaw setup
 ```
 
-L'assistant interactif vous demande de choisir votre fournisseur LLM (Kimi, Qwen, MiniMax, ou personnalisé), votre clé API, et d'activer optionnellement l'entraînement RL.
+L'assistant interactif vous demande de choisir votre fournisseur LLM (Kimi, Qwen, MiniMax, ou personnalise), votre cle API, et d'activer optionnellement l'entrainement RL.
 
-La pile RL de MetaClaw peut basculer explicitement entre `tinker` et `mint`. `auto` est la valeur recommandée et continuera d'inférer MinT à partir d'identifiants ou de base URLs de style Mint lorsque le paquet MinT est installé.
+La pile RL de MetaClaw peut basculer explicitement entre `tinker` et `mint`. `auto` est la valeur recommandee et continuera d'inferer MinT a partir d'identifiants ou de base URLs de style Mint lorsque le paquet MinT est installe.
 
 ```bash
 metaclaw config rl.backend mint
@@ -204,47 +188,37 @@ metaclaw config rl.base_url https://mint.macaron.xin/
 metaclaw config rl.model Qwen/Qwen3-4B-Instruct-2507
 ```
 
-Les alias hérités `rl.tinker_api_key` et `rl.tinker_base_url` restent acceptés pour compatibilité.
+Les alias herites `rl.tinker_api_key` et `rl.tinker_base_url` restent acceptes pour compatibilite.
 
-### 3. Démarrage
+### 3. Demarrage
 
 ```bash
 metaclaw start
 ```
 
-C'est tout. MetaClaw démarre le proxy, configure automatiquement OpenClaw et redémarre la passerelle. Ouvrez OpenClaw et commencez à discuter — les skills sont injectés à chaque tour, et la session est automatiquement résumée en nouveaux skills à la fin.
-
----
-
-## 🛠️ Référence CLI
-
-```
-metaclaw setup                  # Assistant de configuration interactif initial
-metaclaw start                  # Démarrer MetaClaw (par défaut : mode madmax)
-metaclaw start --mode rl        # Forcer le mode RL pour cette session (sans planificateur)
-metaclaw start --mode skills_only  # Forcer le mode skills uniquement pour cette session
-metaclaw stop                   # Arrêter une instance MetaClaw en cours
-metaclaw status                 # Vérifier l'état du proxy, le mode en cours et le planificateur
-metaclaw config show            # Afficher la configuration actuelle
-metaclaw config KEY VALUE       # Définir une valeur de configuration
-```
-
-**Clés de configuration courantes :**
-
-```bash
-metaclaw config rl.enabled true           # Activer l'entraînement RL
-metaclaw config rl.backend auto           # auto | tinker | mint
-metaclaw config rl.api_key sk-...         # Définir la clé du backend RL
-metaclaw config rl.base_url https://mint.macaron.xin/  # Endpoint backend optionnel, p. ex. MinT
-metaclaw config skills.auto_evolve false  # Désactiver le résumé automatique des skills
-metaclaw config proxy.port 31000          # Changer le port du proxy
-```
+C'est tout. MetaClaw demarre le proxy, configure automatiquement OpenClaw et redemarre la passerelle. Ouvrez OpenClaw et commencez a discuter. Les skills sont injectes a chaque tour, et la session est automatiquement resumee en nouveaux skills a la fin.
 
 ---
 
 ## ⚙️ Configuration
 
-La configuration se trouve dans `~/.metaclaw/config.yaml`, créée par `metaclaw setup`.
+La configuration se trouve dans `~/.metaclaw/config.yaml`, creee par `metaclaw setup`.
+
+**Commandes CLI :**
+
+```
+metaclaw setup                  # Assistant de configuration interactif initial
+metaclaw start                  # Demarrer MetaClaw (par defaut : mode madmax)
+metaclaw start --mode rl        # Forcer le mode RL pour cette session (sans planificateur)
+metaclaw start --mode skills_only  # Forcer le mode skills uniquement pour cette session
+metaclaw stop                   # Arreter une instance MetaClaw en cours
+metaclaw status                 # Verifier l'etat du proxy, le mode en cours et le planificateur
+metaclaw config show            # Afficher la configuration actuelle
+metaclaw config KEY VALUE       # Definir une valeur de configuration
+```
+
+<details>
+<summary><b>Reference de configuration complete (cliquez pour developper)</b></summary>
 
 ```yaml
 mode: madmax               # "madmax" | "rl" | "skills_only"
@@ -261,41 +235,41 @@ proxy:
 
 skills:
   enabled: true
-  dir: ~/.metaclaw/skills   # votre bibliothèque de skills
+  dir: ~/.metaclaw/skills   # votre bibliotheque de skills
   retrieval_mode: template  # template | embedding
   top_k: 6
-  task_specific_top_k: 10   # limite des skills spécifiques à la tâche (par défaut 10)
-  auto_evolve: true         # résumer automatiquement les skills après chaque session
+  task_specific_top_k: 10   # limite des skills specifiques a la tache (par defaut 10)
+  auto_evolve: true         # resumer automatiquement les skills apres chaque session
 
 rl:
-  enabled: false            # mettre à true pour activer l'entraînement RL
+  enabled: false            # mettre a true pour activer l'entrainement RL
   backend: auto             # "auto" | "tinker" | "mint"
   model: moonshotai/Kimi-K2.5
   api_key: ""
   base_url: ""              # endpoint backend optionnel, p. ex. https://mint.macaron.xin/ pour MinT
-  tinker_api_key: ""        # alias hérité de api_key
-  tinker_base_url: ""       # alias hérité de base_url
+  tinker_api_key: ""        # alias herite de api_key
+  tinker_base_url: ""       # alias herite de base_url
   prm_url: https://api.openai.com/v1
   prm_model: gpt-5.2
   prm_api_key: ""
   lora_rank: 32
   batch_size: 4
-  resume_from_ckpt: ""      # chemin de checkpoint optionnel pour reprendre l'entraînement
-  evolver_api_base: ""      # laisser vide pour réutiliser llm.api_base
+  resume_from_ckpt: ""      # chemin de checkpoint optionnel pour reprendre l'entrainement
+  evolver_api_base: ""      # laisser vide pour reutiliser llm.api_base
   evolver_api_key: ""
   evolver_model: gpt-5.2
 
 opd:
-  enabled: false            # mettre à true pour activer OPD (distillation enseignant)
-  teacher_url: ""           # URL de base du modèle enseignant (OpenAI-compatible /v1/completions)
-  teacher_model: ""         # nom du modèle enseignant (ex. Qwen/Qwen3-32B)
-  teacher_api_key: ""       # clé API du modèle enseignant
-  kl_penalty_coef: 1.0      # coefficient de pénalité KL pour OPD
+  enabled: false            # mettre a true pour activer OPD (distillation enseignant)
+  teacher_url: ""           # URL de base du modele enseignant (OpenAI-compatible /v1/completions)
+  teacher_model: ""         # nom du modele enseignant (ex. Qwen/Qwen3-32B)
+  teacher_api_key: ""       # cle API du modele enseignant
+  kl_penalty_coef: 1.0      # coefficient de penalite KL pour OPD
 
 max_context_tokens: 20000   # limite de tokens de prompt avant troncature
 
-scheduler:                  # v0.3 : planificateur de méta-apprentissage (auto-activé en mode madmax)
-  enabled: false            # le mode madmax l'active automatiquement ; à définir manuellement pour rl
+scheduler:                  # v0.3 : planificateur de meta-apprentissage (auto-active en mode madmax)
+  enabled: false            # le mode madmax l'active automatiquement ; a definir manuellement pour rl
   sleep_start: "23:00"
   sleep_end: "07:00"
   idle_threshold_minutes: 30
@@ -306,15 +280,19 @@ scheduler:                  # v0.3 : planificateur de méta-apprentissage (auto-
     token_path: ""
 ```
 
+</details>
+
 ---
 
-## 💪 Skills
+## 💪 Mode Skills
 
-Les skills sont de courtes instructions Markdown injectées dans le prompt système de l'agent à chaque tour. Elles résident dans votre répertoire de skills (`~/.metaclaw/skills/` par défaut), organisées en fichiers `SKILL.md` individuels.
+**`metaclaw start --mode skills_only`**
 
-**Le résumé automatique des skills** s'exécute après chaque conversation. Le LLM configuré analyse ce qui s'est passé et génère automatiquement de nouveaux skills. Aucune curation manuelle nécessaire — la bibliothèque grandit avec l'utilisation.
+Le mode le plus leger. Pas de GPU, pas de backend RL necessaire. MetaClaw place votre LLM derriere un proxy qui injecte les skills pertinents a chaque tour, puis resume automatiquement de nouveaux skills apres chaque conversation.
 
-Pour précharger la banque de skills intégrée (40+ skills pour le coding, la sécurité, les tâches agentiques, etc.) :
+Les skills sont de courtes instructions Markdown stockees dans `~/.metaclaw/skills/` sous forme de fichiers `SKILL.md` individuels. La bibliotheque grandit automatiquement avec l'utilisation.
+
+Pour precharger la banque de skills integree (40+ skills pour le coding, la securite, les taches agentiques, etc.) :
 
 ```bash
 cp -r memory_data/skills/* ~/.metaclaw/skills/
@@ -322,73 +300,74 @@ cp -r memory_data/skills/* ~/.metaclaw/skills/
 
 ---
 
-## 🔬 Avancé : Mode RL
+## 🔬 Mode RL
 
-Activez l'entraînement RL pour affiner continuellement le modèle à partir des conversations en direct. Vous pouvez le faire avec Tinker ou avec MinT :
+**`metaclaw start --mode rl`**
+
+Tout ce que le Mode Skills offre, plus le fine-tuning RL continu a partir des conversations en direct. Chaque tour de conversation est tokenise et soumis comme echantillon d'entrainement. Un LLM juge (PRM) evalue les reponses de maniere asynchrone, et un backend compatible Tinker (Tinker Cloud ou MinT) execute le fine-tuning LoRA avec hot-swap des poids.
 
 ```bash
 metaclaw config rl.enabled true
-metaclaw config rl.backend mint
+metaclaw config rl.backend mint          # ou tinker, ou auto
 metaclaw config rl.api_key sk-...
 metaclaw config rl.base_url https://mint.macaron.xin/
 metaclaw config rl.model Qwen/Qwen3-4B-Instruct-2507
 metaclaw config rl.prm_url https://api.openai.com/v1
 metaclaw config rl.prm_api_key sk-...
-metaclaw start
+metaclaw start --mode rl
 ```
 
-En mode RL :
-- Chaque tour de conversation est tokenisé et soumis comme échantillon d'entraînement
-- Un LLM juge (PRM) évalue les réponses de manière asynchrone
-- Un backend compatible Tinker, comme Tinker Cloud ou MinT, exécute le fine-tuning LoRA ; les poids mis à jour sont hot-swappés toutes les `batch_size` samples
-- Un LLM évolueur dédié extrait de nouveaux skills des épisodes échoués
+Un LLM evolueur dedie extrait egalement de nouveaux skills des episodes echoues, les reinjectant dans la bibliotheque de skills.
 
-Si vous préférez Tinker Cloud, définissez `rl.backend` sur `tinker` ou laissez `auto` et omettez l'endpoint MinT.
-
-**Rollout programmatique** (sans TUI OpenClaw) : définissez `openclaw_env_data_dir` sur un répertoire de fichiers JSONL de tâches :
+**Rollout programmatique** (sans TUI OpenClaw) : definissez `openclaw_env_data_dir` sur un repertoire de fichiers JSONL de taches :
 
 ```json
 {"task_id": "task_1", "instruction": "Register the webhook at https://example.com/hook"}
 ```
 
----
+### Distillation On-Policy (OPD)
 
-## 🔬 Avancé : Mode OPD
-
-La Distillation On-Policy (OPD) vous permet de distiller un modèle enseignant plus grand dans l'étudiant pendant qu'il s'entraîne on-policy. L'étudiant génère des réponses normalement ; l'enseignant fournit des log-probabilités par token sur ces mêmes réponses. Une pénalité KL oriente l'étudiant vers la distribution de l'enseignant.
+L'OPD est un complement optionnel du Mode RL. Il distille un modele enseignant plus grand dans l'etudiant on-policy : l'etudiant genere des reponses normalement, et l'enseignant fournit des log-probabilites par token sur ces memes reponses. Une penalite KL oriente l'etudiant vers la distribution de l'enseignant.
 
 ```bash
 metaclaw config opd.enabled true
 metaclaw config opd.teacher_url http://localhost:8082/v1
 metaclaw config opd.teacher_model Qwen/Qwen3-32B
 metaclaw config opd.kl_penalty_coef 1.0
-metaclaw start --mode rl
 ```
 
-L'enseignant doit être servi derrière un endpoint `/v1/completions` compatible OpenAI (ex. vLLM, SGLang). L'OPD peut être combiné avec le scoring PRM — les deux s'exécutent de manière asynchrone.
-
-Consultez `examples/run_conversation_opd.py` pour un exemple programmatique et `scripts/run_openclaw_tinker_opd.sh` pour un script de lancement prêt à l'emploi.
+L'enseignant doit etre servi derriere un endpoint `/v1/completions` compatible OpenAI (ex. vLLM, SGLang). L'OPD peut etre combine avec le scoring PRM, les deux s'executent de maniere asynchrone. Consultez `examples/run_conversation_opd.py` et `scripts/run_openclaw_tinker_opd.sh`.
 
 ---
 
-## 🧠 Avancé : Planificateur de méta-apprentissage (v0.3)
+## 🧠 Mode MadMax (par defaut)
 
-En mode RL, l'étape de hot-swap des poids met l'agent en pause pendant plusieurs minutes. Le planificateur (activé par défaut en mode madmax) reporte les mises à jour RL aux fenêtres d'inactivité de l'utilisateur pour éviter toute interruption.
+**`metaclaw start`**
+
+Tout ce que le Mode RL offre, plus un planificateur de meta-apprentissage qui reporte les mises a jour des poids aux fenetres d'inactivite de l'utilisateur pour eviter toute interruption pendant l'utilisation active. C'est le mode par defaut.
+
+L'etape de hot-swap des poids RL met l'agent en pause pendant plusieurs minutes. Au lieu d'entrainer immediatement quand un batch est plein (comme le fait le Mode RL), MadMax attend une fenetre appropriee.
+
+Trois conditions declenchent une fenetre de mise a jour (une seule suffit) :
+
+- **Heures de sommeil** : heure de debut/fin configurable (ex. 23:00 a 07:00)
+- **Inactivite clavier** : se declenche apres N minutes d'inactivite
+- **Evenements Google Calendar** : detecte les reunions pour lancer les mises a jour pendant votre absence
 
 ```bash
 metaclaw config scheduler.sleep_start "23:00"
 metaclaw config scheduler.sleep_end   "07:00"
 metaclaw config scheduler.idle_threshold_minutes 30
 
-# Optionnel : intégration Google Calendar
+# Optionnel : integration Google Calendar
 pip install -e ".[scheduler]"
 metaclaw config scheduler.calendar.enabled true
 metaclaw config scheduler.calendar.credentials_path ~/.metaclaw/client_secrets.json
 ```
 
-Trois conditions déclenchent une fenêtre de mise à jour (une seule suffit) : heures de sommeil configurées, inactivité clavier du système, ou événement Google Calendar en cours. Si l'utilisateur revient en cours de mise à jour, le batch partiel est sauvegardé et repris à la prochaine fenêtre.
+Si l'utilisateur revient en cours de mise a jour, le batch partiel est sauvegarde et repris a la prochaine fenetre.
 
-Chaque `ConversationSample` est étiqueté avec une version `skill_generation`. Lorsque l'évolution des skills incrémente la génération, le buffer RL est vidé afin que seuls les échantillons post-évolution soient utilisés pour les mises à jour de gradient (séparation support/query MAML).
+Chaque `ConversationSample` est etiquete avec une version `skill_generation`. Lorsque l'evolution des skills incremente la generation, le buffer RL est vide afin que seuls les echantillons post-evolution soient utilises pour les mises a jour de gradient (separation support/query MAML).
 
 ---
 
@@ -410,12 +389,12 @@ Chaque `ConversationSample` est étiqueté avec une version `skill_generation`. 
 
 MetaClaw est construit sur les projets open-source suivants :
 
-- [OpenClaw](https://openclaw.ai) — le framework d'agent central.
-- [SkillRL](https://github.com/aiming-lab/SkillRL) — notre framework RL augmenté de skills.
-- [Tinker](https://www.thinkingmachines.ai/tinker/) — utilisé pour l'entraînement RL en ligne.
-- [MinT](https://github.com/MindLab-Research/mindlab-toolkit) — backend alternatif pour l'entraînement RL en ligne.
-- [OpenClaw-RL](https://github.com/Gen-Verse/OpenClaw-RL) — inspiration pour notre conception RL.
-- [awesome-openclaw-skills](https://github.com/VoltAgent/awesome-openclaw-skills) — fournit la base de notre banque de skills.
+- [OpenClaw](https://openclaw.ai) le framework d'agent central.
+- [SkillRL](https://github.com/aiming-lab/SkillRL) notre framework RL augmente de skills.
+- [Tinker](https://www.thinkingmachines.ai/tinker/) utilise pour l'entrainement RL en ligne.
+- [MinT](https://github.com/MindLab-Research/mindlab-toolkit) backend alternatif pour l'entrainement RL en ligne.
+- [OpenClaw-RL](https://github.com/Gen-Verse/OpenClaw-RL) inspiration pour notre conception RL.
+- [awesome-openclaw-skills](https://github.com/VoltAgent/awesome-openclaw-skills) fournit la base de notre banque de skills.
 
 ---
 

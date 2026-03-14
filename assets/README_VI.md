@@ -91,7 +91,7 @@
 
 <br/>
 
-[Tong quan](#-tong-quan) • [Bat dau nhanh](#-bat-dau-nhanh) • [Lenh CLI](#️-lenh-cli) • [Cau hinh](#️-cau-hinh) • [Skills](#-skills) • [Che do RL](#-nang-cao-che-do-rl) • [Che do OPD](#-nang-cao-che-do-opd) • [Bo lap lich meta-learning](#-nang-cao-bo-lap-lich-meta-learning-v03) • [Trich dan](#-trich-dan)
+[Tong quan](#-tong-quan) • [Bat dau nhanh](#-bat-dau-nhanh) • [Cau hinh](#️-cau-hinh) • [Che do Skills](#-che-do-skills) • [Che do RL](#-che-do-rl) • [Che do MadMax](#-che-do-madmax-mac-dinh) • [Trich dan](#-trich-dan)
 
 </div>
 
@@ -148,28 +148,12 @@ Cau hinh mot lan voi `metaclaw setup`, sau do `metaclaw start` se khoi dong prox
 
 | Che do | Mac dinh | Mo ta |
 |--------|----------|-------|
-| `madmax` | ✅ | RL + bo lap lich thong minh. Skill luon duoc tiem; cap nhat trong so RL chi chay trong khoang ngu/ranh/hop. |
-| `rl` | - | RL khong co bo lap lich. Huan luyen ngay khi batch day (hanh vi v0.2). |
-| `skills_only` | - | Proxy toi LLM API cua ban. Tiem Skill, tu dong tom tat sau moi phien. Khong can GPU / Tinker. |
-
-### **Tiem Skill**
-O moi luot hoi thoai, MetaClaw truy xuat cac huong dan Skill phu hop nhat va tiem vao system prompt cua agent. Cai thien hanh vi ngay lap tuc ma khong can huan luyen lai.
-
-### **Tu dong tom tat Skill**
-Sau moi cuoc hoi thoai, chinh LLM ban dang su dung se phan tich phien lam viec va chiet xuat Skill moi tu dong. Khi bat RL, mo hinh giam khao chuyen dung se trich xuat Skill tu cac episode that bai.
-
-### **Khong can cum GPU**
-O che do `skills_only`, chi can ket noi mang. Huan luyen RL duoc chuyen sang backend tuong thich Tinker.
-
-### **Hai che do hoc tap**
-MetaClaw ho tro ca hai:
-- **RL (GRPO)** de hoc tu cac tin hieu phan hoi ngam
-- **Chung cat theo chinh sach truc tuyen (OPD)** de chung cat mo hinh giao vien lon hon vao mo hinh hoc sinh theo chinh sach truc tuyen
-
-Trong che do OPD, mo hinh hoc sinh tao phan hoi binh thuong, con mo hinh giao vien cung cap xac suat log tung token tren cung phan hoi do. Log-prob cua giao vien duoc truyen vao ham mat mat (vi du `cispo`) de hoc sinh hoc phan phoi cua giao vien. Mo hinh giao vien can duoc phuc vu qua endpoint `/v1/completions` tuong thich OpenAI (vi du vLLM, SGLang).
+| `skills_only` | | Proxy toi LLM API cua ban. Tiem Skill va tu dong tom tat sau moi phien. Khong can GPU / Tinker. |
+| `rl` | | Skill + huan luyen RL (GRPO). Huan luyen ngay khi batch day. OPD tuy chon de chung cat tu mo hinh giao vien. |
+| `madmax` | ✅ | Skill + RL + bo lap lich thong minh. Cap nhat trong so RL chi chay trong khoang ngu/ranh/hop. |
 
 ### **Thiet ke hoan toan bat dong bo**
-Phuc vu, mo hinh hoa phan thuong va huan luyen duoc tach roi hoan toan. Agent tiep tuc phan hoi trong khi cham diem va toi uu hoa chay song song o nen.
+Phuc vu, mo hinh hoa phan thuong va huan luyen duoc tach roi hoan toan. Agent tiep tuc phan hoi trong khi cham diem va toi uu hoa chay song song.
 
 ---
 
@@ -216,7 +200,11 @@ Vay la xong. MetaClaw khoi dong proxy, tu dong cau hinh OpenClaw va khoi dong la
 
 ---
 
-## 🛠️ Lenh CLI
+## ⚙️ Cau hinh
+
+Tep cau hinh nam tai `~/.metaclaw/config.yaml`, duoc tao boi `metaclaw setup`.
+
+**Lenh CLI:**
 
 ```
 metaclaw setup                  # Trinh huong dan cau hinh lan dau
@@ -229,22 +217,8 @@ metaclaw config show            # Xem cau hinh hien tai
 metaclaw config KEY VALUE       # Dat gia tri cau hinh
 ```
 
-**Cac khoa cau hinh thuong dung:**
-
-```bash
-metaclaw config rl.enabled true           # Bat huan luyen RL
-metaclaw config rl.backend auto           # auto | tinker | mint
-metaclaw config rl.api_key sk-...         # Dat khoa backend RL
-metaclaw config rl.base_url https://mint.macaron.xin/  # Endpoint backend tuy chon, vi du MinT
-metaclaw config skills.auto_evolve false  # Tat tu dong tom tat Skill
-metaclaw config proxy.port 31000          # Doi cong proxy
-```
-
----
-
-## ⚙️ Cau hinh
-
-Tep cau hinh nam tai `~/.metaclaw/config.yaml`, duoc tao boi `metaclaw setup`.
+<details>
+<summary><b>Tham chieu cau hinh day du (nhan de mo rong)</b></summary>
 
 ```yaml
 mode: madmax               # "madmax" | "rl" | "skills_only"
@@ -306,13 +280,17 @@ scheduler:                  # v0.3: bo lap lich meta-learning (tu dong bat trong
     token_path: ""
 ```
 
+</details>
+
 ---
 
-## 💪 Skills
+## 💪 Che do Skills
 
-Skill la cac huong dan Markdown ngan duoc tiem vao system prompt cua agent o moi luot hoi thoai. Chung nam trong thu muc Skill cua ban (mac dinh `~/.metaclaw/skills/`), duoc to chuc thanh cac tep `SKILL.md` rieng le.
+**`metaclaw start --mode skills_only`**
 
-**Tu dong tom tat Skill** chay sau moi cuoc hoi thoai. LLM ban da cau hinh se phan tich nhung gi da xay ra va tao Skill moi tu dong. Khong can chinh sua thu cong. Thu vien Skill se lon dan theo qua trinh su dung.
+Che do nhe nhat. Khong can GPU, khong can backend RL. MetaClaw dat LLM cua ban phia sau mot proxy tiem cac Skill phu hop o moi luot hoi thoai, sau do tu dong tom tat Skill moi sau moi cuoc hoi thoai.
+
+Skill la cac huong dan Markdown ngan duoc luu trong `~/.metaclaw/skills/` duoi dang cac tep `SKILL.md` rieng le. Thu vien Skill se lon dan tu dong theo qua trinh su dung.
 
 De tai truoc kho Skill co san (hon 40 Skill bao gom lap trinh, bao mat, tac vu agent, v.v.):
 
@@ -322,28 +300,24 @@ cp -r memory_data/skills/* ~/.metaclaw/skills/
 
 ---
 
-## 🔬 Nang cao: Che do RL
+## 🔬 Che do RL
 
-Bat huan luyen RL de lien tuc tinh chinh mo hinh tu cac cuoc hoi thoai truc tiep voi Tinker hoac MinT:
+**`metaclaw start --mode rl`**
+
+Tat ca tinh nang cua Che do Skills, cong them tinh chinh RL lien tuc tu cac cuoc hoi thoai truc tiep. Moi luot hoi thoai duoc tokenize va gui di lam mau huan luyen. LLM giam khao (PRM) cham diem phan hoi bat dong bo, va backend tuong thich Tinker (Tinker cloud hoac MinT) thuc hien tinh chinh LoRA voi cap nhat nong trong so.
 
 ```bash
 metaclaw config rl.enabled true
-metaclaw config rl.backend mint
+metaclaw config rl.backend mint          # hoac tinker, hoac auto
 metaclaw config rl.api_key sk-...
 metaclaw config rl.base_url https://mint.macaron.xin/
 metaclaw config rl.model Qwen/Qwen3-4B-Instruct-2507
 metaclaw config rl.prm_url https://api.openai.com/v1
 metaclaw config rl.prm_api_key sk-...
-metaclaw start
+metaclaw start --mode rl
 ```
 
-Trong che do RL:
-- Moi luot hoi thoai duoc tokenize va gui di lam mau huan luyen
-- LLM giam khao (PRM) cham diem phan hoi bat dong bo
-- Backend tuong thich Tinker nhu Tinker cloud hoac MinT thuc hien tinh chinh LoRA; trong so duoc cap nhat nong sau moi `batch_size` mau
-- LLM tien hoa chuyen dung trich xuat Skill moi tu cac episode that bai
-
-Neu ban muon su dung Tinker cloud, chuyen `rl.backend` sang `tinker` hoac giu `auto` va bo qua endpoint MinT.
+LLM tien hoa chuyen dung cung trich xuat Skill moi tu cac episode that bai, dua chung tro lai thu vien Skill.
 
 **Rollout tu dong** (khong can OpenClaw TUI): dat `openclaw_env_data_dir` thanh thu muc chua cac tep JSONL nhiem vu:
 
@@ -351,29 +325,34 @@ Neu ban muon su dung Tinker cloud, chuyen `rl.backend` sang `tinker` hoac giu `a
 {"task_id": "task_1", "instruction": "Register the webhook at https://example.com/hook"}
 ```
 
----
+### On-Policy Distillation (OPD)
 
-## 🔬 Nang cao: Che do OPD
-
-Chung cat theo chinh sach truc tuyen (OPD) cho phep ban chung cat mo hinh giao vien lon hon vao mo hinh hoc sinh trong khi no huan luyen truc tuyen. Mo hinh hoc sinh tao phan hoi binh thuong; mo hinh giao vien cung cap xac suat log tung token tren cung phan hoi do. Phat KL huong dan hoc sinh tien gan phan phoi cua giao vien.
+OPD la thanh phan bo sung tuy chon cho Che do RL. No chung cat mo hinh giao vien lon hon vao hoc sinh theo chinh sach truc tuyen: hoc sinh tao phan hoi binh thuong, con giao vien cung cap xac suat log tung token tren cung phan hoi do. Phat KL huong dan hoc sinh tien gan phan phoi cua giao vien.
 
 ```bash
 metaclaw config opd.enabled true
 metaclaw config opd.teacher_url http://localhost:8082/v1
 metaclaw config opd.teacher_model Qwen/Qwen3-32B
 metaclaw config opd.kl_penalty_coef 1.0
-metaclaw start --mode rl
 ```
 
-Mo hinh giao vien can duoc phuc vu qua endpoint `/v1/completions` tuong thich OpenAI (vi du vLLM, SGLang). OPD co the ket hop voi cham diem PRM, ca hai deu chay bat dong bo.
-
-Xem `examples/run_conversation_opd.py` de co vi du tu dong hoa va `scripts/run_openclaw_tinker_opd.sh` de co script khoi dong san.
+Mo hinh giao vien can duoc phuc vu qua endpoint `/v1/completions` tuong thich OpenAI (vi du vLLM, SGLang). OPD co the ket hop voi cham diem PRM, ca hai deu chay bat dong bo. Xem `examples/run_conversation_opd.py` va `scripts/run_openclaw_tinker_opd.sh`.
 
 ---
 
-## 🧠 Nang cao: Bo lap lich meta-learning (v0.3)
+## 🧠 Che do MadMax (Mac dinh)
 
-Trong che do RL, buoc cap nhat nong trong so se tam dung agent trong vai phut. Bo lap lich (mac dinh bat trong che do `madmax`) hoan cap nhat RL den cac khoang thoi gian nguoi dung khong hoat dong, dam bao khong bi gian doan khi dang su dung.
+**`metaclaw start`**
+
+Tat ca tinh nang cua Che do RL, cong them bo lap lich meta-learning hoan cap nhat trong so den cac khoang thoi gian nguoi dung khong hoat dong, dam bao agent khong bi gian doan khi dang su dung. Day la che do mac dinh.
+
+Buoc cap nhat nong trong so RL tam dung agent trong vai phut. Thay vi huan luyen ngay khi batch day (nhu Che do RL), MadMax cho doi mot cua so thich hop.
+
+Ba dieu kien kich hoat cua so cap nhat (chi can mot trong ba):
+
+- **Gio ngu**: thoi gian bat dau/ket thuc co the cau hinh (vi du 23:00 den 07:00)
+- **Ban phim khong hoat dong**: kich hoat sau N phut khong hoat dong
+- **Su kien Google Calendar**: phat hien cuoc hop de chay cap nhat khi ban vang mat
 
 ```bash
 metaclaw config scheduler.sleep_start "23:00"
@@ -386,7 +365,7 @@ metaclaw config scheduler.calendar.enabled true
 metaclaw config scheduler.calendar.credentials_path ~/.metaclaw/client_secrets.json
 ```
 
-Ba dieu kien kich hoat cua so cap nhat (chi can mot trong ba): gio ngu da cau hinh, ban phim he thong khong hoat dong, hoac su kien Google Calendar dang dien ra. Neu nguoi dung quay lai giua chung, batch chua hoan thanh se duoc luu va tiep tuc o cua so tiep theo.
+Neu nguoi dung quay lai giua chung, batch chua hoan thanh se duoc luu va tiep tuc o cua so tiep theo.
 
 Moi `ConversationSample` duoc gan nhan phien ban `skill_generation`. Khi tien hoa Skill tang generation, bo dem RL se duoc xoa sach va chi su dung cac mau sau tien hoa cho cap nhat gradient (phan tach tap support/query theo MAML).
 

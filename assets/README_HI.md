@@ -91,7 +91,7 @@
 
 <br/>
 
-[अवलोकन](#-अवलोकन) • [त्वरित शुरुआत](#-त्वरित-शुरुआत) • [CLI कमांड](#️-cli-कमांड) • [कॉन्फ़िगरेशन](#️-कॉन्फ़िगरेशन) • [Skills](#-skills) • [RL मोड](#-उन्नतrl-मोड) • [OPD मोड](#-उन्नतopd-मोड) • [मेटा-लर्निंग शेड्यूलर](#-उन्नतमेटा-लर्निंग-शेड्यूलर-v03) • [उद्धरण](#-उद्धरण)
+[अवलोकन](#-अवलोकन) • [त्वरित शुरुआत](#-त्वरित-शुरुआत) • [कॉन्फ़िगरेशन](#️-कॉन्फ़िगरेशन) • [Skills मोड](#-skills-मोड) • [RL मोड](#-rl-मोड) • [MadMax मोड](#-madmax-मोड-डिफ़ॉल्ट) • [उद्धरण](#-उद्धरण)
 
 </div>
 
@@ -148,25 +148,9 @@ GPU क्लस्टर की ज़रूरत नहीं। MetaClaw क
 
 | मोड | डिफ़ॉल्ट | विवरण |
 |------|---------|--------|
-| `madmax` | ✅ | RL + स्मार्ट शेड्यूलर। Skill हमेशा सक्रिय; RL वेट अपडेट केवल नींद/निष्क्रिय/मीटिंग विंडो में चलते हैं। |
-| `rl` | — | बिना शेड्यूलर के RL। batch भरते ही तुरंत ट्रेनिंग (v0.2 व्यवहार)। |
-| `skills_only` | — | प्रॉक्सी → आपका LLM API। Skills इंजेक्ट, सेशन के बाद ऑटो-सारांश। GPU / Tinker की ज़रूरत नहीं। |
-
-### **Skill इंजेक्शन**
-हर टर्न पर, MetaClaw सबसे प्रासंगिक Skill निर्देशों को पुनर्प्राप्त करता है और उन्हें Agent के system prompt में इंजेक्ट करता है। बिना पुनः प्रशिक्षण के तत्काल व्यवहार सुधार।
-
-### **स्वचालित Skill सारांशण**
-हर बातचीत के बाद, आपका वही LLM सेशन का विश्लेषण करता है और स्वचालित रूप से नई Skills निकालता है। RL सक्रिय होने पर, एक समर्पित जज मॉडल विफल एपिसोड से Skills निकालता है।
-
-### **GPU क्लस्टर अनावश्यक**
-`skills_only` मोड में केवल नेटवर्क कनेक्शन की ज़रूरत है। RL ट्रेनिंग Tinker-संगत बैकएंड पर ऑफ़लोड की जाती है।
-
-### **दो सीखने के तरीके**
-MetaClaw दोनों का समर्थन करता है:
-- **RL (GRPO)**: अंतर्निहित फ़ीडबैक संकेतों से सीखने के लिए
-- **ऑन-पॉलिसी डिस्टिलेशन (OPD)**: एक बड़े शिक्षक मॉडल को छात्र मॉडल में ऑन-पॉलिसी डिस्टिल करने के लिए
-
-OPD मोड में, छात्र मॉडल सामान्य रूप से प्रतिक्रियाएँ उत्पन्न करता है, और शिक्षक मॉडल उन्हीं प्रतिक्रियाओं पर प्रति-टोकन लॉग-प्रायिकताएँ प्रदान करता है। शिक्षक की logprobs को लॉस फ़ंक्शन (जैसे `cispo`) में पास किया जाता है ताकि छात्र शिक्षक के वितरण को सीख सके। शिक्षक मॉडल को OpenAI-संगत `/v1/completions` एंडपॉइंट (जैसे vLLM, SGLang) पर डिप्लॉय किया जाना चाहिए।
+| `skills_only` | | प्रॉक्सी के माध्यम से आपका LLM API। Skills इंजेक्ट, सेशन के बाद ऑटो-सारांश। GPU / Tinker की ज़रूरत नहीं। |
+| `rl` | | Skills + RL ट्रेनिंग (GRPO)। batch भरते ही तुरंत ट्रेनिंग। शिक्षक डिस्टिलेशन के लिए वैकल्पिक OPD। |
+| `madmax` | ✅ | Skills + RL + स्मार्ट शेड्यूलर। RL वेट अपडेट केवल नींद/निष्क्रिय/मीटिंग विंडो में चलते हैं। |
 
 ### **पूरी तरह असिंक्रोनस डिज़ाइन**
 सर्विंग, रिवॉर्ड मॉडलिंग, और ट्रेनिंग पूरी तरह अलग-अलग हैं। Agent जवाब देता रहता है जबकि स्कोरिंग और ऑप्टिमाइज़ेशन पृष्ठभूमि में समानांतर चलते हैं।
@@ -216,7 +200,11 @@ metaclaw start
 
 ---
 
-## 🛠️ CLI कमांड
+## ⚙️ कॉन्फ़िगरेशन
+
+कॉन्फ़िगरेशन फ़ाइल `~/.metaclaw/config.yaml` में स्थित है, जो `metaclaw setup` द्वारा स्वचालित रूप से बनाई जाती है।
+
+**CLI कमांड:**
 
 ```
 metaclaw setup                  # पहली बार का इंटरैक्टिव कॉन्फ़िगरेशन विज़ार्ड
@@ -229,22 +217,8 @@ metaclaw config show            # वर्तमान कॉन्फ़िग
 metaclaw config KEY VALUE       # कॉन्फ़िगरेशन मान सेट करें
 ```
 
-**सामान्य कॉन्फ़िगरेशन कुंजियाँ:**
-
-```bash
-metaclaw config rl.enabled true           # RL ट्रेनिंग सक्रिय करें
-metaclaw config rl.backend auto           # auto | tinker | mint
-metaclaw config rl.api_key sk-...         # RL बैकएंड Key सेट करें
-metaclaw config rl.base_url https://mint.macaron.xin/  # वैकल्पिक बैकएंड endpoint, जैसे MinT
-metaclaw config skills.auto_evolve false  # Skill ऑटो-सारांशण बंद करें
-metaclaw config proxy.port 31000          # प्रॉक्सी पोर्ट बदलें
-```
-
----
-
-## ⚙️ कॉन्फ़िगरेशन
-
-कॉन्फ़िगरेशन फ़ाइल `~/.metaclaw/config.yaml` में स्थित है, जो `metaclaw setup` द्वारा स्वचालित रूप से बनाई जाती है।
+<details>
+<summary><b>पूर्ण कॉन्फ़िगरेशन संदर्भ (विस्तार के लिए क्लिक करें)</b></summary>
 
 ```yaml
 mode: madmax               # "madmax" | "rl" | "skills_only"
@@ -306,13 +280,17 @@ scheduler:                  # v0.3: मेटा-लर्निंग शेड
     token_path: ""
 ```
 
+</details>
+
 ---
 
-## 💪 Skills
+## 💪 Skills मोड
 
-Skill छोटे Markdown निर्देश हैं जो Agent के system prompt में हर टर्न पर इंजेक्ट किए जाते हैं। ये आपकी Skill डायरेक्टरी (डिफ़ॉल्ट `~/.metaclaw/skills/`) में व्यक्तिगत `SKILL.md` फ़ाइलों के रूप में संग्रहित होते हैं।
+**`metaclaw start --mode skills_only`**
 
-**Skill ऑटो-सारांशण** हर बातचीत के बाद चलता है। कॉन्फ़िगर किया गया LLM स्वचालित रूप से सेशन का विश्लेषण करता है और नई Skills उत्पन्न करता है। मैनुअल क्यूरेशन की ज़रूरत नहीं, Skill लाइब्रेरी उपयोग के साथ स्वचालित रूप से बढ़ती है।
+सबसे हल्का मोड। GPU या RL बैकएंड की ज़रूरत नहीं। MetaClaw आपके LLM को एक प्रॉक्सी के पीछे रखता है जो हर टर्न पर प्रासंगिक Skills इंजेक्ट करता है, फिर हर बातचीत के बाद स्वचालित रूप से नई Skills सारांशित करता है।
+
+Skills छोटे Markdown निर्देश हैं जो `~/.metaclaw/skills/` में व्यक्तिगत `SKILL.md` फ़ाइलों के रूप में संग्रहित होते हैं। लाइब्रेरी उपयोग के साथ स्वचालित रूप से बढ़ती है।
 
 बिल्ट-इन Skill बैंक (कोडिंग, सुरक्षा, Agent कार्यों आदि में 40+ Skills) प्री-लोड करने के लिए:
 
@@ -322,28 +300,24 @@ cp -r memory_data/skills/* ~/.metaclaw/skills/
 
 ---
 
-## 🔬 उन्नत: RL मोड
+## 🔬 RL मोड
 
-RL ट्रेनिंग सक्रिय करें और लाइव बातचीत से मॉडल को लगातार फ़ाइन-ट्यून करें। आप Tinker या MinT बैकएंड का उपयोग कर सकते हैं:
+**`metaclaw start --mode rl`**
+
+Skills मोड की सभी सुविधाएँ, साथ ही लाइव बातचीत से सतत RL फ़ाइन-ट्यूनिंग। हर बातचीत टर्न को tokenize करके ट्रेनिंग सैंपल के रूप में सबमिट किया जाता है। जज LLM (PRM) असिंक्रोनस रूप से प्रतिक्रियाओं को स्कोर करता है, और Tinker-संगत बैकएंड (Tinker क्लाउड या MinT) LoRA फ़ाइन-ट्यूनिंग करता है जिसमें वेट हॉट-स्वैप किए जाते हैं।
 
 ```bash
 metaclaw config rl.enabled true
-metaclaw config rl.backend mint
+metaclaw config rl.backend mint          # या tinker, या auto
 metaclaw config rl.api_key sk-...
 metaclaw config rl.base_url https://mint.macaron.xin/
 metaclaw config rl.model Qwen/Qwen3-4B-Instruct-2507
 metaclaw config rl.prm_url https://api.openai.com/v1
 metaclaw config rl.prm_api_key sk-...
-metaclaw start
+metaclaw start --mode rl
 ```
 
-RL मोड में:
-- हर बातचीत टर्न को tokenize करके ट्रेनिंग सैंपल के रूप में सबमिट किया जाता है
-- जज LLM (PRM) असिंक्रोनस रूप से प्रतिक्रियाओं को स्कोर करता है
-- Tinker-संगत बैकएंड (जैसे Tinker क्लाउड या MinT) LoRA फ़ाइन-ट्यूनिंग करता है; हर `batch_size` सैंपल के बाद वेट हॉट-स्वैप किए जाते हैं
-- एक समर्पित इवॉल्वर LLM विफल एपिसोड से नई Skills निकालता है
-
-यदि आप Tinker क्लाउड का उपयोग जारी रखना चाहते हैं, तो `rl.backend` को `tinker` पर सेट करें, या `auto` पर रखें और MinT endpoint छोड़ दें।
+एक समर्पित इवॉल्वर LLM विफल एपिसोड से नई Skills निकालता है और उन्हें Skill लाइब्रेरी में वापस जोड़ता है।
 
 **प्रोग्रामैटिक रोलआउट** (OpenClaw TUI की ज़रूरत नहीं): `openclaw_env_data_dir` को JSONL टास्क फ़ाइलों वाली डायरेक्टरी पर सेट करें:
 
@@ -351,29 +325,34 @@ RL मोड में:
 {"task_id": "task_1", "instruction": "Register the webhook at https://example.com/hook"}
 ```
 
----
+### ऑन-पॉलिसी डिस्टिलेशन (OPD)
 
-## 🔬 उन्नत: OPD मोड
-
-ऑन-पॉलिसी डिस्टिलेशन (OPD) आपको छात्र मॉडल के ऑन-पॉलिसी ट्रेनिंग के दौरान एक बड़े शिक्षक मॉडल को डिस्टिल करने देता है। छात्र मॉडल सामान्य रूप से प्रतिक्रियाएँ उत्पन्न करता है; शिक्षक मॉडल उन्हीं प्रतिक्रियाओं पर प्रति-टोकन लॉग-प्रायिकताएँ प्रदान करता है। KL पेनल्टी छात्र को शिक्षक के वितरण की ओर मार्गदर्शन करती है।
+OPD, RL मोड के लिए एक वैकल्पिक ऐड-ऑन है। यह एक बड़े शिक्षक मॉडल को छात्र मॉडल में ऑन-पॉलिसी डिस्टिल करता है: छात्र मॉडल सामान्य रूप से प्रतिक्रियाएँ उत्पन्न करता है, और शिक्षक मॉडल उन्हीं प्रतिक्रियाओं पर प्रति-टोकन लॉग-प्रायिकताएँ प्रदान करता है। KL पेनल्टी छात्र को शिक्षक के वितरण की ओर मार्गदर्शन करती है।
 
 ```bash
 metaclaw config opd.enabled true
 metaclaw config opd.teacher_url http://localhost:8082/v1
 metaclaw config opd.teacher_model Qwen/Qwen3-32B
 metaclaw config opd.kl_penalty_coef 1.0
-metaclaw start --mode rl
 ```
 
-शिक्षक मॉडल को OpenAI-संगत `/v1/completions` एंडपॉइंट (जैसे vLLM, SGLang) पर डिप्लॉय किया जाना चाहिए। OPD को PRM स्कोरिंग के साथ संयोजित किया जा सकता है, दोनों असिंक्रोनस रूप से चलते हैं।
-
-प्रोग्रामैटिक उदाहरण के लिए `examples/run_conversation_opd.py` देखें, और तैयार लॉन्च स्क्रिप्ट के लिए `scripts/run_openclaw_tinker_opd.sh` देखें।
+शिक्षक मॉडल को OpenAI-संगत `/v1/completions` एंडपॉइंट (जैसे vLLM, SGLang) पर डिप्लॉय किया जाना चाहिए। OPD को PRM स्कोरिंग के साथ संयोजित किया जा सकता है, दोनों असिंक्रोनस रूप से चलते हैं। `examples/run_conversation_opd.py` और `scripts/run_openclaw_tinker_opd.sh` देखें।
 
 ---
 
-## 🧠 उन्नत: मेटा-लर्निंग शेड्यूलर (v0.3)
+## 🧠 MadMax मोड (डिफ़ॉल्ट)
 
-RL मोड में, वेट हॉट-स्वैप स्टेप Agent को कई मिनट के लिए रोक देता है। शेड्यूलर (`madmax` मोड में डिफ़ॉल्ट रूप से सक्रिय) RL अपडेट को उपयोगकर्ता-निष्क्रिय विंडो तक स्थगित कर देता है ताकि सक्रिय उपयोग के दौरान Agent में बाधा न आए।
+**`metaclaw start`**
+
+RL मोड की सभी सुविधाएँ, साथ ही एक मेटा-लर्निंग शेड्यूलर जो वेट अपडेट को उपयोगकर्ता-निष्क्रिय विंडो तक स्थगित कर देता है ताकि सक्रिय उपयोग के दौरान Agent में बाधा न आए। यह डिफ़ॉल्ट मोड है।
+
+RL वेट हॉट-स्वैप स्टेप Agent को कई मिनट के लिए रोक देता है। batch भरते ही तुरंत ट्रेनिंग शुरू करने के बजाय (जैसा RL मोड करता है), MadMax एक उपयुक्त विंडो की प्रतीक्षा करता है।
+
+तीन स्थितियाँ अपडेट विंडो ट्रिगर करती हैं (कोई भी एक पर्याप्त है):
+
+- **नींद के घंटे**: कॉन्फ़िगर करने योग्य शुरू/समाप्ति समय (जैसे 23:00 से 07:00)
+- **कीबोर्ड निष्क्रियता**: N मिनट की निष्क्रियता के बाद ट्रिगर
+- **Google Calendar इवेंट**: मीटिंग का पता लगाकर आपकी अनुपस्थिति में अपडेट चलाता है
 
 ```bash
 metaclaw config scheduler.sleep_start "23:00"
@@ -386,7 +365,7 @@ metaclaw config scheduler.calendar.enabled true
 metaclaw config scheduler.calendar.credentials_path ~/.metaclaw/client_secrets.json
 ```
 
-तीन स्थितियाँ अपडेट विंडो ट्रिगर करती हैं (कोई भी एक पर्याप्त है): कॉन्फ़िगर किए गए नींद के घंटे, सिस्टम कीबोर्ड निष्क्रियता, या सक्रिय Google Calendar इवेंट। यदि अपडेट के बीच में उपयोगकर्ता लौटता है, तो आंशिक batch सहेजा जाता है और अगली विंडो में पुनः आरंभ किया जाता है।
+यदि अपडेट के बीच में उपयोगकर्ता लौटता है, तो आंशिक batch सहेजा जाता है और अगली विंडो में पुनः आरंभ किया जाता है।
 
 हर `ConversationSample` को `skill_generation` वर्शन टैग के साथ चिह्नित किया जाता है। जब Skill विकास generation बढ़ाता है, तो RL buffer फ़्लश किया जाता है ताकि ग्रेडिएंट अपडेट के लिए केवल विकास-उत्तर सैंपल का उपयोग हो (MAML support/query सेट विभाजन)।
 
@@ -410,12 +389,12 @@ metaclaw config scheduler.calendar.credentials_path ~/.metaclaw/client_secrets.j
 
 MetaClaw निम्नलिखित ओपन-सोर्स परियोजनाओं पर आधारित है:
 
-- [OpenClaw](https://openclaw.ai) - कोर Agent फ़्रेमवर्क।
-- [SkillRL](https://github.com/aiming-lab/SkillRL) - हमारा Skill-संवर्धित RL फ़्रेमवर्क।
-- [Tinker](https://www.thinkingmachines.ai/tinker/) - ऑनलाइन RL ट्रेनिंग के लिए।
-- [MinT](https://github.com/MindLab-Research/mindlab-toolkit) - ऑनलाइन RL ट्रेनिंग का वैकल्पिक बैकएंड।
-- [OpenClaw-RL](https://github.com/Gen-Verse/OpenClaw-RL) - हमारे RL डिज़ाइन की प्रेरणा।
-- [awesome-openclaw-skills](https://github.com/VoltAgent/awesome-openclaw-skills) - हमारे Skill बैंक की नींव।
+- [OpenClaw](https://openclaw.ai) , कोर Agent फ़्रेमवर्क।
+- [SkillRL](https://github.com/aiming-lab/SkillRL) , हमारा Skill-संवर्धित RL फ़्रेमवर्क।
+- [Tinker](https://www.thinkingmachines.ai/tinker/) , ऑनलाइन RL ट्रेनिंग के लिए।
+- [MinT](https://github.com/MindLab-Research/mindlab-toolkit) , ऑनलाइन RL ट्रेनिंग का वैकल्पिक बैकएंड।
+- [OpenClaw-RL](https://github.com/Gen-Verse/OpenClaw-RL) , हमारे RL डिज़ाइन की प्रेरणा।
+- [awesome-openclaw-skills](https://github.com/VoltAgent/awesome-openclaw-skills) , हमारे Skill बैंक की नींव।
 
 ---
 
