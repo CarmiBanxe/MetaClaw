@@ -389,6 +389,7 @@ MetaClaw 基于以下开源项目构建：
 - [OpenClaw](https://openclaw.ai) —— 核心 Agent 框架。
 - [SkillRL](https://github.com/aiming-lab/SkillRL) —— 我们的 Skill 增强 RL 框架。
 - [Tinker](https://www.thinkingmachines.ai/tinker/) —— 用于在线 RL 训练。
+- [MinT](https://github.com/MindLab-Research/mindlab-toolkit) —— 在线 RL 训练的备选后端。
 - [OpenClaw-RL](https://github.com/Gen-Verse/OpenClaw-RL) —— 我们 RL 设计的灵感来源。
 - [awesome-openclaw-skills](https://github.com/VoltAgent/awesome-openclaw-skills) —— 为我们的 Skill 库提供基础。
 

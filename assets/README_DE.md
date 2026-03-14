@@ -389,6 +389,7 @@ MetaClaw baut auf folgenden Open-Source-Projekten auf:
 - [OpenClaw](https://openclaw.ai) — das zentrale Agent-Framework.
 - [SkillRL](https://github.com/aiming-lab/SkillRL) — unser skill-erweitertes RL-Framework.
 - [Tinker](https://www.thinkingmachines.ai/tinker/) — für Online-RL-Training verwendet.
+- [MinT](https://github.com/MindLab-Research/mindlab-toolkit) — alternatives Backend für Online-RL-Training.
 - [OpenClaw-RL](https://github.com/Gen-Verse/OpenClaw-RL) — Inspiration für unser RL-Design.
 - [awesome-openclaw-skills](https://github.com/VoltAgent/awesome-openclaw-skills) — stellt die Grundlage für unsere Skill-Bank bereit.
 
