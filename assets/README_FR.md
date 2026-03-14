@@ -60,7 +60,7 @@
 <tr>
 <td align="center" width="100">
   <a href="https://www.thinkingmachines.ai/tinker/">
-    <img src="https://github.com/thinkingmachines.png?size=200" width="48" height="48" alt="Tinker" />
+    <img src="tinker.jpg" width="48" height="48" alt="Tinker" />
   </a><br/>
   <sub><a href="https://www.thinkingmachines.ai/tinker/"><b>Tinker</b></a></sub>
 </td>
