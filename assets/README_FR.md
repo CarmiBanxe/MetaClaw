@@ -8,6 +8,8 @@
 
 <p>Inspiré par l'apprentissage du cerveau. Méta-apprenez et faites évoluer votre 🦞 à partir de chaque conversation. Sans GPU. Compatible Kimi, Qwen, Claude, MiniMax, et plus.</p>
 
+<sub>⚡ Supported LLM APIs</sub>
+
 <table>
 <tr>
 <td align="center" width="100">
@@ -48,6 +50,28 @@
 </td>
 <td align="center" width="100">
   <sub><b>+ Much<br/>More</b></sub>
+</td>
+</tr>
+</table>
+
+<sub>🧬 RL Training Backends</sub>
+
+<table>
+<tr>
+<td align="center" width="100">
+  <a href="https://www.thinkingmachines.ai/tinker/">
+    <img src="https://github.com/thinkingmachines.png?size=200" width="48" height="48" alt="Tinker" />
+  </a><br/>
+  <sub><a href="https://www.thinkingmachines.ai/tinker/"><b>Tinker</b></a></sub>
+</td>
+<td align="center" width="100">
+  <a href="https://github.com/MindLab-Research/mindlab-toolkit">
+    <img src="https://github.com/MindLab-Research.png?size=200" width="48" height="48" alt="MinT" />
+  </a><br/>
+  <sub><a href="https://github.com/MindLab-Research/mindlab-toolkit"><b>MinT</b></a></sub>
+</td>
+<td align="center" width="100">
+  <sub><b>More<br/>Coming</b></sub>
 </td>
 </tr>
 </table>
