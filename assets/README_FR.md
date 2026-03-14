@@ -112,7 +112,7 @@ Parlez simplement à votre agent comme d'habitude — MetaClaw transforme chaque
 
 Sous le capot, il encapsule votre modèle derrière un proxy compatible OpenAI, intercepte les interactions via OpenClaw, injecte les skills pertinents à chaque tour, et méta-apprend à partir de l'expérience accumulée. Les skills sont résumés automatiquement après chaque session ; avec le RL activé, un planificateur de méta-apprentissage reporte les mises à jour des poids aux fenêtres d'inactivité pour ne jamais interrompre l'agent pendant l'utilisation active.
 
-Aucun cluster GPU nécessaire. MetaClaw fonctionne avec n'importe quelle API LLM compatible OpenAI et intègre optionnellement **Kimi-K2.5** (1T MoE) via [Tinker](https://www.thinkingmachines.ai/tinker/) pour l'entraînement LoRA dans le cloud.
+Aucun cluster GPU nécessaire. MetaClaw fonctionne avec n'importe quelle API LLM compatible OpenAI et utilise un backend compatible Tinker pour l'entraînement LoRA dans le cloud. [Tinker](https://www.thinkingmachines.ai/tinker/) reste le chemin de référence par défaut ; MinT peut être activé via un paquet de compatibilité séparé si nécessaire.
 
 ## 🤖 Fonctionnalités principales
 
@@ -134,7 +134,7 @@ Configurez une fois avec `metaclaw setup`, puis `metaclaw start` lance le proxy,
 Après chaque conversation, le même LLM que vous utilisez déjà analyse la session et distille automatiquement de nouveaux skills. Avec RL activé, un modèle juge dédié extrait les skills des épisodes échoués.
 
 ### **Aucun cluster GPU requis**
-En mode `skills_only`, seule une connexion réseau est nécessaire. L'entraînement RL est délégué au cloud Tinker.
+En mode `skills_only`, seule une connexion réseau est nécessaire. L'entraînement RL est délégué à un backend compatible Tinker.
 
 ### **Deux modes d'apprentissage**
 MetaClaw supporte les deux :
@@ -160,6 +160,8 @@ pip install -e ".[scheduler]"           # + intégration Google Calendar pour le
 pip install -e ".[rl,evolve,scheduler]" # recommandé : configuration complète RL + planificateur
 ```
 
+Si vous voulez utiliser `rl.backend=mint`, installez séparément le paquet de compatibilité MinT dans le même environnement, par exemple [`mindlab-toolkit`](https://github.com/MindLab-Research/mindlab-toolkit). MetaClaw garde volontairement cette dépendance hors du paquet par défaut afin que les utilisateurs RL choisissent explicitement entre Tinker et MinT.
+
 ### 2. Configuration
 
 ```bash
@@ -167,6 +169,17 @@ metaclaw setup
 ```
 
 L'assistant interactif vous demande de choisir votre fournisseur LLM (Kimi, Qwen, MiniMax, ou personnalisé), votre clé API, et d'activer optionnellement l'entraînement RL.
+
+La pile RL de MetaClaw peut basculer explicitement entre `tinker` et `mint`. `auto` est la valeur recommandée et continuera d'inférer MinT à partir d'identifiants ou de base URLs de style Mint lorsque le paquet MinT est installé.
+
+```bash
+metaclaw config rl.backend mint
+metaclaw config rl.api_key sk-mint-...
+metaclaw config rl.base_url https://mint.macaron.xin/
+metaclaw config rl.model Qwen/Qwen3-4B-Instruct-2507
+```
+
+Les alias hérités `rl.tinker_api_key` et `rl.tinker_base_url` restent acceptés pour compatibilité.
 
 ### 3. Démarrage
 
@@ -195,7 +208,9 @@ metaclaw config KEY VALUE       # Définir une valeur de configuration
 
 ```bash
 metaclaw config rl.enabled true           # Activer l'entraînement RL
-metaclaw config rl.tinker_api_key sk-...  # Définir la clé Tinker
+metaclaw config rl.backend auto           # auto | tinker | mint
+metaclaw config rl.api_key sk-...         # Définir la clé du backend RL
+metaclaw config rl.base_url https://mint.macaron.xin/  # Endpoint backend optionnel, p. ex. MinT
 metaclaw config skills.auto_evolve false  # Désactiver le résumé automatique des skills
 metaclaw config proxy.port 31000          # Changer le port du proxy
 ```
@@ -217,6 +232,7 @@ llm:
 
 proxy:
   port: 30000
+  api_key: ""              # jeton bearer optionnel pour le proxy local MetaClaw
 
 skills:
   enabled: true
@@ -228,8 +244,12 @@ skills:
 
 rl:
   enabled: false            # mettre à true pour activer l'entraînement RL
+  backend: auto             # "auto" | "tinker" | "mint"
   model: moonshotai/Kimi-K2.5
-  tinker_api_key: ""
+  api_key: ""
+  base_url: ""              # endpoint backend optionnel, p. ex. https://mint.macaron.xin/ pour MinT
+  tinker_api_key: ""        # alias hérité de api_key
+  tinker_base_url: ""       # alias hérité de base_url
   prm_url: https://api.openai.com/v1
   prm_model: gpt-5.2
   prm_api_key: ""
@@ -279,11 +299,14 @@ cp -r memory_data/skills/* ~/.metaclaw/skills/
 
 ## 🔬 Avancé : Mode RL
 
-Activez l'entraînement RL pour affiner continuellement le modèle à partir des conversations en direct :
+Activez l'entraînement RL pour affiner continuellement le modèle à partir des conversations en direct. Vous pouvez le faire avec Tinker ou avec MinT :
 
 ```bash
 metaclaw config rl.enabled true
-metaclaw config rl.tinker_api_key sk-...
+metaclaw config rl.backend mint
+metaclaw config rl.api_key sk-...
+metaclaw config rl.base_url https://mint.macaron.xin/
+metaclaw config rl.model Qwen/Qwen3-4B-Instruct-2507
 metaclaw config rl.prm_url https://api.openai.com/v1
 metaclaw config rl.prm_api_key sk-...
 metaclaw start
@@ -292,8 +315,10 @@ metaclaw start
 En mode RL :
 - Chaque tour de conversation est tokenisé et soumis comme échantillon d'entraînement
 - Un LLM juge (PRM) évalue les réponses de manière asynchrone
-- Tinker exécute le fine-tuning LoRA dans le cloud ; les poids mis à jour sont hot-swappés toutes les `batch_size` samples
+- Un backend compatible Tinker, comme Tinker Cloud ou MinT, exécute le fine-tuning LoRA ; les poids mis à jour sont hot-swappés toutes les `batch_size` samples
 - Un LLM évolueur dédié extrait de nouveaux skills des épisodes échoués
+
+Si vous préférez Tinker Cloud, définissez `rl.backend` sur `tinker` ou laissez `auto` et omettez l'endpoint MinT.
 
 **Rollout programmatique** (sans TUI OpenClaw) : définissez `openclaw_env_data_dir` sur un répertoire de fichiers JSONL de tâches :
 
