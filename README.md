@@ -8,7 +8,7 @@
 
 <p>Inspired by how the brain learns. Meta-learn and evolve your 🦞 from every conversation in the wild. No GPU required. Works with Kimi, Qwen, Claude, MiniMax, and more.</p>
 
-<sub>⚡ Supported LLM APIs</sub>
+⚡ Supported LLM Providers & Platforms
 
 <table>
 <tr>
@@ -54,7 +54,7 @@
 </tr>
 </table>
 
-<sub>🧬 RL Training Backends</sub>
+🧬 RL Training Backends for Weight Evolution
 
 <table>
 <tr>
