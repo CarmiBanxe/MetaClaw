@@ -163,6 +163,7 @@ metaclaw start --mode skills_only  # skills uniquement, pas de RL (Tinker non re
 
 ## 🔥 Actualites
 
+- **[16/03/2026]** **v0.3.2** Support multi-Claw : IronClaw, PicoClaw, ZeroClaw et CoPaw sont desormais supportes aux cotes d'OpenClaw. OpenRouter ajoute comme plateforme LLM.
 - **[13/03/2026]** **v0.3.1** Support du backend MinT : l'entrainement RL fonctionne desormais avec Tinker et MinT. Configurable via `rl.backend` (auto/tinker/mint).
 - **[13/03/2026]** **v0.3** Support continu de meta-apprentissage : les mises a jour RL ne s'executent que pendant les heures de sommeil, les periodes d'inactivite ou les reunions Google Calendar. Ajout de la separation support/query pour eviter que des signaux de recompense perimes ne polluent les mises a jour du modele.
 - **[11/03/2026]** **v0.2** Deploiement en un clic via la CLI `metaclaw`. Les skills sont actives par defaut, le RL est desormais optionnel.

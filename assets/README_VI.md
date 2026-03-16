@@ -163,6 +163,7 @@ metaclaw start --mode skills_only  # chi Skills, khong RL (khong can Tinker)
 
 ## 🔥 Tin moi
 
+- **[16/03/2026]** **v0.3.2** Ho tro da Claw: IronClaw, PicoClaw, ZeroClaw va CoPaw nay duoc ho tro cung voi OpenClaw. Them OpenRouter lam nen tang LLM.
 - **[13/03/2026]** **v0.3.1** MinT backend duoc ho tro: huan luyen RL hien ho tro ca Tinker va MinT. Cau hinh qua `rl.backend` (auto/tinker/mint).
 - **[13/03/2026]** **v0.3** Ho tro meta-learning lien tuc: cap nhat RL cham chi chay trong gio ngu, thoi gian ranh hoac cuoc hop Google Calendar. Them phan tach tap support/query de ngan tin hieu thuong qua thoi lam nhiem mo hinh.
 - **[11/03/2026]** **v0.2** Trien khai mot cu nhap qua `metaclaw` CLI. Skill duoc bat mac dinh, RL la tuy chon.
