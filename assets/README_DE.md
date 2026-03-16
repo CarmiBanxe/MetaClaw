@@ -43,6 +43,18 @@
   <sub><a href="https://github.com/zeroclaw-labs/zeroclaw"><b>ZeroClaw</b></a></sub>
 </td>
 <td align="center" width="100">
+  <a href="https://github.com/qwibitai/nanoclaw">
+    <img src="https://github.com/qwibitai.png?size=200" width="48" height="48" alt="NanoClaw" />
+  </a><br/>
+  <sub><a href="https://github.com/qwibitai/nanoclaw"><b>NanoClaw</b></a></sub>
+</td>
+<td align="center" width="100">
+  <a href="https://github.com/NVIDIA/NemoClaw">
+    <img src="https://github.com/NVIDIA.png?size=200" width="48" height="48" alt="NemoClaw" />
+  </a><br/>
+  <sub><a href="https://github.com/NVIDIA/NemoClaw"><b>NemoClaw</b></a></sub>
+</td>
+<td align="center" width="100">
   <sub><b>More<br/>Coming</b></sub>
 </td>
 </tr>
@@ -163,7 +175,7 @@ metaclaw start --mode skills_only  # Nur Skills, kein RL (kein Tinker nötig)
 
 ## 🔥 Neuigkeiten
 
-- **[16.03.2026]** **v0.3.2** Multi-Claw-Unterstützung: IronClaw, PicoClaw, ZeroClaw und CoPaw werden neben OpenClaw unterstützt. OpenRouter als LLM-Plattform hinzugefügt.
+- **[16.03.2026]** **v0.3.2** Multi-Claw-Unterstützung: IronClaw, PicoClaw, ZeroClaw, CoPaw, NanoClaw und NemoClaw werden neben OpenClaw unterstützt. NanoClaw über den neuen `/v1/messages` Anthropic-kompatiblen Endpunkt; NemoClaw über OpenShell-Inferenz-Routing. OpenRouter als LLM-Plattform hinzugefügt.
 - **[13.03.2026]** **v0.3.1** MinT-Backend-Unterstützung: RL-Training funktioniert jetzt mit Tinker und MinT. Konfigurierbar über `rl.backend` (auto/tinker/mint).
 - **[13.03.2026]** **v0.3** Kontinuierliche Meta-Learning-Unterstützung: RL-Gewichtsupdates laufen nur noch während Schlafenszeiten, Leerlaufphasen oder Google-Calendar-Meetings. Support/Query-Set-Trennung hinzugefügt, um veraltete Belohnungssignale von Modell-Updates fernzuhalten.
 - **[11.03.2026]** **v0.2** Ein-Klick-Deployment über `metaclaw` CLI. Skills standardmäßig aktiviert, RL jetzt optional.
@@ -182,7 +194,7 @@ https://github.com/user-attachments/assets/d86a41a8-4181-4e3a-af0e-dc453a6b8594
 **MetaClaw ist ein Agent, der in realen Einsatzszenarien meta-lernt und sich weiterentwickelt.**
 Sprich einfach wie gewohnt mit deinem Agenten. MetaClaw verwandelt jedes Live-Gespräch in ein Lernsignal und ermöglicht dem Agenten, sich durch den realen Einsatz kontinuierlich zu verbessern, statt nur auf Offline-Training zu setzen.
 
-Unter der Haube kapselt es dein Modell hinter einem OpenAI-kompatiblen Proxy, fängt Interaktionen über OpenClaw ab, injiziert relevante Skills bei jedem Schritt und meta-lernt aus den gesammelten Erfahrungen. Nach jeder Session werden Skills automatisch zusammengefasst; mit aktiviertem RL verschiebt ein Meta-Learning-Scheduler die Gewichtsaktualisierungen in inaktive Zeitfenster, damit der Agent während der aktiven Nutzung nie unterbrochen wird.
+Unter der Haube kapselt es dein Modell hinter einem OpenAI-kompatiblen Proxy (für Anthropic-native Agenten wie NanoClaw wird zusätzlich ein `/v1/messages`-kompatibler Endpunkt bereitgestellt), fängt Interaktionen über OpenClaw, NanoClaw, NemoClaw und andere unterstützte Agenten ab, injiziert relevante Skills bei jedem Schritt und meta-lernt aus den gesammelten Erfahrungen. Nach jeder Session werden Skills automatisch zusammengefasst; mit aktiviertem RL verschiebt ein Meta-Learning-Scheduler die Gewichtsaktualisierungen in inaktive Zeitfenster, damit der Agent während der aktiven Nutzung nie unterbrochen wird.
 
 Kein GPU-Cluster nötig. MetaClaw funktioniert mit jeder OpenAI-kompatiblen LLM-API und nutzt ein Tinker-kompatibles Backend für Cloud-basiertes LoRA-Training. [Tinker](https://www.thinkingmachines.ai/tinker/) ist der Standard-Referenzpfad; bei Bedarf kann MinT über ein separates Kompatibilitätspaket aktiviert werden.
 
@@ -464,6 +476,8 @@ MetaClaw baut auf folgenden Open-Source-Projekten auf:
 - [MinT](https://github.com/MindLab-Research/mindlab-toolkit) - alternatives Backend für Online-RL-Training.
 - [OpenClaw-RL](https://github.com/Gen-Verse/OpenClaw-RL) - Inspiration für unser RL-Design.
 - [awesome-openclaw-skills](https://github.com/VoltAgent/awesome-openclaw-skills) - stellt die Grundlage für unsere Skill-Bank bereit.
+- [NanoClaw](https://github.com/qwibitai/nanoclaw) - persönlicher Claude-Agent von qwibitai, verbunden über den `/v1/messages` Anthropic-kompatiblen Endpunkt.
+- [NemoClaw](https://github.com/NVIDIA/NemoClaw) - NVIDIA OpenShell-Inferenz-Agenten-Plugin.
 
 ---
 

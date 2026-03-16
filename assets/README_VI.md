@@ -43,6 +43,18 @@
   <sub><a href="https://github.com/zeroclaw-labs/zeroclaw"><b>ZeroClaw</b></a></sub>
 </td>
 <td align="center" width="100">
+  <a href="https://github.com/qwibitai/nanoclaw">
+    <img src="https://github.com/qwibitai.png?size=200" width="48" height="48" alt="NanoClaw" />
+  </a><br/>
+  <sub><a href="https://github.com/qwibitai/nanoclaw"><b>NanoClaw</b></a></sub>
+</td>
+<td align="center" width="100">
+  <a href="https://github.com/NVIDIA/NemoClaw">
+    <img src="https://github.com/NVIDIA.png?size=200" width="48" height="48" alt="NemoClaw" />
+  </a><br/>
+  <sub><a href="https://github.com/NVIDIA/NemoClaw"><b>NemoClaw</b></a></sub>
+</td>
+<td align="center" width="100">
   <sub><b>More<br/>Coming</b></sub>
 </td>
 </tr>
@@ -163,7 +175,7 @@ metaclaw start --mode skills_only  # chi Skills, khong RL (khong can Tinker)
 
 ## 🔥 Tin moi
 
-- **[16/03/2026]** **v0.3.2** Ho tro da Claw: IronClaw, PicoClaw, ZeroClaw va CoPaw nay duoc ho tro cung voi OpenClaw. Them OpenRouter lam nen tang LLM.
+- **[16/03/2026]** **v0.3.2** Ho tro da Claw: IronClaw, PicoClaw, ZeroClaw, CoPaw, NanoClaw va NemoClaw nay duoc ho tro cung voi OpenClaw. NanoClaw qua endpoint tuong thich Anthropic `/v1/messages` moi; NemoClaw qua dinh tuyen suy luan OpenShell. Them OpenRouter lam nen tang LLM.
 - **[13/03/2026]** **v0.3.1** MinT backend duoc ho tro: huan luyen RL hien ho tro ca Tinker va MinT. Cau hinh qua `rl.backend` (auto/tinker/mint).
 - **[13/03/2026]** **v0.3** Ho tro meta-learning lien tuc: cap nhat RL cham chi chay trong gio ngu, thoi gian ranh hoac cuoc hop Google Calendar. Them phan tach tap support/query de ngan tin hieu thuong qua thoi lam nhiem mo hinh.
 - **[11/03/2026]** **v0.2** Trien khai mot cu nhap qua `metaclaw` CLI. Skill duoc bat mac dinh, RL la tuy chon.
@@ -182,7 +194,7 @@ https://github.com/user-attachments/assets/d86a41a8-4181-4e3a-af0e-dc453a6b8594
 **MetaClaw la mot agent meta-learning va tien hoa trong moi truong thuc te.**
 Chi can noi chuyen voi agent nhu binh thuong. MetaClaw bien moi cuoc hoi thoai truc tiep thanh tin hieu hoc tap, giup agent lien tuc cai thien thong qua trien khai thuc te thay vi chi huan luyen ngoai tuyen.
 
-Ben trong, MetaClaw dat mo hinh cua ban phia sau mot proxy tuong thich OpenAI, chan cac tuong tac tu OpenClaw, tiem cac Skill phu hop o moi luot hoi thoai va meta-learning tu kinh nghiem tich luy. Skill duoc tu dong tom tat sau moi phien; khi bat RL, bo lap lich meta-learning se hoan cap nhat trong so den cac khoang thoi gian ranh de agent khong bi gian doan khi dang su dung.
+Ben trong, MetaClaw dat mo hinh cua ban phia sau mot proxy tuong thich OpenAI (cung cap endpoint tuong thich Anthropic `/v1/messages` cho cac agent nhu NanoClaw), chan cac tuong tac tu OpenClaw, NanoClaw, NemoClaw va cac Agent duoc ho tro khac, tiem cac Skill phu hop o moi luot hoi thoai va meta-learning tu kinh nghiem tich luy. Skill duoc tu dong tom tat sau moi phien; khi bat RL, bo lap lich meta-learning se hoan cap nhat trong so den cac khoang thoi gian ranh de agent khong bi gian doan khi dang su dung.
 
 Khong can cum GPU. MetaClaw hoat dong voi bat ky LLM API tuong thich OpenAI nao va su dung backend tuong thich Tinker de huan luyen LoRA tren dam may. [Tinker](https://www.thinkingmachines.ai/tinker/) la duong dan tham chieu mac dinh, con MinT co the duoc kich hoat thong qua goi tuong thich rieng khi can.
 
@@ -464,6 +476,8 @@ MetaClaw duoc xay dung tren cac du an ma nguon mo sau:
 - [MinT](https://github.com/MindLab-Research/mindlab-toolkit) , backend thay the cho huan luyen RL truc tuyen.
 - [OpenClaw-RL](https://github.com/Gen-Verse/OpenClaw-RL) , nguon cam hung cho thiet ke RL cua chung toi.
 - [awesome-openclaw-skills](https://github.com/VoltAgent/awesome-openclaw-skills) , cung cap nen tang cho kho Skill cua chung toi.
+- [NanoClaw](https://github.com/qwibitai/nanoclaw) , agent Claude ca nhan cua qwibitai, ket noi qua endpoint tuong thich Anthropic `/v1/messages`.
+- [NemoClaw](https://github.com/NVIDIA/NemoClaw) , plugin agent OpenShell cua NVIDIA cho suy luan.
 
 ---
 

@@ -43,6 +43,18 @@
   <sub><a href="https://github.com/zeroclaw-labs/zeroclaw"><b>ZeroClaw</b></a></sub>
 </td>
 <td align="center" width="100">
+  <a href="https://github.com/qwibitai/nanoclaw">
+    <img src="https://github.com/qwibitai.png?size=200" width="48" height="48" alt="NanoClaw" />
+  </a><br/>
+  <sub><a href="https://github.com/qwibitai/nanoclaw"><b>NanoClaw</b></a></sub>
+</td>
+<td align="center" width="100">
+  <a href="https://github.com/NVIDIA/NemoClaw">
+    <img src="https://github.com/NVIDIA.png?size=200" width="48" height="48" alt="NemoClaw" />
+  </a><br/>
+  <sub><a href="https://github.com/NVIDIA/NemoClaw"><b>NemoClaw</b></a></sub>
+</td>
+<td align="center" width="100">
   <sub><b>More<br/>Coming</b></sub>
 </td>
 </tr>
@@ -163,7 +175,7 @@ metaclaw start --mode skills_only  # 仅 Skills，无 RL（无需 Tinker）
 
 ## 🔥 最新动态
 
-- **[2026/03/16]** **v0.3.2** 多 Claw 支持：现已支持 IronClaw、PicoClaw、ZeroClaw 和 CoPaw，与 OpenClaw 并列。新增 OpenRouter 作为受支持的 LLM 平台。
+- **[2026/03/16]** **v0.3.2** 多 Claw 支持：现已支持 IronClaw、PicoClaw、ZeroClaw、CoPaw、NanoClaw 和 NemoClaw，与 OpenClaw 并列。NanoClaw 通过新增的 `/v1/messages` Anthropic 兼容端点接入；NemoClaw 通过 OpenShell 推理路由接入。新增 OpenRouter 作为受支持的 LLM 平台。
 - **[2026/03/13]** **v0.3.1** MinT 后端支持：RL 训练现同时支持 Tinker 和 MinT。通过 `rl.backend`（auto/tinker/mint）配置。
 - **[2026/03/13]** **v0.3** 持续元学习支持：慢速 RL 更新仅在睡眠时间、空闲期间或 Google Calendar 会议期间运行。新增 support/query 集分离,防止过时的奖励信号污染模型更新。
 - **[2026/03/11]** **v0.2** 通过 `metaclaw` CLI 一键部署。Skill 默认开启,RL 现为可选。
@@ -182,7 +194,7 @@ https://github.com/user-attachments/assets/d86a41a8-4181-4e3a-af0e-dc453a6b8594
 **MetaClaw 是一个在真实场景中元学习并持续进化的 Agent。**
 只需像平时一样与 Agent 对话, MetaClaw 将每一次实时对话转化为学习信号,让 Agent 在真实部署中持续进化,而非仅依赖离线训练。
 
-在底层,它将你的模型封装为 OpenAI 兼容代理,通过 OpenClaw 拦截实时对话,在每轮对话中注入相关 Skill,并从积累的交互经验中元学习。每次会话结束后自动总结新 Skill；开启 RL 后,元学习调度器会将权重更新推迟到空闲窗口,确保活跃使用期间不受干扰。
+在底层,它将你的模型封装为 OpenAI 兼容代理（对 NanoClaw 等 Anthropic 原生 Agent 还提供 `/v1/messages` 兼容端点），通过 OpenClaw、NanoClaw、NemoClaw 等支持的 Agent 拦截实时对话,在每轮对话中注入相关 Skill,并从积累的交互经验中元学习。每次会话结束后自动总结新 Skill；开启 RL 后,元学习调度器会将权重更新推迟到空闲窗口,确保活跃使用期间不受干扰。
 
 无需 GPU 集群。MetaClaw 兼容任意 OpenAI 格式的 LLM API,并通过 Tinker 兼容后端进行云端 LoRA 微调。[Tinker](https://www.thinkingmachines.ai/tinker/) 是默认参考路径；如果需要,也可以通过单独安装的兼容包接入 MinT。
 
@@ -464,6 +476,8 @@ MetaClaw 基于以下开源项目构建：
 - [MinT](https://github.com/MindLab-Research/mindlab-toolkit), 在线 RL 训练的备选后端。
 - [OpenClaw-RL](https://github.com/Gen-Verse/OpenClaw-RL), 我们 RL 设计的灵感来源。
 - [awesome-openclaw-skills](https://github.com/VoltAgent/awesome-openclaw-skills), 为我们的 Skill 库提供基础。
+- [NanoClaw](https://github.com/qwibitai/nanoclaw) , qwibitai 开发的个人 Claude Agent，通过 `/v1/messages` 兼容端点接入。
+- [NemoClaw](https://github.com/NVIDIA/NemoClaw) , NVIDIA 开发的 OpenShell 推理 Agent 插件。
 
 ---
 

@@ -292,6 +292,86 @@ def _rewrite_new_session_bootstrap_prompt(messages: list[dict]) -> tuple[list[di
 
 
 # ------------------------------------------------------------------ #
+# Anthropic ↔ OpenAI format helpers (for NanoClaw /v1/messages)      #
+# ------------------------------------------------------------------ #
+
+def _anthropic_to_openai_body(body: dict[str, Any]) -> dict[str, Any]:
+    """Convert an Anthropic /v1/messages request body to OpenAI chat format."""
+    messages: list[dict] = list(body.get("messages", []))
+
+    # Anthropic puts the system prompt at top level; move it into messages[0].
+    system = body.get("system")
+    if system:
+        if isinstance(system, str):
+            system_text = system
+        elif isinstance(system, list):
+            system_text = " ".join(
+                blk.get("text", "")
+                for blk in system
+                if isinstance(blk, dict) and blk.get("type") == "text"
+            )
+        else:
+            system_text = str(system)
+        messages = [{"role": "system", "content": system_text}] + messages
+
+    # Flatten Anthropic content blocks → plain strings expected by OpenAI.
+    normalized: list[dict] = []
+    for msg in messages:
+        content = msg.get("content")
+        if isinstance(content, list):
+            text = " ".join(
+                blk.get("text", "")
+                for blk in content
+                if isinstance(blk, dict) and blk.get("type") == "text"
+            )
+            normalized.append({**msg, "content": text})
+        else:
+            normalized.append(msg)
+
+    openai_body: dict[str, Any] = {
+        "model": body.get("model", ""),
+        "messages": normalized,
+        "max_tokens": body.get("max_tokens", 2048),
+    }
+    for opt in ("temperature", "top_p", "stop_sequences", "stream"):
+        if opt in body:
+            key = "stop" if opt == "stop_sequences" else opt
+            openai_body[key] = body[opt]
+    return openai_body
+
+
+def _openai_to_anthropic_response(openai_resp: dict[str, Any], model: str) -> dict[str, Any]:
+    """Convert an OpenAI chat completion response to Anthropic /v1/messages format."""
+    choice = openai_resp.get("choices", [{}])[0]
+    message = choice.get("message", {})
+    content_text = message.get("content") or ""
+    finish_reason = choice.get("finish_reason", "stop")
+
+    stop_reason_map = {
+        "stop": "end_turn",
+        "length": "max_tokens",
+        "tool_calls": "tool_use",
+        "content_filter": "stop_sequence",
+    }
+    stop_reason = stop_reason_map.get(finish_reason, "end_turn")
+
+    usage = openai_resp.get("usage", {})
+    return {
+        "id": openai_resp.get("id", "msg_metaclaw"),
+        "type": "message",
+        "role": "assistant",
+        "model": model,
+        "content": [{"type": "text", "text": content_text}],
+        "stop_reason": stop_reason,
+        "stop_sequence": None,
+        "usage": {
+            "input_tokens": usage.get("prompt_tokens", 0),
+            "output_tokens": usage.get("completion_tokens", 0),
+        },
+    }
+
+
+# ------------------------------------------------------------------ #
 # MetaClawAPIServer                                                    #
 # ------------------------------------------------------------------ #
 
@@ -527,6 +607,70 @@ class MetaClawAPIServer:
                     owner._stream_response(result), media_type="text/event-stream"
                 )
             return JSONResponse(content=result["response"])
+
+        # ---------------------------------------------------------------- #
+        # Anthropic-compatible endpoint — used by NanoClaw (credential proxy
+        # forwards container Anthropic SDK calls to ANTHROPIC_BASE_URL).
+        # ---------------------------------------------------------------- #
+
+        @app.post("/v1/messages")
+        async def anthropic_messages(
+            request: Request,
+            authorization: Optional[str] = Header(default=None),
+            x_api_key: Optional[str] = Header(default=None, alias="x-api-key"),
+            x_session_id: Optional[str] = Header(default=None),
+            x_turn_type: Optional[str] = Header(default=None),
+            x_session_done: Optional[str] = Header(default=None),
+        ):
+            owner: MetaClawAPIServer = request.app.state.owner
+            if owner._last_request_tracker is not None:
+                owner._last_request_tracker.touch()
+            # Accept Anthropic-style x-api-key as well as Bearer token.
+            auth_header = authorization or (f"Bearer {x_api_key}" if x_api_key else None)
+            await owner._check_auth(auth_header)
+
+            if not owner.submission_enabled.is_set():
+                resumed = await asyncio.to_thread(owner.submission_enabled.wait, 300.0)
+                if not resumed:
+                    raise HTTPException(
+                        status_code=503,
+                        detail="submission paused for weight update (wait timeout)",
+                    )
+
+            raw_body = await request.json()
+            stream = bool(raw_body.get("stream", False))
+            openai_body = _anthropic_to_openai_body(raw_body)
+            model = raw_body.get("model") or owner._served_model
+
+            incoming_messages = openai_body.get("messages", [])
+            if isinstance(incoming_messages, list):
+                rewritten_messages, _ = _rewrite_new_session_bootstrap_prompt(incoming_messages)
+                openai_body["messages"] = rewritten_messages
+
+            _raw_sid = x_session_id or ""
+            if _raw_sid:
+                session_id = _raw_sid
+                turn_type = (x_turn_type or "side").strip().lower()
+            else:
+                msg_count = len(openai_body.get("messages") or [])
+                session_id = await owner._resolve_tui_session(model, msg_count)
+                turn_type = (x_turn_type or "main").strip().lower()
+            session_done = bool(
+                x_session_done and x_session_done.strip().lower() in {"1", "true", "yes", "on"}
+            )
+
+            result = await owner._handle_request(
+                openai_body,
+                session_id=session_id,
+                turn_type=turn_type,
+                session_done=session_done,
+            )
+            if stream:
+                return StreamingResponse(
+                    owner._stream_anthropic_response(result, model),
+                    media_type="text/event-stream",
+                )
+            return JSONResponse(content=_openai_to_anthropic_response(result["response"], model))
 
         return app
 
@@ -1519,6 +1663,50 @@ class MetaClawAPIServer:
         yield f"data: {json.dumps(first, ensure_ascii=False)}\n\n"
         yield f"data: {json.dumps(final, ensure_ascii=False)}\n\n"
         yield "data: [DONE]\n\n"
+
+    async def _stream_anthropic_response(self, result: dict[str, Any], model: str):
+        """Yield Anthropic-format SSE events from an internal result dict."""
+        payload = result["response"]
+        choice = payload.get("choices", [{}])[0]
+        message = choice.get("message", {})
+        content_text = message.get("content", "") or ""
+        finish_reason = choice.get("finish_reason", "stop")
+        stop_reason_map = {
+            "stop": "end_turn", "length": "max_tokens",
+            "tool_calls": "tool_use", "content_filter": "stop_sequence",
+        }
+        stop_reason = stop_reason_map.get(finish_reason, "end_turn")
+        usage = payload.get("usage", {})
+        msg_id = payload.get("id", "msg_metaclaw")
+
+        def _sse(event: str, data: dict) -> str:
+            return f"event: {event}\ndata: {json.dumps(data, ensure_ascii=False)}\n\n"
+
+        yield _sse("message_start", {
+            "type": "message_start",
+            "message": {
+                "id": msg_id, "type": "message", "role": "assistant",
+                "content": [], "model": model, "stop_reason": None,
+                "stop_sequence": None,
+                "usage": {"input_tokens": usage.get("prompt_tokens", 0), "output_tokens": 0},
+            },
+        })
+        yield _sse("content_block_start", {
+            "type": "content_block_start", "index": 0,
+            "content_block": {"type": "text", "text": ""},
+        })
+        yield _sse("ping", {"type": "ping"})
+        yield _sse("content_block_delta", {
+            "type": "content_block_delta", "index": 0,
+            "delta": {"type": "text_delta", "text": content_text},
+        })
+        yield _sse("content_block_stop", {"type": "content_block_stop", "index": 0})
+        yield _sse("message_delta", {
+            "type": "message_delta",
+            "delta": {"stop_reason": stop_reason, "stop_sequence": None},
+            "usage": {"output_tokens": usage.get("completion_tokens", 0)},
+        })
+        yield _sse("message_stop", {"type": "message_stop"})
 
     # ------------------------------------------------------------------ #
     # Lifecycle                                                            #

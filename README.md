@@ -6,7 +6,7 @@
 
 # Just talk to your agent — it learns and *EVOLVES*.
 
-<p>Inspired by how the brain learns. Meta-learn and evolve your 🦞 from every conversation in the wild. No GPU required. Works with Kimi, Qwen, Claude, MiniMax, and more.</p>
+<p>Inspired by how the brain learns. Meta-learn and evolve your 🦞 from every conversation in the wild. No GPU required. Works with Kimi, Qwen, Claude, MiniMax, and more. Supports OpenClaw, CoPaw, IronClaw, PicoClaw, ZeroClaw, NanoClaw, and NemoClaw.</p>
 
 🦞 Supported Personal Agents
 
@@ -41,6 +41,18 @@
     <img src="https://github.com/zeroclaw-labs.png?size=200" width="48" height="48" alt="ZeroClaw" />
   </a><br/>
   <sub><a href="https://github.com/zeroclaw-labs/zeroclaw"><b>ZeroClaw</b></a></sub>
+</td>
+<td align="center" width="100">
+  <a href="https://github.com/qwibitai/nanoclaw">
+    <img src="https://github.com/qwibitai.png?size=200" width="48" height="48" alt="NanoClaw" />
+  </a><br/>
+  <sub><a href="https://github.com/qwibitai/nanoclaw"><b>NanoClaw</b></a></sub>
+</td>
+<td align="center" width="100">
+  <a href="https://github.com/NVIDIA/NemoClaw">
+    <img src="https://github.com/NVIDIA.png?size=200" width="48" height="48" alt="NemoClaw" />
+  </a><br/>
+  <sub><a href="https://github.com/NVIDIA/NemoClaw"><b>NemoClaw</b></a></sub>
 </td>
 <td align="center" width="100">
   <sub><b>More<br/>Coming</b></sub>
@@ -161,7 +173,7 @@ metaclaw start --mode skills_only  # skills only, no RL (no Tinker needed)
 
 ## 🔥 News
 
-- **[03/16/2026]** **v0.3.2** — Multi-claw support: IronClaw, PicoClaw, ZeroClaw, and CoPaw now supported alongside OpenClaw. Added OpenRouter as a supported LLM platform.
+- **[03/16/2026]** **v0.3.2** — Multi-claw support: IronClaw, PicoClaw, ZeroClaw, CoPaw, NanoClaw, and NemoClaw now supported alongside OpenClaw. NanoClaw connected via new `/v1/messages` Anthropic-compatible endpoint; NemoClaw via OpenShell inference routing. Added OpenRouter as a supported LLM platform.
 - **[03/13/2026]** **v0.3.1** — MinT backend support: RL training now works with both Tinker and MinT. Configurable via `rl.backend` (auto/tinker/mint).
 - **[03/13/2026]** **v0.3** — Continual meta-learning support: slow RL updates now only run during sleep hours, idle time, or Google Calendar meetings. Added support/query set separation to prevent stale reward signals from polluting model updates.
 - **[03/11/2026]** **v0.2** — One-click deployment via `metaclaw` CLI. Skills enabled by default, RL is now opt-in.
@@ -180,7 +192,7 @@ https://github.com/user-attachments/assets/d86a41a8-4181-4e3a-af0e-dc453a6b8594
 **MetaClaw is an agent that meta-learns and evolves in the wild.**
 Just talk to your agent as you normally would — MetaClaw turns every live conversation into a learning signal, enabling the agent to continuously improve through real-world deployment rather than offline training alone.
 
-Under the hood, it places your model behind an OpenAI-compatible proxy that intercepts interactions from your personal agent (OpenClaw, CoPaw, IronClaw, or any OpenAI-compatible client), injects relevant skills at each turn, and meta-learns from accumulated experience. Skills are summarized automatically after each session; with RL enabled, a meta-learning scheduler defers weight updates to idle windows so the agent is never interrupted during active use.
+Under the hood, it places your model behind a proxy that intercepts interactions from your personal agent (OpenClaw, CoPaw, IronClaw, PicoClaw, ZeroClaw, NanoClaw, NemoClaw, or any OpenAI-compatible client), injects relevant skills at each turn, and meta-learns from accumulated experience. For Anthropic-native agents like NanoClaw, MetaClaw also exposes a `/v1/messages` Anthropic-compatible endpoint so the full pipeline works without any agent-side changes. Skills are summarized automatically after each session; with RL enabled, a meta-learning scheduler defers weight updates to idle windows so the agent is never interrupted during active use.
 
 No GPU cluster required. MetaClaw works with any OpenAI-compatible LLM API out of the box, and uses a Tinker-compatible backend for cloud-based LoRA training. [Tinker](https://www.thinkingmachines.ai/tinker/) is the default reference path, and MinT can be enabled through a separate compatibility package when needed.
 
@@ -223,7 +235,7 @@ metaclaw setup
 ```
 
 The interactive wizard will ask you to:
-1. **Choose your personal agent** — `openclaw`, `copaw`, `ironclaw`, or `none` (MetaClaw will auto-configure it on start)
+1. **Choose your personal agent** — `openclaw`, `copaw`, `ironclaw`, `picoclaw`, `zeroclaw`, `nanoclaw`, `nemoclaw`, or `none` (MetaClaw will auto-configure it on start)
 2. **Choose your LLM provider** — Kimi, Qwen, MiniMax, or custom
 3. **Enter your API key** and optionally enable RL training
 
@@ -269,6 +281,8 @@ MetaClaw works as a transparent proxy in front of any personal agent that suppor
 | `ironclaw` | [IronClaw](https://github.com/nearai/ironclaw) | Patches `~/.ironclaw/.env` → `LLM_BACKEND=openai_compatible` + `LLM_BASE_URL/MODEL/API_KEY`. Runs `ironclaw service restart`. |
 | `picoclaw` | [PicoClaw](https://github.com/sipeed/picoclaw) | Injects a `metaclaw` entry into `~/.picoclaw/config.json` `model_list` and sets it as the default model. Runs `picoclaw gateway restart`. |
 | `zeroclaw` | [ZeroClaw](https://github.com/zeroclaw-labs/zeroclaw) | Patches `~/.zeroclaw/config.toml` → `provider = "openai-compatible"` + `base_url/model/api_key`. Runs `zeroclaw service restart`. |
+| `nanoclaw` | [NanoClaw](https://github.com/qwibitai/nanoclaw) | Patches nanoclaw's `.env` → `ANTHROPIC_BASE_URL` pointing at the proxy's `/v1/messages` Anthropic-compatible endpoint. Restarts via `launchctl` (macOS) or `systemctl --user` (Linux). |
+| `nemoclaw` | [NemoClaw](https://github.com/NVIDIA/NemoClaw) | Registers a `metaclaw` provider in OpenShell via `openshell provider create` and sets it as the active inference route via `openshell inference set`. Persists config to `~/.nemoclaw/config.json`. |
 | `none` | — | Skips auto-configuration. Point your agent at the proxy manually. |
 
 ### Setup
@@ -276,7 +290,7 @@ MetaClaw works as a transparent proxy in front of any personal agent that suppor
 Pick your agent during `metaclaw setup` (the first question in the wizard):
 
 ```
-Personal agent to configure (openclaw/copaw/ironclaw/picoclaw/zeroclaw/none) [openclaw]:
+Personal agent to configure (openclaw/copaw/ironclaw/picoclaw/zeroclaw/nanoclaw/nemoclaw/none) [openclaw]:
 ```
 
 Or set it directly at any time:
@@ -286,6 +300,8 @@ metaclaw config claw_type copaw      # switch to CoPaw
 metaclaw config claw_type ironclaw   # switch to IronClaw
 metaclaw config claw_type picoclaw   # switch to PicoClaw
 metaclaw config claw_type zeroclaw   # switch to ZeroClaw
+metaclaw config claw_type nanoclaw   # switch to NanoClaw
+metaclaw config claw_type nemoclaw   # switch to NemoClaw
 metaclaw config claw_type none       # manual / custom agent
 ```
 
@@ -299,6 +315,13 @@ Point any OpenAI-compatible client at the MetaClaw proxy:
 base_url: http://127.0.0.1:30000/v1
 api_key:  metaclaw          # or whatever proxy.api_key is set to
 model:    <your model id>
+```
+
+For Anthropic-native clients (e.g. the Claude SDK or NanoClaw's credential proxy), use the Anthropic-compatible endpoint instead:
+
+```
+ANTHROPIC_BASE_URL: http://127.0.0.1:30000
+ANTHROPIC_API_KEY:  metaclaw
 ```
 
 ---
@@ -325,7 +348,7 @@ metaclaw config KEY VALUE       # Set a config value
 
 ```yaml
 mode: madmax               # "madmax" | "rl" | "skills_only"
-claw_type: openclaw        # "openclaw" | "copaw" | "ironclaw" | "none"
+claw_type: openclaw        # "openclaw" | "copaw" | "ironclaw" | "picoclaw" | "zeroclaw" | "nanoclaw" | "nemoclaw" | "none"
 
 llm:
   provider: kimi            # kimi | qwen | openai | minimax | custom
@@ -508,6 +531,8 @@ MetaClaw builds on top of the following open-source projects:
 - [OpenClaw](https://openclaw.ai) – the primary supported personal agent.
 - [CoPaw](https://github.com/agentscope-ai/CoPaw) – multi-channel personal agent support.
 - [IronClaw](https://github.com/nearai/ironclaw) – Rust-native personal agent support.
+- [NanoClaw](https://github.com/qwibitai/nanoclaw) – container-isolated Anthropic-native personal agent.
+- [NemoClaw](https://github.com/NVIDIA/NemoClaw) – NVIDIA OpenShell-sandboxed personal agent with NIM inference.
 - [SkillRL](https://github.com/aiming-lab/SkillRL) – our skill-augmented RL framework.
 - [Tinker](https://www.thinkingmachines.ai/tinker/) – used for online RL training.
 - [MinT](https://github.com/MindLab-Research/mindlab-toolkit) – alternative backend for online RL training.
