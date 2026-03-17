@@ -2,6 +2,8 @@
 
 <img src="assets/new_logo2.png" alt="MetaClaw" width="600">
 
+<br/>
+
 # Just talk to your agent — it learns and *EVOLVES*.
 
 <p>Inspired by how brains learn. Meta-learn and evolve your 🦞 from every conversation in the wild. No GPU required.
