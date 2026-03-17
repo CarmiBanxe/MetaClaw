@@ -6,7 +6,7 @@
 
 # Just talk to your agent — it learns and *EVOLVES*.
 
-<p>Inspired by how the brain learns. Meta-learn and evolve your 🦞 from every conversation in the wild. No GPU required. 
+<p>Inspired by how brain learns. Meta-learn and evolve your 🦞 from every conversation in the wild. No GPU required. 
 <br/>
 
 
