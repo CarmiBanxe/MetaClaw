@@ -7,14 +7,13 @@
 # Just talk to your agent — it learns and *EVOLVES*.
 
 <p>Inspired by how the brain learns. Meta-learn and evolve your 🦞 from every conversation in the wild. No GPU required. 
-  
-  Works with Kimi, Qwen, Claude, MiniMax, and more. Supports OpenClaw, CoPaw, IronClaw, PicoClaw, ZeroClaw, NanoClaw, and NemoClaw.</p>
-
 <br/>
+
 
 <img src="assets/metaclaw_mainfig.png" alt="MetaClaw Architecture" width="800">
 
 <br/>
+
 
 <p>
   <a href="https://github.com/aiming-lab/MetaClaw"><img src="https://img.shields.io/badge/github-MetaClaw-181717?style=flat&labelColor=555&logo=github&logoColor=white" alt="GitHub"></a>
