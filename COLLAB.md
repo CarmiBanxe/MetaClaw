@@ -7,7 +7,7 @@ MetaClaw — agent meta-learning framework. Agents learn and evolve from convers
 ## Collaboration pattern
 
 - **Claude Code** — planner, reviewer, orchestrator.
-- **Qoder CLI** — execution agent (file edits, tests, commands) via MCP.
+- **Aider** — execution agent (file edits, tests, commands) via MCP.
 - User interacts only with Claude in one terminal: `cd ~/MetaClaw && claude`
 
 ## Project isolation
