@@ -1,43 +1,44 @@
-# .qoder/context.md — Qoder Execution Contract (Developer Core Template)
+# .qoder/context.md — Qoder Execution Contract (MetaClaw)
 
-**Repository:** `~/developer/`  
-**Purpose:** Central repository for shared components across all projects  
-**Version:** 1.0 | 2026-04-03
+**Repository:** `~/MetaClaw/`  
+**Purpose:** Multi-agent orchestration platform (Target Product)  
+**Version:** 2.0 | 2026-04-03
 
 ---
 
 ## Core rule
 
-**Repository scope = ~/developer/ only.**
+**Repository scope = ~/MetaClaw/ only.**
 
-This is a **template repository** containing shared components for distribution.
+This is a **product repository** containing the MetaClaw orchestration platform.
 
-### What this means
+### Architecture clarity
 
-- Edit files here for downstream distribution
-- Test changes before syncing to projects
-- Never assume project-specific paths or configs
-- Report breaking changes clearly
+**MetaClaw is the TARGET PLATFORM, not a development partner:**
+
+- Three partners (Claude + Qoder + MiroFish) are BUILDING MetaClaw
+- MetaClaw does NOT participate in its own creation
+- In production, MetaClaw will orchestrate banking AI agents
 
 ---
 
 ## Project isolation
 
-**Hard invariant:** This repository is NOT a working project.
+**Hard invariant:** This repository is product code.
 
 | Do | Don't |
 |----|-------|
-| Create templates for new projects | Implement project-specific features here |
-| Update shared scripts | Hardcode paths to specific projects |
-| Maintain compliance reference | Run production services from here |
-| Sync tested components | Auto-sync without review |
+| Implement MetaClaw components | Mix files from other projects |
+| Document architecture clearly | Confuse dev-tools with product |
+| Test orchestration logic | Commit without testing |
+| Update MEMORY.md | Expose API keys in code |
 
 ### Violation is a critical error
 
 Never:
 - Read project files without explicit instruction
-- Assume project structure matches templates
-- Mix components from different downstream projects
+- Assume MetaClaw is a "fourth partner"
+- Mix development-time and production-time concepts
 
 ---
 
@@ -45,45 +46,39 @@ Never:
 
 **Qoder CLI role in this repository:**
 
-1. **Template maintainer** — edit files that will be copied to projects
-2. **Sync executor** — run distribution scripts when requested
-3. **Integration tester** — validate components work in target projects
+1. **Platform implementer** — build MetaClaw orchestration components
+2. **Test executor** — validate multi-agent scenarios
+3. **Documentation updater** — maintain ARCHITECTURE.md
 
 ### Typical tasks
 
-- Update AGENTS.md template
-- Modify .qoder/config.yml defaults
-- Add new scripts to scripts/
-- Create project templates in templates/
-- Test sync workflow
+- Implement agent orchestration logic
+- Create HITL gateway components
+- Write integration tests
+- Update architecture documentation
 
 ---
 
 ## Working method
 
-### For template edits
+### For implementation tasks
 
-1. Identify the component to update
-2. Make changes with clear diff
-3. Test syntax/validity
-4. Commit with version bump
-5. Note which projects should receive update
+1. Read ARCHITECTURE.md for context
+2. Implement component
+3. Write tests
+4. Update MEMORY.md
+5. Commit with clear message
 
-### For sync operations
+### For MiroFish simulations
 
-1. User specifies target project(s)
-2. Show diff for each target
-3. Wait for explicit approval
-4. Execute sync
-5. Verify success
+When designing orchestration patterns:
 
-### For testing
+1. Claude designs agent interaction model
+2. MiroFish simulates agent behavior (auto-trigger)
+3. Results validate architecture
+4. Qoder implements validated design
 
-1. Pick non-production project first
-2. Apply component
-3. Verify functionality
-4. Report results
-5. Ready for broader sync
+**Auto-trigger keywords:** agent orchestration, multi-agent, HITL, stress test, UX validation
 
 ---
 
@@ -91,80 +86,25 @@ Never:
 
 When working in this repository:
 
-1. **User instruction** — explicit sync/deploy commands
+1. **User instruction** — explicit implementation commands
 2. **This context** (.qoder/context.md) — execution rules
-3. **AGENTS.md** — component catalog and procedures
-4. **Global defaults** (~/.claude/CLAUDE.md)
-
-### Downstream precedence
-
-Components synced TO projects become templates there. Local project files override these defaults.
-
----
-
-## Compliance-sensitive repositories
-
-If syncing TO `vibe-coding`:
-
-### Special handling required
-
-Before syncing compliance components:
-
-1. Read target's `COMPLIANCE_ARCH.md`
-2. Compare with source in `developer/compliance/`
-3. Identify any invariant changes
-4. Require explicit user approval for:
-   - Threshold changes
-   - Source weight modifications
-   - Retention assumption updates
-   - Licensing boundary shifts
-
-### Protected invariants (vibe-coding)
-
-- Canonical key structure
-- OFAC RSS status (dead since Jan 2025)
-- Watchman minMatch = 0.80
-- ClickHouse TTL = 5 YEAR
-- AGPLv3 internal-only use
-- GUIYON exclusion
-
-**Never sync changes to these without explicit review.**
+3. **AGENTS.md** — three-partner agent instructions
+4. **CLAUDE.md** — project context
+5. **ARCHITECTURE.md** — platform design
+6. **Global defaults** (~/.claude/CLAUDE.md)
 
 ---
 
 ## Output expectations
 
-After completing work in this repository:
+After completing work:
 
 ```
-✓ Component updated: {name}
-✓ Tests passed: {test_type}
-✓ Ready for sync to: {projects}
+✓ Component implemented: {name}
+✓ Tests passed: {count}
+✓ ARCHITECTURE.md updated: yes/no
+✓ MEMORY.md updated: yes
 ○ Pending: {follow-up actions}
-```
-
-### For sync operations
-
-```
-═══════════════════════════════════════
-  Sync Report: Developer → {project}
-═══════════════════════════════════════
-
-Updated components:
-  ✓ AGENTS.md (v1.0 → v1.1)
-  ✓ .qoder/config.yml (WSS polling added)
-  ○ scripts/sync-to-project.sh (new)
-
-Skipped (local overrides detected):
-  ○ CLAUDE.md (project-specific)
-
-Verification:
-  ✓ Syntax check passed
-  ✓ Target tests run successfully
-  ✓ No breaking changes detected
-
-Rollback available: git stash apply
-═══════════════════════════════════════
 ```
 
 ---
@@ -173,22 +113,22 @@ Rollback available: git stash apply
 
 | Command | Purpose |
 |---------|---------|
-| `bash scripts/sync-to-project.sh <name>` | Sync to project |
-| `bash scripts/check-agent-instructions.sh` | Verify setup |
-| `git diff --stat origin/master` | See pending changes |
-| `ls templates/` | List available templates |
+| `bash collab.sh worker "task" branch` | Parallel implementation |
+| `bash collab.sh run "command"` | Single command execution |
+| `bash collab.sh jobs` | Check active tasks |
+| `python -m pytest tests/` | Run test suite |
 
 ---
 
 ## Files in this repository
 
-| Path | Purpose | Sync status |
-|------|---------|-------------|
-| `.qoder/context.md` | This file — execution contract | Template |
-| `.qoder/config.yml` | Qoder configuration | Sync to all |
-| `AGENTS.md` | Agent instructions template | Sync to all |
-| `docs/COLLAB.md` | Collaboration docs | Sync to all |
-| `docs/MCP-BEST-PRACTICES.md` | MCP guide | Sync to all |
-| `scripts/` | Shared utilities | Sync to all |
-| `templates/` | Project bootstraps | Copy on demand |
-| `compliance/` | Reference implementation | vibe-coding only |
+| Path | Purpose |
+|------|---------|
+| `.qoder/context.md` | This file — execution contract |
+| `.qoder/config.yml` | Qoder CLI configuration |
+| `AGENTS.md` | Three-partner agent instructions |
+| `CLAUDE.md` | Project context |
+| `docs/COLLAB.md` | Collaboration pattern |
+| `docs/MIROFISH-SCENARIOS.md` | MiroFish scenario library |
+| `docs/MEMORY.md` | Long-term memory |
+| `ARCHITECTURE.md` | MetaClaw platform design |
