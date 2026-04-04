@@ -3,7 +3,7 @@
 **Repository:** `~/developer/`  
 **Version:** 3.0 | 2026-04-03  
 **Purpose:** Shared components, templates, and configurations distributed across all projects  
-**Architecture:** Three-Partner Synergy (Claude Code + Aider + MiroFish)
+**Architecture:** Three-Partner Synergy (Claude Code + Qoder CLI + MiroFish)
 
 ---
 
@@ -12,8 +12,8 @@
 This repository is the **central source of truth** for:
 
 - Agent instructions (AGENTS.md, CLAUDE.md templates)
-- Aider configurations (.qoder/config.yml)
-- **Three-partner synergy architecture** (Claude + Aider + MiroFish)
+- Qoder CLI configurations (.qoder/config.yml)
+- **Three-partner synergy architecture** (Claude + Qoder + MiroFish)
 - Compliance architecture (COMPLIANCE_ARCH.md)
 - Shared scripts and automation (sync-all.sh, onboard-project.sh)
 - Project templates
@@ -27,7 +27,7 @@ All projects use the same three-partner stack:
 | Partner | Role | Activation | Scope |
 |---------|------|------------|-------|
 | **Claude Code** | Architect & Coordinator | Every session | Design, review, orchestration |
-| **Aider** | Executor | MCP auto-load | Implementation, edits, tests |
+| **Qoder CLI** | Executor | MCP auto-load | Implementation, edits, tests |
 | **MiroFish** | Simulator & Validator | Auto-trigger by keywords | Behavioral simulation, stress-testing |
 
 **Key principle:** MiroFish is a partner for ALL projects, not just Banxe.
@@ -55,7 +55,7 @@ Components from this repository are synced to:
 
 1. **Explicit user instruction** (highest authority)
 2. **Repository-level contracts**:
-   - `.aider.conf.yml` (execution contract)
+   - `.qoder/context.md` (execution contract)
    - `CLAUDE.md` (project context)
 3. **Global defaults**: `~/.claude/CLAUDE.md`
 
@@ -72,8 +72,8 @@ When syncing components TO a project, that project's local files take precedence
 ```
 ~/developer/
 ├── .claude/CLAUDE.md          ← Global collaboration contract (symlink target)
-├── .qoder/config.yml          ← Aider configuration template
-├── .aider.conf.yml          ← Aider execution contract template
+├── .qoder/config.yml          ← Qoder configuration template
+├── .qoder/context.md          ← Qoder execution contract template
 ├── AGENTS.md                  ← This file — agent instructions template
 ├── docs/
 │   ├── COLLAB.md              ← Collaboration pattern documentation
@@ -102,8 +102,8 @@ When syncing components TO a project, that project's local files take precedence
 | Component | Source | Target | Purpose |
 |-----------|--------|--------|---------|
 | `AGENTS.md` | `./AGENTS.md` | `{project}/AGENTS.md` | Agent instructions |
-| `.qoder/config.yml` | `./.qoder/config.yml` | `{project}/.qoder/config.yml` | Aider config |
-| `.aider.conf.yml` | `./.aider.conf.yml` | `{project}/.aider.conf.yml` | Execution contract |
+| `.qoder/config.yml` | `./.qoder/config.yml` | `{project}/.qoder/config.yml` | Qoder config |
+| `.qoder/context.md` | `./.qoder/context.md` | `{project}/.qoder/context.md` | Execution contract |
 | `docs/COLLAB.md` | `./docs/COLLAB.md` | `{project}/docs/COLLAB.md` | Collaboration docs |
 | `docs/MCP-BEST-PRACTICES.md` | `./docs/MCP-BEST-PRACTICES.md` | `{project}/docs/MCP-BEST-PRACTICES.md` | MCP guide |
 
@@ -246,7 +246,7 @@ To add a new shared component:
 |------|--------|-------|
 | Component author | Any developer | Create/maintain specific components |
 | Sync coordinator | Moriel Carmi | Approve cross-project distribution |
-| Integration tester | Aider | Validate synced components work |
+| Integration tester | Qoder CLI | Validate synced components work |
 
 ---
 
@@ -255,8 +255,8 @@ To add a new shared component:
 | File | Purpose | Sync targets |
 |------|---------|--------------|
 | `AGENTS.md` | This file — three-partner agent instructions | All projects |
-| `.qoder/config.yml` | Aider configuration | All projects |
-| `.aider.conf.yml` | Aider execution contract (UNIVERSAL) | All projects |
+| `.qoder/config.yml` | Qoder CLI configuration | All projects |
+| `.qoder/context.md` | Qoder execution contract (UNIVERSAL) | All projects |
 | `docs/COLLAB.md` | Collaboration documentation | All projects |
 | `docs/MCP-BEST-PRACTICES.md` | MCP server guide | All projects |
 | `docs/PROJECT-REGISTRY.csv` | Project registry for sync-all.sh | Internal use |
@@ -287,6 +287,6 @@ A component is ready for sync when:
 - [x] Update AGENTS.md with three-partner architecture
 - [x] Create onboard-project.sh for new project onboarding
 - [ ] Create git post-commit hook for auto-sync
-- [ ] Deploy full Aider stack to banxe-mirofish
+- [ ] Deploy full Qoder stack to banxe-mirofish
 - [ ] Create project-specific MIROFISH-SCENARIOS.md for all 6 projects
 - [ ] Update MEMORY.md with three-partner documentation
