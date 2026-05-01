@@ -7,7 +7,7 @@ Date: 2026-05-01 · Author: Moriel Carmi · Status: COMMITTED
 |---|---|---|---|---|---|
 | EVO-X2 #1 | banxe-NucBox-EVO-X2 | 192.168.0.72 | 100.68.102.48 | Prod Ollama | Vulkan, gfx1151, FA pending, ROCm fix pending |
 | EVO-X2 #2 | TBD | 192.168.0.15 | not-yet-joined | Fresh Ubuntu 24.04 | openssh-server not installed (S0 blocker) |
-| Legion    | mark-legion         | 192.168.0.75 (NAT) | 100.101.218.26 | LiteLLM gateway + Coding (RTX 4090) | WSL2 |
+| Legion    | mark-legion         | 192.168.0.75 (NAT) | 100.101.218.26 | LiteLLM gateways (prod 8080 + LAN v2 4000) | WSL2 Ubuntu 24.04 on Windows 11 host; RTX 4070 Laptop 8 GiB; 3.8 GiB RAM |
 
 ## 1. Conventions
 
@@ -96,3 +96,60 @@ Prometheus + Grafana (Docker on EVO-X2 #2 or Legion). prometheus.yml jobs: litel
 ## 8. Operator action queued for evo1 (NOT executed in S1)
 
 - `sudo update-grub && sudo reboot` to activate ROCm fix (render,video groups) and GTT GRUB params. Schedule during a low-traffic window. After reboot, S2/S5 work continues.
+
+## 9. Sprint S3v2 — execution report (PASS)
+
+Original Sprint 3 (Qwen3-Coder-Next 80B local llama.cpp+CUDA on Legion, target 25–35 toks/s) was PAUSED on hardware mismatch: Legion is RTX 4070 Laptop 8 GiB + 3.8 GiB RAM, not RTX 4090 + 32 GiB. Pivoted to S3v2 — wire coding access via the existing evo1 endpoint.
+
+- evo1 already hosts qwen3-coder-next:q4_K_M (~51.7 GB Q4_K_M, qwen3next family).
+- Direct bench from Legion via ssh evo1 → 127.0.0.1:11434 with sk-banxe-evo1-local-2026:
+  eval_count=200, toks_per_sec=18.38 (200-token Python fibonacci prompt).
+- ~/.continue/config.json written on Legion (mode 600, 700 bytes), 2 providers:
+  1) Qwen3-Coder-Next (evo1, 80B MoE, Vulkan) → http://192.168.0.72:11434/v1, qwen3-coder-next:q4_K_M.
+  2) Qwen3-30B BANXE (evo1, fast) → http://192.168.0.72:11434/v1, qwen3:30b-a3b.
+  tabAutocompleteModel = qwen3-coder-next:q4_K_M.
+- /v1/chat/completions smoke from ssh evo1 → http://192.168.0.72:11434/v1: HTTP 200, valid OpenAI completion format.
+- LiteLLM prod on :8080 left untouched.
+- VS Code Continue extension reload required by user (cannot be done from shell).
+- Deviations: original 80B local plan paused (hardware mismatch); curl invocations from Legion shell sandboxed → routed via ssh evo1.
+
+## 10. Sprint S4 — execution report (PASS)
+
+LiteLLM Gateway upgrade — pivot to side-by-side stack to protect prod compliance routes.
+
+Decision: stand up new LAN-only LiteLLM v2 on port 4000, leave existing prod LiteLLM on 127.0.0.1:8080 untouched. Prod gateway hosts cloud providers (Anthropic/Gemini/Groq) and BANXE/UK-GDPR Art.44 compliance routes; mirroring those into a 0.0.0.0:4000 instance would have leaked cloud API keys to the LAN.
+
+- v2 process: systemd unit /etc/systemd/system/litellm-lan-gateway.service, User=mmber, Group=mmber, Restart=always RestartSec=10. MainPID at S4.6 close = 390324, listening 0.0.0.0:4000.
+- v2 config: /home/mmber/MetaClaw/litellm/litellm-config.v2.yaml, mode 600, ~3.3 KB. NO cloud providers.
+- Models registered (7): banxe-general, qwen3-30b, qwen3-banxe, fast, glm-4-flash, coding, gpt-oss-20b. Master key sk-banxe-llm-gateway-2026.
+- Backends: evo1 (192.168.0.72:11434) and evo2 (192.168.0.15:11434) via Ollama. Coding/gpt-oss-20b on evo1 only.
+- Router: latency-based-routing, num_retries=2, timeout=120, retry_after=5; fallbacks coding→qwen3-30b, banxe-general→fast.
+- Redis cache: 192.168.0.72:6379 namespace banxe-litellm (PONG verified via raw socket).
+- Prometheus callbacks enabled; pipx venv was missing prometheus_client → injected via `pipx inject litellm prometheus_client`.
+- Functional checks via ssh evo1 → 100.101.218.26:4000 (Tailscale; LAN 192.168.0.75:4000 unreachable due to WSL2 NAT):
+  - GET /v1/models → 7 entries, HTTP 200.
+  - 4× /v1/chat/completions on banxe-general: 3 served by evo1 (200), 1 by evo2 (404 — qwen3:30b-a3b not yet replicated, S2.7 in flight).
+  - coding completion: toks_per_sec = 17.12 (vs S3v2 direct baseline 18.38, proxy overhead 6.85%).
+- Prod gateway: pid 309, 127.0.0.1:8080, elapsed at S4.6 close = 03:53:25. Untouched, no regression.
+- Deviations: latency-router temporarily prefers failing evo2 endpoints (404 returns faster than evo1 inference). Self-resolves once S2.7 completes.
+
+Post-S2.7 follow-ups: re-run banxe-general LB burst (expect both backends serve), re-run fast burst (expect router quirk to clear), then close S2.8 + S2.9.
+
+## 11. Sprint S2 — partial progress (S2.0–S2.6 done, S2.7 in flight)
+
+S2 plan (EVO-X2 #2 bring-up) advanced through S2.0–S2.6. S2.7 (rsync of /data/ollama-models from evo1) was started 13:14 CEST on 2026-05-01 and is still copying at the time of this commit. S2.8 + S2.9 are pending S2.7 completion; final S2_evo2_bringup JSON will be appended in a follow-up commit.
+
+- S2.0 pre-state probe: evo2 = moriel-carmi-NucBox-EVO-X2 (Ubuntu 24.04.4 LTS, kernel 6.17.0-23-generic), nvme0n1 1.9 TiB / 1.8 TiB free, 62 GiB RAM, 32 vCPU, /data absent (created on rootfs in S2.3), Ollama not installed.
+- S2.1 base stack: apt update + install ~30 pkgs (git, htop, nvtop, iotop, cmake, ninja-build, python3-pip, python3-venv, pv, lm-sensors, build-essential, …). ufw rules added (22, 2222, 11434, 50052) v4+v6, ufw active. ssh service stayed active across `ufw --force enable`.
+- S2.2 sshd dual-listen 22+2222: drop-in /etc/ssh/sshd_config.d/10-banxe-ports.conf (Port 22, Port 2222) AND drop-in /etc/systemd/system/ssh.socket.d/10-banxe-ports.conf (ListenStream=22, ListenStream=2222) because Ubuntu 24.04 uses socket-activation. Listeners verified on 0.0.0.0 and [::] for both ports. Passwordless ssh -p 2222 moriel-carmi@192.168.0.15 confirmed.
+- S2.3 /data layout on rootfs: /data/{ollama-models,models,llama-cpp} created, owner moriel-carmi:moriel-carmi 0755 initial. (Later corrected in S2.5-fix to ollama:ollama 2775 for ollama-write + group-write for moriel-carmi via setgid.)
+- S2.4 GRUB GTT prep: /etc/default/grub backup → grub.bak.20260501.evo2. New CMDLINE: `quiet splash amdgpu.ppfeaturemask=0xffffffff ttm.pages_limit=31457280` (pre-state was just `quiet splash`). update-grub and reboot NOT executed in S2.4.
+- S2.5 Ollama install + canonical override.conf: ollama 0.22.1 installed via official script, ollama:ollama (uid 997) auto-created with render(992)+video(44) groups. Canonical override.conf written with sk-banxe-evo2-local-2026 + FA=1 + ctx 131072 + NUM_PARALLEL=2 + KEEP_ALIVE=10m. First-start failed with `Error: mkdir /data/ollama-models/blobs: permission denied` — fixed in S2.5-fix: chown ollama:ollama on three /data subdirs, chmod 2775 (setgid + group-write), usermod -aG ollama moriel-carmi (so future rsync from moriel-carmi can group-write into blobs/). After fix: ollama active, *:11434 listening, /data/ollama-models/blobs created by ollama, /api/tags returns {"models":[]}.
+- S2.6 update-grub + reboot (UNSAFE STEP, gated): operator-approved. Reboot executed; evo2 returned in 5 s. /proc/cmdline confirms both grub tokens applied. Post-reboot: ollama active, 22+2222+11434 listening, Vulkan total = **184.0 GiB** (above the expected ~154 GiB — recorded as positive deviation).
+- S2.7 rsync (in flight): launched 13:14 CEST as `moriel-carmi` on evo2 with `nohup rsync -rlptD --partial --info=progress2 --no-i-r -e "ssh -p 2222 -i ~/.ssh/id_ed25519_to_evo1" banxe@192.168.0.72:/data/ollama-models/ /data/ollama-models/`. Auth path = dedicated keypair id_ed25519_to_evo1 on evo2, pubkey appended to banxe@evo1:/home/banxe/.ssh/authorized_keys (one-time UNSAFE STEP, idempotent). Sustained throughput ≈ 11.2 MB/s, ETA ≈ 2:42; total ≈ 104 GiB. Background watcher monitors `tail -3 /tmp/rsync_evo1_to_evo2.log` every 5 min on evo2; on detection of `total size is …` / `sent X received Y bytes` the agent will auto-resume S2.8 + S2.9.
+
+Pending in this sprint:
+- S2.8 cross-check + bench: /api/tags on evo2:11434 (sk-banxe-evo2-local-2026) lists qwen3:30b-a3b + glm-4.7-flash + qwen3-coder-next:q4_K_M; bench qwen3:30b-a3b from Legion via :4000 (LiteLLM v2 LB) — expect parity with evo1 ±15% (target ≈ 31–43 toks/s).
+- S2.9 final smoke + cluster matrix update: 3×3 ICMP+SSH still PASS, df -h /data on evo2, du -sh /data/ollama-models on evo2, finalize S2_evo2_bringup JSON.
+
+Post-S2.7 also re-runs LiteLLM v2 (port 4000) banxe-general LB burst and fast burst — expect router-quirk to clear once evo2 stops returning 404.
