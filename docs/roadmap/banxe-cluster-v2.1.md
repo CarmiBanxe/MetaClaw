@@ -75,3 +75,24 @@ Prometheus + Grafana (Docker on EVO-X2 #2 or Legion). prometheus.yml jobs: litel
 - S1 can proceed independently (no dependency on EVO-X2 #2).
 - Tailscale tailnet ACL: enable cross-node SSH for users banxe/mmber (currently restricted).
 - Close public 2222/tcp on EVO-X2 #1 (S6).
+
+## 7. Sprint S1 — execution report (PASS)
+
+- override.conf rewritten to canonical block (11 Environment= entries). Backup: `/etc/systemd/system/ollama.service.d/override.conf.bak.20260501`.
+- Single planned downtime: ~8 s on `systemctl restart ollama`.
+- Ollama 0.20.7 active; Vulkan iGPU pool total=154.0 GiB, available=153.8 GiB. FlashAttention=Enabled, OLLAMA_CONTEXT_LENGTH=131072, OLLAMA_NUM_PARALLEL=2, OLLAMA_KEEP_ALIVE=10m, API key sk-banxe-evo1-local-2026.
+- Bench qwen3:30b-a3b from Legion: S1.4 short prompt 36.90 toks/s; S1.7 200-tok 36.95 toks/s. Roadmap target was 13–17 toks/s — exceeded ~2x (positive deviation).
+- Models inventory on evo1 (6): qwen3:30b-a3b (17 GiB, qwen3moe Q4_K_M); huihui_ai/glm-4.7-flash-abliterated:latest (17 GiB); qwen3-coder-next:q4_K_M (48 GiB); gurubot/gpt-oss-derestricted:20b (14 GiB); qwen3:4b (2 GiB); qwen3.5:latest (6 GiB).
+- ROCm fix prep: banxe added to render,video groups (effective on next login).
+- GRUB GTT prep: ttm.pages_limit retargeted 15204352 → 31457280, amdgpu.ppfeaturemask=0xffffffff appended; pre-existing tokens preserved (quiet splash amd_iommu=off amdgpu.gttsize=59392). Backup: `/etc/default/grub.bak.20260501`. update-grub and reboot NOT executed.
+- Security upgrades: 80 packages applied, kernel-related 3 (linux-image/headers/generic-hwe-24.04) skipped. dpkg --audit clean. /var/run/reboot-required absent.
+- Smoke test post-upgrade: ollama, ssh, systemd-resolved, dbus, containerd active; network-manager inactive by design (system uses systemd-networkd/netplan).
+- Deviations recorded:
+  - Bench positive deviation (~2x target).
+  - S1.6 first pass nodejs unpack OOM under live ollama; recovered with `apt-get install -f` + `apt-get install --reinstall nodejs` (22.22.2).
+  - ~80 packages left "unpacked but not configured" after the nodejs OOM; drained with `dpkg --configure -a`.
+  - Carry-over from S0 (out of S1 scope): tcp/2222 of evo1 reachable from public internet; brute-force from 185.214.135.211, 185.2.101.118, 47.77.182.54. To be remediated in S6.
+
+## 8. Operator action queued for evo1 (NOT executed in S1)
+
+- `sudo update-grub && sudo reboot` to activate ROCm fix (render,video groups) and GTT GRUB params. Schedule during a low-traffic window. After reboot, S2/S5 work continues.
