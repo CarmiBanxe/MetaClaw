@@ -197,3 +197,41 @@ Pending sprints: **S5** (RPC distributed inference, USB4/Thunderbolt link 10.0.0
 Pending follow-up actions queued for the operator (off-sprint, low priority):
 - evo1: `sudo update-grub && sudo reboot` to activate render/video group membership for banxe and the ttm.pages_limit/ppfeaturemask GRUB tokens. Schedule during a low-traffic window.
 - VS Code: reload Continue extension to pick up ~/.continue/config.json from S3v2.
+
+## 14. Audit 2026-05-01 (end of Phase 1)
+
+Roadmap completion as of this commit:
+
+| Sprint | Plan reference | Actual status | Completion |
+|---|---|---|---|
+| S0 + S0b | Discovery & Connectivity | All 6 sub-tasks done; tailnet `banxe.com` joined for 3 nodes; passwordless SSH cluster-wide | 100% |
+| S1 | evo1 hotfix without downtime | override.conf canonical, FA=1, ctx 131072, NUM_PARALLEL=2, KEEP_ALIVE=10m, 80 security pkgs, GRUB tokens written; **`update-grub && reboot` queued for operator** | ~85% |
+| S2 | evo2 bring-up | Full 9 sub-tasks done; 6/6 model parity with evo1; bench 72.40 toks/s | 100% |
+| S3 | Legion coding model (Qwen3-Coder-Next 80B llama.cpp+CUDA, target 25-35 toks/s) | **PAUSED** on hardware mismatch (Legion=RTX 4070 Laptop 8 GiB, not RTX 4090 24 GiB). S3v2 wired Continue.dev to evo1 coder-next at 18.38 toks/s | ~30% (S3v2 only) |
+| S4 | LiteLLM gateway upgrade | New v2 gateway on :4000 (systemd, LAN-only), 7 models, latency-routing, Redis cache, Prometheus callbacks. **`large` route (RPC GLM-4.7) commented out pending S5** | ~85% |
+| S5 | Distributed inference llama.cpp RPC | NOT STARTED. Requires USB4/Thunderbolt cable between EVO-X2, GLM-4.7 Q4_K_M ~190 GiB download, llama.cpp RPC build on both EVO-X2 | 0% |
+| S6 | Production Hardening | NOT STARTED. Includes Prometheus+Grafana, ~/check-llm-cluster.sh cron, **public 2222/tcp closure on evo1 (security-debt carry-over)**, Tailscale ACL for cross-node SSH, simple-shuffle routing | 0% |
+
+Weighted overall completion: **~58%**.
+
+KPI status:
+
+| KPI | Target | Actual | Status |
+|---|---|---|---|
+| EVO-X2 cluster throughput | 67 → 130+ toks/s (LB ×2) | evo1 36.95 + evo2 72.40 = 109 toks/s sum; latency-router converges to evo2 alone (~72 steady-state) | ⚠ Below 130 single-backend; close to 130 in sum |
+| Coding throughput | 13-17 → 25-35 toks/s | 18.38 toks/s (qwen3-coder-next on evo1 Vulkan, NOT Legion CUDA) | ❌ Below 25-35; blocked by hardware |
+| Per-node API key | sk-banxe-evo{1,2}-local-2026 | applied | ✅ |
+| 190 GiB models via RPC, GLM-4.7 7-8 toks/s | full | not implemented (S5 pending) | ❌ |
+
+Phase 2 (next session) execution order, by `optimality` canon:
+
+1. **S1 reboot evo1** (1 operator command, ~30 s downtime). Activates render/video group for banxe + ttm.pages_limit + amdgpu.ppfeaturemask. Closes S1 to 100%.
+2. **S3 decommission** (no execution, just decision-record): formally accept S3v2 as the final coding path; mark S3 KPI "25-35 toks/s coding" as BLOCKED_HARDWARE until a CUDA host (≥ RTX 4090 24 GiB + 64 GiB RAM) is added to the fleet.
+3. **S6 security-critical subset first** (public 2222/tcp closure on evo1 + Tailscale ACL): closes the carry-over security debt from S0 (active brute-force from 185.214.135.211, 185.2.101.118, 47.77.182.54). Does not require new hardware.
+4. **S5 RPC distributed inference** (full sprint, 4-8 hours): requires USB4/Thunderbolt cable. Will close `large` route in LiteLLM v2 yaml.
+5. **S6 monitoring subset** (Prometheus+Grafana, cron health-check, simple-shuffle routing): finalizes Phase 2.
+
+Operator-side prerequisites for Phase 2:
+- Confirm presence of USB4/Thunderbolt cable between EVO-X2 #1 and EVO-X2 #2.
+- Confirm acceptance of S3 decommission (no separate CUDA host purchase planned).
+- Confirm a 1-minute prod downtime window for S1 reboot.
