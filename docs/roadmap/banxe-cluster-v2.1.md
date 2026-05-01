@@ -278,3 +278,31 @@ KPI revision:
 Sprint S3 status: **DECOMMISSIONED** (S3v2 is the canonical implementation).
 
 This decision unblocks 100% completion claim for the rest of Phase 2.
+## 17. Sprint S6 — security subset (PASS)
+
+Closed S0 carry-over security debt: public 2222/tcp brute-force on evo1 from 185.214.135.211, 185.2.101.118, 47.77.182.54.
+
+Action taken on evo1 (2026-05-01 ~21:50 CEST):
+- ufw enabled with whitelist policy: allow 22/2222/11434 from 192.168.0.0/24 (LAN) and 100.64.0.0/10 (Tailscale CGNAT) only; loopback v4+v6 allowed.
+- Default policies: incoming=deny, outgoing=allow, routed=allow (Docker compatibility preserved).
+- ssh.session from Legion (LAN) survived ufw enable.
+- Listeners still alive: 0.0.0.0:2222 (sshd), *:11434 (ollama), [::]:2222.
+
+Pre-existing UFW rules discovered (ufw status was lying as `inactive` while `/etc/ufw/user.rules` contained allow rules — service was disabled but rules persisted):
+- 3389/tcp ALLOW IN Anywhere (RDP) — **CLOSED in this sprint**, narrowed to LAN + Tailscale.
+- 443/tcp ALLOW IN Anywhere (OpenClaw Web UI) — left untouched; assumed intentional public-facing service with auth+TLS. Recorded as `remaining_security_debt`.
+- 80/tcp ALLOW IN Anywhere (HTTP→HTTPS redirect) — left untouched, paired with 443.
+
+Effect:
+- Brute-force on 2222 from public internet: silent drop at default-deny. Expected to vanish from journalctl -u ssh within seconds.
+- evo1 SSH access: LAN (192.168.0.0/24) + Tailscale (100.64.0.0/10) only.
+- evo1 Ollama API (11434): LAN + Tailscale only (LiteLLM gateway on Legion 192.168.0.75 still reaches it).
+- evo1 RDP (3389): LAN + Tailscale only (was Anywhere).
+
+Sprint S6 — security subset: **PASS**.
+
+Remaining S6 monitoring subset (deferred to next session):
+- Prometheus + Grafana stack (Docker on Legion or evo2)
+- ~/check-llm-cluster.sh + cron 5min
+- LiteLLM v2 routing_strategy: latency-based-routing → simple-shuffle (for true LB instead of fail-over)
+- Decision on 80/443 OpenClaw Web UI public exposure
