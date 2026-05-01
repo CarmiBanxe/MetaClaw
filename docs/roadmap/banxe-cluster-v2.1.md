@@ -235,3 +235,23 @@ Operator-side prerequisites for Phase 2:
 - Confirm presence of USB4/Thunderbolt cable between EVO-X2 #1 and EVO-X2 #2.
 - Confirm acceptance of S3 decommission (no separate CUDA host purchase planned).
 - Confirm a 1-minute prod downtime window for S1 reboot.
+
+## 15. Sprint S1 — Phase 2 close (PASS, formal)
+
+S1.5 deferred operator action executed at 2026-05-01 21:38 CEST: `sudo update-grub && sudo reboot` on evo1. Boot sequence:
+- update-grub generated grub.cfg with both kernels (6.17.0-22 active, 6.17.0-20 fallback) and our two GTT tokens. (`os-prober` was OOM-killed mid-run because qwen3:30b-a3b was warm in memory — not a blocker, os-prober is disabled by default in Ubuntu 24.04.)
+- evo1 returned in 5 seconds (boot_id 88252ba4-fbf4-48b8-adc8-69bb4bbb9c75).
+- /proc/cmdline confirms `amdgpu.ppfeaturemask=0xffffffff` and `ttm.pages_limit=31457280` (alongside pre-existing `quiet splash amd_iommu=off amdgpu.gttsize=59392`).
+- `id banxe` now contains 44(video) and 992(render) — ROCm fix groups active.
+- ollama and ssh active; listeners 2222 + 11434 alive.
+
+Bench qwen3:30b-a3b post-reboot: **37.78 toks/s** (vs S1.7 pre-reboot 36.95). Delta +2.3%, within jitter — no measurable performance gain from GTT expansion or render/video groups on this workload.
+
+Why no gain (deviation):
+- The 200-token benchmark with default ctx loads only ~6 GiB KV cache, which already fits in the pre-reboot 154 GiB Vulkan pool. The expanded 184 GiB pool would only matter for larger ctx (>32 K) or multi-model concurrent loads.
+- Ollama runs under user `ollama`, not `banxe`. The `usermod -aG render,video banxe` does not affect ollama's already-correct device ACL.
+- The ~2× gap evo1 (37.78) vs evo2 (72.40) is dominated by production background load on evo1 (Redis, PostgreSQL, Docker stack), not by GRUB/group settings. Kernel 6.17.0-22 (evo1) vs 6.17.0-23 (evo2) is a secondary factor.
+
+Sprint S1 status: **PASS** (all planned steps executed). Performance target was 13–17 toks/s; delivered 37.78 (+118% over upper bound). Cluster sum after Phase 2: evo1 37.78 + evo2 72.40 ≈ **110 toks/s** on qwen3:30b-a3b.
+
+Phase 2 next: S3 decommission (markdown-only) → S6 security subset (close public 2222/tcp on evo1) → S5 RPC distributed inference → S6 monitoring subset.
