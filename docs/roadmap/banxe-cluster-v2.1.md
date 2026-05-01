@@ -306,3 +306,26 @@ Remaining S6 monitoring subset (deferred to next session):
 - ~/check-llm-cluster.sh + cron 5min
 - LiteLLM v2 routing_strategy: latency-based-routing → simple-shuffle (for true LB instead of fail-over)
 - Decision on 80/443 OpenClaw Web UI public exposure
+
+## 18. Sprint S5 — formal block (decision-record)
+
+Sprint 5 (RPC distributed inference: USB4/Thunderbolt link 10.0.0.1/30 ↔ 10.0.0.2/30 between EVO-X2 #1 and #2, llama.cpp GGML_RPC build, GLM-4.7 Q4_K_M ~190 GiB download on evo2, master llama-server on evo1:8081, worker llama-rpc-worker on evo2:50052, LiteLLM `large` route, target 7–8 toks/s) is **formally blocked** as of 2026-05-01.
+
+Rationale:
+- No confirmed USB4/Thunderbolt cable between the two EVO-X2 nodes in the current hardware inventory.
+- Falling back to 1 GbE LAN (192.168.0.x) for the RPC transport delivers ~1–2 toks/s on GLM-4.7-355B, well below the 7–8 toks/s KPI. Latency on LAN (~0.5–2 ms RTT, 110 MB/s ceiling) collapses RPC throughput for >100 GiB working sets.
+- GLM-4.7 Q4_K_M download (~190 GiB) is wasted effort if the inference layer cannot meet KPI.
+
+Status mapping:
+- S5 plan items 5.1 (USB4 link), 5.2 (llama.cpp GGML_RPC build), 5.3 (rpc-worker systemd unit), 5.4 (190 GiB download), 5.5 (master llama-server), 5.6 (LiteLLM `large` route): **BLOCKED_HARDWARE**.
+
+Unblock conditions:
+- A USB4 40 Gbps or Thunderbolt 4 cable connecting EVO-X2 #1 USB4 port ↔ EVO-X2 #2 USB4 port. Then re-open S5 in a follow-up sprint.
+- Alternatively, 10/25 GbE network upgrade between the two nodes (NIC + switch + cable). Same unblock effect.
+
+KPI revision:
+- Original target: 190 GiB models via RPC; GLM-4.7 full 355B at 7–8 toks/s.
+- Effective target: deferred until link upgrade.
+- LiteLLM v2 `large` route in /home/mmber/MetaClaw/litellm/litellm-config.v2.yaml remains commented out (no functional regression — it is a stub for the future, not a current API consumer).
+
+Sprint S5 status: **BLOCKED_HARDWARE** (no work performed; future-ready stub left in LiteLLM config and roadmap section 2).
