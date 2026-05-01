@@ -153,3 +153,47 @@ Pending in this sprint:
 - S2.9 final smoke + cluster matrix update: 3×3 ICMP+SSH still PASS, df -h /data on evo2, du -sh /data/ollama-models on evo2, finalize S2_evo2_bringup JSON.
 
 Post-S2.7 also re-runs LiteLLM v2 (port 4000) banxe-general LB burst and fast burst — expect router-quirk to clear once evo2 stops returning 404.
+
+## 12. Sprint S2 — final close (PASS)
+
+S2.7 rsync completed 2026-05-01 ~15:58 CEST (164 min, ~107 GiB at avg 11.05 MB/s, exit code 23 due to utime perms on /data and /data/blobs only — all 41 file entries transferred, no data loss).
+
+Inventory parity with evo1 confirmed (6/6 models): qwen3:30b-a3b 17.28 GiB qwen3moe; huihui_ai/glm-4.7-flash-abliterated:latest 17.48 GiB glm4moelite; qwen3-coder-next:q4_K_M 48.19 GiB qwen3next; gurubot/gpt-oss-derestricted:20b 14.72 GiB gpt-oss; qwen3:4b 2.33 GiB; qwen3.5:latest 6.14 GiB.
+
+Bench qwen3:30b-a3b on evo2 from Legion: **72.40 toks/s** (eval_count=200, eval_duration=2762.5 ms). evo1 baseline = 36.95 toks/s. evo2 outperforms by **+95.9%** — recorded as positive deviation. Likely causes: fresher kernel 6.17.0-23 vs evo1 6.17.0-22, no production background load on evo2, larger Vulkan GTT pool 184 GiB vs evo1 154 GiB.
+
+LiteLLM v2 :4000 LB validation (cache-bypass burst, 6 unique-prompt parallel requests):
+- 6/6 → 200 OK, time 0.69–1.55 s.
+- All 6 routed to evo2 (latency-based-routing converged to faster backend). Cluster-level behavior is fail-over rather than round-robin. To enforce balanced load: switch routing_strategy to simple-shuffle or usage-based-routing (deferred to S6 hardening).
+- Earlier 8-request burst (S4.5 reuse with prompt "reply 1..8") hit Redis cache 5/8; cache-bypass with nanosecond-timestamp prompts produced the clean numbers above.
+
+Cluster-level KPI snapshot post-S2 close:
+- Combined potential throughput: evo1 36.95 + evo2 72.40 = **~109 toks/s** on qwen3:30b-a3b (target was 67 → 130+; on track).
+- All 7 LiteLLM v2 models routable; coding via :4000 = 17.12 toks/s (S4 baseline).
+- Prod LiteLLM :8080 untouched (loopback; cloud + UK GDPR routes intact).
+
+Operator actions for S2 close: none (rsync auto-completed, all probes are read-only).
+
+Sprint S2 status: **PASS**. next_sprint_ready=true.
+
+## 13. Cluster post-state snapshot (2026-05-01, end of day)
+
+| Component | Endpoint | Auth | Status |
+|---|---|---|---|
+| evo1 Ollama | http://192.168.0.72:11434 | Bearer sk-banxe-evo1-local-2026 | active, Vulkan 154 GiB, 36.95 toks/s |
+| evo2 Ollama | http://192.168.0.15:11434 | Bearer sk-banxe-evo2-local-2026 | active, Vulkan 184 GiB, 72.40 toks/s |
+| LiteLLM prod | http://127.0.0.1:8080 (loopback) | Bearer LITELLM_MASTER_KEY (env) | active, pid 309, cloud + BANXE/UK-GDPR routes |
+| LiteLLM v2 LAN | http://0.0.0.0:4000 | Bearer sk-banxe-llm-gateway-2026 | active, systemd litellm-lan-gateway.service, 7 LAN models |
+| Redis cache | 192.168.0.72:6379 ns banxe-litellm | (none) | PONG verified |
+| Continue.dev | ~/.continue/config.json | sk-banxe-evo1-local-2026 | wired, 2 providers (coder-next + qwen3-30b on evo1) |
+
+Three-node Tailscale tailnet `banxe.com` (carmi@):
+- Legion `mark-legion` 100.101.218.26 (RTX 4070 Laptop 8 GiB / 3.8 GiB RAM)
+- EVO-X2 #1 `banxe-nucbox-evo-x2` 100.68.102.48 (192.168.0.72 LAN, prod)
+- EVO-X2 #2 `banxe-nucbox-evo-x2-2` 100.99.208.21 (192.168.0.15 LAN, fresh prod)
+
+Pending sprints: **S5** (RPC distributed inference, USB4/Thunderbolt link 10.0.0.1/30 ↔ 10.0.0.2/30, GLM-4.7 full Q4_K_M ~190 GiB), **S6** (Prometheus+Grafana, ~/check-llm-cluster.sh cron, public 2222/tcp closure on evo1, Tailscale ACL for cross-node SSH, simple-shuffle routing).
+
+Pending follow-up actions queued for the operator (off-sprint, low priority):
+- evo1: `sudo update-grub && sudo reboot` to activate render/video group membership for banxe and the ttm.pages_limit/ppfeaturemask GRUB tokens. Schedule during a low-traffic window.
+- VS Code: reload Continue extension to pick up ~/.continue/config.json from S3v2.
