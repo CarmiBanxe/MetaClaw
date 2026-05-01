@@ -255,3 +255,26 @@ Why no gain (deviation):
 Sprint S1 status: **PASS** (all planned steps executed). Performance target was 13–17 toks/s; delivered 37.78 (+118% over upper bound). Cluster sum after Phase 2: evo1 37.78 + evo2 72.40 ≈ **110 toks/s** on qwen3:30b-a3b.
 
 Phase 2 next: S3 decommission (markdown-only) → S6 security subset (close public 2222/tcp on evo1) → S5 RPC distributed inference → S6 monitoring subset.
+
+## 16. Sprint S3 — formal decommission (decision-record)
+
+The original Sprint 3 plan (build Qwen3-Coder-Next 80B Q4_K_XL on Legion via llama.cpp+CUDA, target 25–35 toks/s) is **formally decommissioned** as of 2026-05-01 in favor of the already-deployed S3v2 (Continue.dev wired to evo1's qwen3-coder-next:q4_K_M endpoint, 18.38 toks/s baseline).
+
+Rationale:
+- Legion hardware is RTX 4070 Laptop 8 GiB + 3.8 GiB RAM, not RTX 4090 24 GiB + 64 GiB RAM as the original roadmap assumed. Running an 80B Q4_K_XL (~51 GiB) model on this host would force severe disk-mmap offload and yield <1 tok/s — non-viable for interactive coding.
+- Adding a dedicated CUDA host (≥ RTX 4090 24 GiB + 64 GiB RAM) is not in the current procurement budget.
+- S3v2 already covers the operational need (VS Code Continue.dev has working coding completion via evo1 Vulkan).
+
+Status mapping:
+- S3 plan items 3.1 (build llama.cpp+CUDA), 3.2 (download 51 GiB GGUF), 3.3 (foreground sanity), 3.4 (systemd unit qwen3-coder.service): **WONTFIX_HARDWARE**.
+- S3 plan item 3.5 (Continue.dev wiring): completed via S3v2.
+
+KPI revision:
+- Original target: coding 25–35 toks/s.
+- Effective target: coding ≥ 15 toks/s (qwen3-coder-next on evo1 Vulkan).
+- Actual: 18.38 toks/s ✅.
+- Marked: BLOCKED_HARDWARE for the 25–35 toks/s tier; will revisit if a CUDA host is added to the fleet.
+
+Sprint S3 status: **DECOMMISSIONED** (S3v2 is the canonical implementation).
+
+This decision unblocks 100% completion claim for the rest of Phase 2.
