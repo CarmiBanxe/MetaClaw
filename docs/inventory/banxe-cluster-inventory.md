@@ -249,3 +249,21 @@ Connectivity verified:
 Throughput note: 9.12 Gbit/s achieved is ~23% of USB4 theoretical 40 Gbit/s, which is typical for the Linux `thunderbolt_net` driver path (kernel-level, no SR-IOV / DMA bypass). This is 9× faster than 1 GbE LAN and well above the bandwidth needed for llama.cpp RPC token streaming. RTT 0.49 ms beats the 65-second-per-token LAN ceiling described in roadmap v2.1 §5.
 
 Sprint S5 status moved from BLOCKED_HARDWARE to IN_PROGRESS. Next: build llama.cpp with GGML_RPC + GGML_VULKAN on both EVO-X2 nodes.
+
+## 5.8 EVO-X2 #1 /data deep contents (discovered 2026-05-02 02:59 CEST)
+
+While creating /data/models for S5.4 download, the chown step revealed pre-existing BANXE production directory layout on evo1 (separate nvme0n1p1 mount, 1.7 TiB free of 1.9 TiB):
+
+- /data/banxe — banxe-owned (uid 1000) directory tree, 15 entries; pre-existing BANXE workspace.
+- /data/banxe-emi-stack — banxe-owned, 15 entries; likely the EMI BANXE AI BANK production stack root.
+- /data/banxe-stack — root-owned, 10 entries; older / common stack layer.
+- /data/banxe-training — root-owned, 8 entries; ML training assets.
+- /data/clickhouse — clickhouse:clickhouse owned, used by ClickHouse server (data persistence directory). Confirms ClickHouse is a real prod component on evo1, not just hypothetical.
+- /data/backups — root-owned, 7 entries; backup snapshots.
+- /data/ollama-models — owned by ollama:ollama 2775 (set in S2.5 fix); 6 prod Ollama models for Vulkan inference (~104 GiB total).
+- /data/llama-cpp — banxe:banxe (set in S5.23 prep); contains llama.cpp build with GGML_VULKAN + GGML_RPC for S5 RPC distributed inference.
+- /data/models — banxe:banxe (created in S5.30-fix); hosts large GGUF model files for the master llama-server (in progress: GLM-4.5-Air Q4_K_M, 67.97 GiB total when S5.30 finishes).
+
+Implication for the canon: evo1 is not just "Ollama + Redis + PostgreSQL" but actually carries a multi-component BANXE production stack including ClickHouse and at least three banxe-* workspace trees. This expands the "do not destroy" scope and confirms that S6 ufw whitelist + 80/443 OpenClaw Web UI rules are essential, not optional.
+
+Action queued (deferred, low priority): a deeper read-only audit of /data/banxe-stack and /data/banxe-emi-stack to enumerate which services depend on the Ollama/LiteLLM cluster we are building.
