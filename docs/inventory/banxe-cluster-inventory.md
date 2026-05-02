@@ -232,3 +232,20 @@ Recorded in banxe-cluster-v2.1.md sections 14, 16, 18, 21. Highlights for cross-
 - Aider ai/ai-heavy commands non-functional until qwen3.5-abliterated:35b and llama3.3:70b are pulled onto cluster.
 - Continue.dev requires VS Code extension reload to pick up ~/.continue/config.json (S3v2 deferred operator action).
 - BANXE compliance/dashboard/deep-search and OpenClaw eval cron all running per their own schedules; not affected by SRE work.
+
+## 5.7 USB4 link UP — Sprint 5.1 closed (2026-05-02 01:59 CEST)
+
+After replacing the wrong PD-only cable with a correct USB4/TB4 data cable, the link came up cleanly on both nodes:
+- evo1 thunderbolt0 UP, MAC 02:4d:fd:67:8e:09, peer device 1-2 visible at 01:44.
+- evo2 thunderbolt0 UP, MAC 02:90:cb:8a:75:6f, peer device 1-2 visible at 01:44.
+- IP addressing: evo1=10.0.0.1/30, evo2=10.0.0.2/30 (point-to-point, /30 mask, no gateway).
+- Persistent: /etc/systemd/network/10-thunderbolt0.network on both nodes (will auto-apply on next boot).
+- ufw allow from 10.0.0.0/30 added on evo2 (USB4-RPC-link comment).
+
+Connectivity verified:
+- ICMP: ping 10.0.0.1 from 10.0.0.2 → 5/5 packets, 0% loss, RTT min/avg/max/mdev = 0.300/0.489/0.644/0.127 ms.
+- TCP/iperf3: 4 parallel streams, 10 sec, [SUM] 9.12 Gbit/s sender / 9.11 Gbit/s receiver, 0 retransmits, 10.6 GBytes total transfer.
+
+Throughput note: 9.12 Gbit/s achieved is ~23% of USB4 theoretical 40 Gbit/s, which is typical for the Linux `thunderbolt_net` driver path (kernel-level, no SR-IOV / DMA bypass). This is 9× faster than 1 GbE LAN and well above the bandwidth needed for llama.cpp RPC token streaming. RTT 0.49 ms beats the 65-second-per-token LAN ceiling described in roadmap v2.1 §5.
+
+Sprint S5 status moved from BLOCKED_HARDWARE to IN_PROGRESS. Next: build llama.cpp with GGML_RPC + GGML_VULKAN on both EVO-X2 nodes.
