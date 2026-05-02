@@ -1,0 +1,111 @@
+# BANXE LiteLLM LAN Gateway v2 (S4)
+# Sprint 4 — port 4000, bind 0.0.0.0, LAN-only Ollama backends.
+# Cloud providers (Anthropic/Gemini/Groq) and BANXE/UK-GDPR compliance routes
+# stay on the prod gateway at 127.0.0.1:8080 (DO NOT mirror them here).
+
+model_list:
+  # banxe-general (qwen3:30b-a3b) — load-balanced across evo1 + evo2
+  - model_name: banxe-general
+    litellm_params:
+      model: ollama/qwen3:30b-a3b
+      api_base: http://192.168.0.72:11434
+      api_key: sk-banxe-evo1-local-2026
+      timeout: 120
+  - model_name: banxe-general
+    litellm_params:
+      model: ollama/qwen3:30b-a3b
+      api_base: http://192.168.0.15:11434
+      api_key: sk-banxe-evo2-local-2026
+      timeout: 120
+
+  # qwen3-30b — backwards-compat alias, same LB pair
+  - model_name: qwen3-30b
+    litellm_params:
+      model: ollama/qwen3:30b-a3b
+      api_base: http://192.168.0.72:11434
+      api_key: sk-banxe-evo1-local-2026
+      timeout: 120
+  - model_name: qwen3-30b
+    litellm_params:
+      model: ollama/qwen3:30b-a3b
+      api_base: http://192.168.0.15:11434
+      api_key: sk-banxe-evo2-local-2026
+      timeout: 120
+
+  # qwen3-banxe — evo1 only
+  - model_name: qwen3-banxe
+    litellm_params:
+      model: ollama/qwen3:30b-a3b
+      api_base: http://192.168.0.72:11434
+      api_key: sk-banxe-evo1-local-2026
+      timeout: 120
+
+  # fast (glm-4.7-flash-abliterated) — load-balanced across evo1 + evo2
+  - model_name: fast
+    litellm_params:
+      model: ollama/huihui_ai/glm-4.7-flash-abliterated:latest
+      api_base: http://192.168.0.72:11434
+      api_key: sk-banxe-evo1-local-2026
+      timeout: 120
+  - model_name: fast
+    litellm_params:
+      model: ollama/huihui_ai/glm-4.7-flash-abliterated:latest
+      api_base: http://192.168.0.15:11434
+      api_key: sk-banxe-evo2-local-2026
+      timeout: 120
+
+  # glm-4-flash — backwards-compat alias, evo1 only
+  - model_name: glm-4-flash
+    litellm_params:
+      model: ollama/huihui_ai/glm-4.7-flash-abliterated:latest
+      api_base: http://192.168.0.72:11434
+      api_key: sk-banxe-evo1-local-2026
+      timeout: 120
+
+  # coding — qwen3-coder-next:q4_K_M, evo1 primary (no fallback yet, see router fallbacks below)
+  - model_name: coding
+    litellm_params:
+      model: ollama/qwen3-coder-next:q4_K_M
+      api_base: http://192.168.0.72:11434
+      api_key: sk-banxe-evo1-local-2026
+      timeout: 240
+
+  # gpt-oss-20b — evo1 only
+  - model_name: gpt-oss-20b
+    litellm_params:
+      model: ollama/gurubot/gpt-oss-derestricted:20b
+      api_base: http://192.168.0.72:11434
+      api_key: sk-banxe-evo1-local-2026
+      timeout: 120
+
+
+  - model_name: large
+    litellm_params:
+      model: openai/glm-4.5-air
+      api_base: http://192.168.0.72:8081/v1
+      api_key: sk-rpc-glm47-2026
+      timeout: 300
+
+router_settings:
+  routing_strategy: simple-shuffle
+  num_retries: 2
+  timeout: 120
+  retry_after: 5
+  fallbacks:
+    - coding: ["qwen3-30b"]
+    - banxe-general: ["fast"]
+
+litellm_settings:
+  success_callback: ["prometheus"]
+  failure_callback: ["prometheus"]
+  drop_params: true
+
+cache: true
+cache_params:
+  type: redis
+  host: 192.168.0.72
+  port: 6379
+  namespace: banxe-litellm
+
+general_settings:
+  master_key: sk-banxe-llm-gateway-2026
