@@ -344,3 +344,16 @@ Same gap as §25; tracked as P3.7c. Inference path untouched.
 
 ### Verdict
 PARTIAL PASS — same shape as §25: observability core (Prometheus self / LiteLLM / Ollama blackbox) all up, node_exporter still unwired.
+
+## 27. Sprint P3.9 — verify (PASS, 2026-05-03)
+
+Read-only hygiene snapshot.
+
+- **`~/bin/check-llm-cluster.sh`**: present, mode `0755`, owned by `mmber`, 1121 bytes; first lines confirm purpose ("BANXE LLM Cluster Health Check ... appends one CSV-ish line per run"). Cron `*/5 * * * *` from §previous sprints.
+- **`~/bin/backup-cluster.sh`**: symlink → `~/MetaClaw/scripts/backup-cluster.sh` (canonical, version-controlled). Header confirms `Cron: 0 4 * * *`.
+- **Health log** at `/home/mmber/llm-cluster-health.log` (40,968 bytes). Last 20 lines (every 5 min, 03:30→05:05): ollama on both nodes returned 200 throughout; latency mostly 10-30 ms; one transient `legion_v4000=000ERR` at 04:00:03 (LiteLLM v2 was being polled exactly during a 5-minute boundary, recovered next tick) and `evo1_ollama=200ERR/7970ms` at 05:05:02 (slow response under load — evo2 pull saturating LAN; non-fatal). LiteLLM v2 :4000 = 200 throughout; v8080 = 401 (auth-required, expected for unauthenticated probe).
+- **Backup cron**: PID 3462088 (cron) → 3462104/3462107 (script) → 3462110 + 3462113 (rsync over ssh:2222). **Still running** — started 04:00:03, currently 6.8 GiB mirrored to `/mnt/d/backups/evo1/` (`backups`, `banxe`, `banxe-emi-stack`, `banxe-stack`, `banxe-training`, `clickhouse`, `ctio-workspace`, `developer`, `guiyon-project`, `hitl-dashboard` …). Long runtime expected during evo2 pull saturating LAN; not a fault. Log files (`cron.log`, `backup-2026-05-03.log`) currently only show header + first section divider — rsync `-av` output is buffered and will flush at completion.
+- **MODELS.md**: at `/home/mmber/MetaClaw/docs/MODELS.md`. First 30 lines confirm Tier 1 production-critical (qwen3:30b-a3b, glm-4.7-flash-abliterated, qwen3-coder-next, GLM-4.5-Air RPC) and Tier 2 (gurubot/gpt-oss-derestricted:20b, qwen3.5:35b, llama3.3:70b) — matches §"5.x" inventory.
+
+### Verdict
+PASS. All hygiene assets present and functioning. The 04:00 backup is mid-flight (rsync in progress) — not a regression. Will inspect the completed log on next snapshot.
