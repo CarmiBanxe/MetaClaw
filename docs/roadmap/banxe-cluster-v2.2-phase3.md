@@ -108,3 +108,36 @@ Status: DEFERRED.
 10. P3.10 NPU — future
 
 Estimated total: ~5 hours for P3.1-P3.9. P3.10 deferred.
+
+## 14. Sprint P3.11 — Telegram integration for cluster alerts (30 min, NEW)
+
+Source: QClaw/OpenClaw Telegram webhook capability (Tencent release May 2026).
+- Create Telegram bot via BotFather, get bot token.
+- Wire ~/bin/check-llm-cluster.sh to send failures to Telegram channel.
+- Wire /opt/banxe/compliance/drive_watcher.py alerts to same channel.
+- Wire ~/.openclaw/workspace-moa/scripts/daily-eval.sh results to channel.
+- Test: force a health-check failure, verify Telegram notification.
+Exit-gate: cluster alerts appear in Telegram within 60s of event.
+
+## 15. Phase 4 backlog items (deferred)
+
+P4.1 — QClaw/OpenClaw Computer Use on Legion Windows host (exploration, 2h).
+Install QClaw on Legion Windows or upgrade OpenClaw to >=2026.1.29 (patched for CVE-2026-25253).
+Evaluate: VS Code automation, browser research, file management via Computer Use.
+Security constraint: sandbox mode, no prod credentials, ephemeral tmpfs tool calls.
+
+P4.2 — ROCm 6.4 migration on both EVO-X2 (estimated 2h).
+Replace Vulkan path with ROCm for Ollama. Expected throughput improvement on gfx1151.
+Gated on FCA CASS 15 deadline (2026-05-07) — do not destabilize cluster before then.
+
+P4.3 — BIOS UMA rebalance on evo1 (15 min + reboot).
+Change iGPU VRAM allocation from 96 GiB to 64 GiB in BIOS to match evo2.
+Expected result: evo1 CPU RAM 32→64 GiB, throughput 37→70+ toks/s.
+
+P4.4 — XDNA 2 NPU utilization (research sprint, 4h).
+252 TOPS aggregate across 2x EVO-X2. AMD Ryzen AI SDK + onnxruntime-directml.
+
+## 16. Security backlog
+
+- CVE-2026-25253 (CVSS 8.8): OpenClaw unauthenticated RCE via WebSocket token hijacking. Affects versions <2026.1.29. ACTION: verify current OpenClaw version on Legion; if vulnerable, upgrade immediately. Ref: QClaw-OpenClaw architecture doc §Security.
+- evo1 80/443 ALLOW IN Anywhere (OpenClaw Web UI): restrict to LAN+Tailscale. Deferred from P3.5.
