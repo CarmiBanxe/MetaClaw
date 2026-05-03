@@ -219,6 +219,54 @@ def test_f7_block_workflow_no_adr(rules):
     assert r.status == "BLOCK"
 
 
+def test_f7_adr_022_with_guardian_only_diff_PASS(rules):
+    diff = (
+        "--- a/.github/workflows/guardian.yml\n"
+        "+++ b/.github/workflows/guardian.yml\n"
+        "+name: Guardian\n"
+        "--- a/.claude/settings.json\n"
+        "+++ b/.claude/settings.json\n"
+        '+{"canon": "v8"}\n'
+    )
+    ctx = AuditContext(diff=diff, prompt="Refs: ADR-022 — bootstrap Guardian into repo")
+    r = rules.r7_factory_baseline_locked(ctx, _memory())
+    assert r.status == "PASS"
+    assert any("ADR-022 bootstrap exception applied" in e for e in r.evidence)
+
+
+def test_f7_adr_022_with_non_guardian_diff_BLOCK(rules):
+    diff = (
+        "--- a/.claude/settings.json\n"
+        "+++ b/.claude/settings.json\n"
+        '+{"canon": "v8"}\n'
+        "--- a/payments/router.py\n"
+        "+++ b/payments/router.py\n"
+        "+def initiate(): pass\n"
+    )
+    ctx = AuditContext(diff=diff, prompt="Refs: ADR-022")
+    r = rules.r7_factory_baseline_locked(ctx, _memory())
+    assert r.status == "BLOCK"
+    assert any("non-Guardian" in reason for reason in r.reasons)
+
+
+def test_f7_no_adr_022_baseline_only_diff_BLOCK(rules):
+    diff = '--- a/.claude/settings.json\n+++ b/.claude/settings.json\n+{"canon": "v8"}\n'
+    r = rules.r7_factory_baseline_locked(AuditContext(diff=diff, prompt="random update"), _memory())
+    assert r.status == "BLOCK"
+
+
+def test_f7_general_adr_baseline_diff_PASS(rules):
+    diff = (
+        "--- a/.github/workflows/factory-guard.yml\n"
+        "+++ b/.github/workflows/factory-guard.yml\n"
+        "+jobs: {}\n"
+    )
+    ctx = AuditContext(diff=diff, prompt="motivated by Refs: ADR-005")
+    r = rules.r7_factory_baseline_locked(ctx, _memory())
+    assert r.status == "PASS"
+    assert any("ADR ref" in e for e in r.evidence)
+
+
 # ============ F8 factory-branch-prefix ============
 def test_f8_pass_no_branch(rules):
     r = rules.r8_factory_branch_prefix(AuditContext(prompt="factory rollout"), _memory())

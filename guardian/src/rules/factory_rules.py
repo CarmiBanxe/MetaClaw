@@ -22,6 +22,19 @@ NEW_FILE_RE = re.compile(r"^new file mode\s+\d+\s*$|^---\s+/dev/null$", re.MULTI
 AMENDMENT_RE = re.compile(r"amendment[s_-]?\d*\.md|/amendments/", re.IGNORECASE)
 BASELINE_PATHS = (".claude/settings.json", "factory-guard.yml", ".claude/CLAUDE.md")
 ADR_REF_RE = re.compile(r"\bADR-\d{3,}\b")
+ADR_022_REF_RE = re.compile(r"\bADR-022\b")
+GUARDIAN_ONLY_PATHS = {
+    ".github/workflows/guardian.yml",
+    ".claude/settings.json",
+    ".github/workflows/factory-guard.yml",
+}
+DIFF_PATH_RE = re.compile(r"^[+-]{3}\s+[ab]/(\S+)", re.MULTILINE)
+
+
+def _is_guardian_only_path(path: str) -> bool:
+    return path in GUARDIAN_ONLY_PATHS or any(path.endswith(g) for g in GUARDIAN_ONLY_PATHS)
+
+
 INS_FORMAT_RE = re.compile(r"^INS-\d{4}-\d{2}-\d{2}-")
 
 
@@ -178,11 +191,42 @@ class FactoryRules:
         touched = [p for p in BASELINE_PATHS if p in diff or any(p in f for f in files)]
         if not touched:
             return RuleResult("F7-factory-baseline-locked", "PASS")
-        if ADR_REF_RE.search(diff) or ADR_REF_RE.search(ctx.prompt):
+
+        diff_paths = set(DIFF_PATH_RE.findall(diff))
+        all_touched_paths = diff_paths.union(set(files))
+        non_guardian_touched = sorted(p for p in all_touched_paths if not _is_guardian_only_path(p))
+
+        adr_refs_diff = set(ADR_REF_RE.findall(diff))
+        adr_refs_prompt = set(ADR_REF_RE.findall(ctx.prompt))
+        adr_refs = adr_refs_diff | adr_refs_prompt
+        has_adr_022 = "ADR-022" in adr_refs
+        has_other_adr = bool(adr_refs - {"ADR-022"})
+
+        if has_adr_022 and not non_guardian_touched:
+            return RuleResult(
+                "F7-factory-baseline-locked",
+                "PASS",
+                evidence=[
+                    "ADR-022 bootstrap exception applied",
+                    f"baseline touched: {touched}",
+                    "Guardian-only diff confirmed",
+                ],
+            )
+        if has_other_adr:
             return RuleResult(
                 "F7-factory-baseline-locked",
                 "PASS",
                 evidence=[f"baseline touched ({touched}) with ADR ref"],
+            )
+        if has_adr_022 and non_guardian_touched:
+            return RuleResult(
+                "F7-factory-baseline-locked",
+                "BLOCK",
+                reasons=[
+                    "ADR-022 ref present but diff touches non-Guardian paths "
+                    f"(bootstrap exception requires Guardian-only diff): {non_guardian_touched[:5]}"
+                ],
+                evidence=touched,
             )
         return RuleResult(
             "F7-factory-baseline-locked",
