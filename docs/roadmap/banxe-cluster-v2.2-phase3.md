@@ -464,3 +464,11 @@ Verification:
 
 ### Технический долг
 Открыть follow-up: 'Investigate midaz-ledger restart loop on evo1 compose stack' (репо banxe-payment-core или developer-core, не P3.x).
+
+## 33. Sprint P3.11 — wire to check-llm-cluster.sh (PARTIAL PASS, 2026-05-03T06:03:50+02:00)
+
+- Helper `~/bin/banxe-telegram-notify` уже есть (из §24).
+- В `~/bin/check-llm-cluster.sh` добавлен блок `# BANXE_TELEGRAM_HOOK`: при наличии `LAST_FAIL_LINE` и executable helper'а вызывает `banxe-telegram-notify "check-llm-cluster: $LAST_FAIL_LINE"`. Skript остаётся no-op, пока `TELEGRAM_ENABLED=1` и токен не выставлены в `~/.config/banxe/telegram.env`.
+- Snapshot скрипта зафиксирован в `docs/ops/check-llm-cluster.sh.snapshot` для версионности (исходник лежит вне MetaClaw в `~/bin/`).
+- Note: pre-commit на repo-wide `git add -A` шумит ruff-проверками внутри `.venv/` (не наши файлы). Закрепили `.venv/` в `.gitignore`, чтобы будущие add'ы не вытягивали 1000+ файлов сторонних пакетов.
+- Result: PARTIAL PASS. Bot token wiring остаётся за оператором (BotFather → `~/.config/banxe/telegram.env` → `TELEGRAM_ENABLED=1`).
