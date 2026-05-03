@@ -113,3 +113,58 @@ Runtime environment почти готов, но service supervision для compl
 
 ### Verdict
 **PASS.** Внешний контракт F1 выполнен; canonical service на evo1 запущен, observable, test-OK.
+
+## §F3 — deep-search canonical switch (PASS, 2026-05-03T16:52:01+02:00)
+
+### Outcome
+**PASS.** Legacy `/opt/deep-search-server.py` (PID 1915, root, uptime 14h+) убит. Канонический systemd-юнит `banxe-deep-search.service` (`/data/banxe/compliance-env/bin/python /data/banxe/deep-search/deep-search-server.py`) теперь serving на `evo1:8088`.
+
+### Steps executed
+1. `systemctl stop banxe-deep-search` (на всякий случай, юнит был в restart loop).
+2. `kill 1915` (legacy /opt/ process), 2s settle.
+3. `systemctl reset-failed banxe-deep-search` + `systemctl start banxe-deep-search`.
+4. Один промежуточный OSError при первом restart attempt (port в TIME_WAIT после kill), второй attempt поднялся чисто.
+
+### Post-state
+- LISTEN 0.0.0.0:8088 by `python` PID 2813293 (canonical unit).
+- `systemctl is-active banxe-deep-search` = `active`.
+
+### Smoke (Legion → evo1:8088)
+```
+[1] / HTTP 200 time=0.0057s
+[2] / HTTP 200 time=0.0065s
+[3] / HTTP 200 time=0.0066s
+```
+
+### Verdict
+**PASS.** Канонический путь подтверждён, legacy retired.
+
+## §FINAL — v2.3 mini-sprints summary (2026-05-03T16:52:01+02:00)
+
+### Outcome table
+
+| Followup | Status | Where | Commit |
+|---|---|---|---|
+| F1 — banxe-compliance-api unblock | **PASS** | evo1:8194, /health 200 | faab812 |
+| F3 — deep-search canonical | **PASS** | evo1:8088 (canonical unit, legacy PID 1915 retired) | (this) |
+| F-secrets — ANTHROPIC_API_KEY batch | **DEFERRED** | env key empty; re-run after `export ANTHROPIC_API_KEY=...` | 8ff326d |
+
+### Closes carryover from v2.2 §47
+- P3.4-followup-1 (auth.py refresh) → DONE in F1.
+- P3.4-followup-3 (deep-search canonical) → DONE in F3.
+- P3.4-followup-2 (drive_watcher restore) → still OPEN, требует поиска исходника.
+- Factory secrets enablement → DEFERRED (operator action: export key и re-run).
+
+### Open carryover (12 items)
+- P3.4-followup-2 (drive_watcher.py source missing).
+- P3.2-followup / P4.3 BIOS UMA rebalance evo2 (qwen3:235b-a22b unlock).
+- MiroFish prod-hardening (§43 v2.2).
+- CVE-2026-25253 OpenClaw upgrade.
+- evo1 80/443 → LAN+Tailscale only (если ещё не сделано в P3.5).
+- P4.1–P4.6 Phase 4 backlog (NPU, ROCm, BIOS evo1, n8n, doc translation).
+- COMPLIANCE-OPS-2 (запрет manual uvicorn вне systemd).
+- Factory CI scope tweak (.venv exclude).
+- Legacy `banxe-api.service` consolidation (decision: оставить как есть; consolidate если понадобится).
+
+### Verdict
+**v2.3 mini-sprints CLOSED**. 2/3 followups закрыты PASS, 1 DEFERRED по env key. Net coverage: внешний контракт compliance-стека на evo1 обеспечен (compliance-api 8194 + deep-search 8088 + node_exporter 9100 + glm-master 8081 — все на canonical systemd units, observable, smoke-OK).
