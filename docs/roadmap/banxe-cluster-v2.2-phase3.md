@@ -194,3 +194,12 @@ Estimated: 2h install + basic workflows, 1h Atom setup. Deferred to Phase 4 (pos
 - LiteLLM v2 (:4000) routes added: `ai` (qwen3.5:35b LB evo1+evo2), `ai-heavy` (llama3.3:70b LB evo1+evo2).
 - Smoke from Legion: `ai` and `ai-heavy` produce completions via gateway master_key sk-banxe-llm-gateway-2026.
 - Exit-gate: 4 pulls succeed; LiteLLM-mediated completions confirmed. PASS.
+
+## 20. Sprint P3.3 — execution report (PASS, 2026-05-03)
+
+- Unit `openclaw-tunnel-gmktec.service` already SSH-logs in as `banxe@evo1:2222` with `~/.ssh/gmktec_key` (no `mmber` user in the SSH path).
+- Service uptime 2h+ before this audit, no restart loops; previous `Invalid user mmber` regression (originally fixed in S0) has not reappeared in evo1 sshd journal over the past 24h.
+- Hygiene: removed two malformed files in Legion `~/.ssh/` (`'authorized_keys << EOF'`, `'authorized_keys\\""'`) created by an earlier here-doc mistake; backups preserved in `/tmp/legion-ssh-junk-*.bak`.
+- Hardened ExecStart with `-o ExitOnForwardFailure=yes` so the tunnel exits immediately if local forwarding can't be established (prevents silent half-broken state).
+- Exit-gate verified: 60s evo1 sshd silence confirmed; `127.0.0.1:18791` listening on Legion (LocalForward to OpenClaw 18790).
+- Result: PASS.
