@@ -341,3 +341,10 @@ Diagnostic confirms the persistence claim from §5.7 was incomplete. On both EVO
 Root cause: `/etc/systemd/network/10-thunderbolt0.network` was written but `systemd-networkd` was never enabled, so NetworkManager's link-local fallback owns the interface. The S5.1 RPC throughput numbers (9.12 Gbit/s) were measured before this regression; current state must be re-validated after the fix.
 
 Fix (sudo on each node): `sudo systemctl enable --now systemd-networkd`. Both fixes printed via OPERATOR_RUN. NetworkManager keeps its 169.254/16 as a secondary address; routes for 10.0.0.0/30 will be added by networkd. No reboot required.
+
+**Applied 2026-05-03 (P3.7 follow-up).** After operator ran the two-node `enable --now systemd-networkd`:
+- evo1 thunderbolt0: `enabled active`, addresses `169.254.188.190/16` (NM secondary) + `10.0.0.1/30 brd 10.0.0.3 scope global` (networkd) ✓
+- evo2 thunderbolt0: `enabled active`, addresses `169.254.211.201/16` (NM secondary) + `10.0.0.2/30 brd 10.0.0.3 scope global` (networkd) ✓
+- ICMP `evo1 → 10.0.0.2`: 3/3 packets, 0% loss, RTT min/avg/max = 0.123/0.183/0.295 ms.
+
+USB4 /30 link is now persistent across reboots. RPC throughput re-validation (iperf3) deferred to next dedicated S5 sprint.
