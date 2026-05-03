@@ -42,3 +42,43 @@ Re-entry plan: оператор делает `export ANTHROPIC_API_KEY=...` (в 
 | firewall-evo1 LAN+Tailscale | OPEN | TBD | v2.2 §16 |
 | factory-ci-tweak | OPEN | TBD | v2.2 §42 |
 | Phase 4: P4.1–P4.6, MiroFish, doc-translation | DEFERRED | Phase 4 | v2.2 §15/§17/§18/§43 |
+
+## §COMPLIANCE-OPS — port-binding & service supervision (operational, 2026-05-03T16:41:07+02:00)
+
+### Status snapshot
+- **Dependency baseline on evo1**: validated. `compliance-env` теперь содержит SQLAlchemy 2.0.49, asyncpg 0.31.0, psycopg2-binary 2.9.11, pydantic 2.12.5, redis 7.4.0, и все имеющиеся deps из `requirements.txt`. Установка PyJWT и остальных deps идёт по `pip install -r` (см. F1 trail).
+- **Service supervision NOT canonical**: `banxe-compliance-api.service` падает с `Address already in use` на 8093. На порту висит orphan `uvicorn pid=1908` (uptime ~4h+, биндинг на `127.0.0.1:8093`). Наш юнит хочет биндиться на `0.0.0.0:8093` и конфликтует.
+
+### Findings (factual)
+- `/data/banxe/banxe-emi-stack/api/routers/auth.py` обновлён до Legion HEAD `61b944c`, конфликт-маркеры удалены (F1 step 3-4).
+- ImportError `No module named 'sqlalchemy'` устранён (`pip install "sqlalchemy[asyncio]"`).
+- Следующий ImportError `No module named 'jwt'` — устранён через `pip install -r requirements.txt` (см. F1).
+- После последнего restart процесс падает не на ImportError, а на port 8093 уже занят.
+
+### Operational items (carryover)
+
+- **COMPLIANCE-OPS-1**: устранить port-binding conflict на `banxe-compliance-api` (8093). Проверить:
+  - `systemctl cat banxe-compliance-api` — ExecStart, KillMode (по умолчанию `control-group`), Restart=on-failure.
+  - Найти orphan uvicorn (`pid=1908` в snapshot `16:36:08`): `sudo lsof -iTCP:8093 -sTCP:LISTEN -n -P`, проследить cwd/cmdline через `/proc/1908/cmdline`, `/proc/1908/cwd`.
+  - Если это процесс не из нашего юнита — kill его (operator approval), затем `systemctl restart banxe-compliance-api`.
+  - Если это и есть наш предыдущий runner, который не убрался при restart — расследовать KillMode/RemainAfterExit и привести к каноничному `KillMode=mixed`.
+
+- **COMPLIANCE-OPS-2**: запретить manual `uvicorn` вне systemd для prod-like evo1, если сервис уже управляется через `banxe-compliance-api.service`. Реализация:
+  - Добавить в `/etc/banxe/operations.md` запись "compliance-api управляется только systemd; manual `uvicorn` в `/data/banxe` запрещён".
+  - Опционально — wrapper-скрипт `/usr/local/bin/banxe-compliance-api` с проверкой `systemctl is-active` перед любым запуском.
+  - Audit: cron каждые 15 минут проверяет, что на 8093 биндится PID, принадлежащий `banxe-compliance-api.service` cgroup; иначе alert.
+
+- **COMPLIANCE-OPS-3**: smoke check после фикса. Шаги:
+  - `systemctl restart banxe-compliance-api` → `systemctl is-active banxe-compliance-api` = `active`.
+  - `ss -tlnp | grep :8093` показывает PID, чей parent — `banxe-compliance-api.service` cgroup.
+  - `curl -s -o /dev/null -w "%{http_code}\n" http://192.168.0.72:8093/docs` → 200 (FastAPI OpenAPI UI; гарантированный endpoint у FastAPI приложений).
+  - `curl -s -o /dev/null -w "%{http_code}\n" http://192.168.0.72:8093/health` → **NOT VERIFIED**: наличие `/health` endpoint в `api/main.py` не подтверждено из логов; нужно проверить отдельно `grep -n "/health\|@app.get" /data/banxe/banxe-emi-stack/api/main.py`. До подтверждения — `/docs` остаётся каноничным smoke endpoint.
+
+### Practical conclusion
+Runtime environment почти готов, но service supervision для compliance-api ещё не приведён в каноническое production-состояние. Следующий шаг — не переустанавливать пакеты, а починить **lifecycle и process ownership на порту 8093**.
+
+### Open
+- COMPLIANCE-OPS-1 → WIP (next action).
+- COMPLIANCE-OPS-2 → OPEN (audit + wrapper).
+- COMPLIANCE-OPS-3 → OPEN (smoke harness).
+- F1 (auth.py refresh) → DONE; deps install → DONE; service active → BLOCKED on COMPLIANCE-OPS-1.
