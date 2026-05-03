@@ -544,3 +544,17 @@ Action: NONE. Контейнер принадлежит compose-стеку Balle
 
 ### Verdict
 PASS. Observability stack полностью замкнут: data-source → Prometheus → Grafana → 4 BANXE-* dashboards.
+
+## 40. Sprint P3.7f — verify v3 (first traffic on glm_master metrics, 2026-05-03T06:34:30+02:00)
+
+Один контролируемый запрос через LiteLLM glm-air (GLM-4.5-Air distributed evo1+evo2 через USB4 RPC) для прогрева счётчиков llama.cpp.
+
+Snapshot Prometheus instant query сразу после ответа:
+- llamacpp:prompt_tokens_total{job=glm_master} > 0
+- llamacpp:tokens_predicted_total{job=glm_master} > 0
+- llamacpp:tokens_predicted_seconds_total{job=glm_master} > 0
+
+Закрывает §29 dashboard BANXE-glm-master-RPC реальными данными.
+
+### Verdict
+PASS.
