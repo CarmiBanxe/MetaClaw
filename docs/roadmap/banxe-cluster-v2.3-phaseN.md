@@ -216,3 +216,36 @@ PASS. Канонический путь подтверждён, legacy retired.
 
 ### Verdict
 v2.3 mini-sprints CLOSED. 2/3 PASS, 1 DEFERRED (env). Canonical observable services on evo1: glm-master 8081, ollama 11434, node_exporter 9100, deep-search 8088, banxe-compliance-api 8194.
+
+## §QW — Quick Wins batch (2026-05-03T18:13:18+02:00)
+
+5 коротких операционных улучшений после полного аудита (по 6 шелл-запросов фактов, не по памяти).
+
+### QW1 — evo2 ufw narrowing (PASS)
+Удалены Anywhere allows для 22/2222/11434/50052 (v4+v6) на evo2. Добавлены точные allows для 192.168.0.0/24 (LAN) + 100.64.0.0/10 (Tailscale) + 10.0.0.0/30 (USB4 RPC только для 50052). Поверхность атаки на evo2 сужена — Ollama API и SSH больше не открыты в публичный интернет.
+
+### QW2 — Legion duplicate prod units stopped (PASS)
+`systemctl --user disable --now banxe-compliance-api.service deep-search.service`. Symlinks из `default.target.wants/` удалены. Legion больше не слушает 8088/8093 как user units. evo1 — единственный prod источник: смок `evo1:8088` HTTP 200 за 5.4 ms, `evo1:8194/health` HTTP 200 за 6.9 ms.
+
+### QW3 — LiteLLM v2 → systemd --user unit (PASS)
+Создан `~/.config/systemd/user/litellm-v2.service` с `Restart=always` + `WantedBy=default.target`. Старый nohup-процесс остановлен, юнит `enable --now`. `is-active = active`, PID 944224 слушает `0.0.0.0:4000`. Все 13 routes (banxe-general, qwen3-30b, qwen3-banxe, fast, glm-4-flash, coding, gpt-oss-20b, large, glm-4.5-air-distributed, glm-air, ai, ai-heavy, reasoning) доступны. Smoke `ai`: completion в 1.04s. LiteLLM v2 теперь переживёт reboot Legion.
+
+### QW4 — docker system prune on Legion (PASS)
+`docker system prune -af --volumes`. Освобождено: **10 GB на диске** (102→92 GB used), **4.1 GB в docker store** (Total reclaimed). Images: 18→6, Containers: 20→6, Build Cache: 1.95 GB→0. Все 6 активных контейнеров целы.
+
+### QW5 — drive_watcher.py dead cron removed (PASS)
+Из Legion crontab удалена строка `0 */6 * * * /opt/banxe/compliance/venv/bin/python /opt/banxe/drive_watcher.py >> /opt/banxe/compliance/watcher.log 2>&1`. Этот cron job был мёртв с момента создания (скрипт никогда не существовал ни на Legion, ни на evo1, ни в git-истории). Старый `watcher.log` (11.5 KB, заполнен повторяющимися `No such file` ошибками) ротируется в `.stale.<timestamp>`. Crontab теперь содержит только 3 живых job'а: daily-eval, check-llm-cluster, backup-cluster.
+
+### Verdict
+**5/5 Quick Wins PASS.**
+
+Cumulative impact:
+- Security: 4 ports на evo2 сужены, 0 ports открыты в публичный интернет на обоих evo nodes (кроме deliberate Tailscale).
+- Operational stability: дубли убраны, единый source of truth, LiteLLM v2 auto-restart.
+- Disk: 10 GB реклеймировано на Legion.
+- Crontab: 0 мёртвых job'ов.
+
+### Carryover untouched (по-прежнему open в Phase 4)
+- P3.4-followup-2 (drive_watcher.py source restoration — отдельный sprint когда понадобится).
+- P3.2 / P4.3 BIOS UMA rebalance (qwen3:235b-a22b unblock).
+- MiroFish prod-hardening, CVE-2026-25253, P4.1-P4.6, COMPLIANCE-OPS-2, factory secrets batch, factory CI scope tweak.
