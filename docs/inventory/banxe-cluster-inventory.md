@@ -267,3 +267,42 @@ While creating /data/models for S5.4 download, the chown step revealed pre-exist
 Implication for the canon: evo1 is not just "Ollama + Redis + PostgreSQL" but actually carries a multi-component BANXE production stack including ClickHouse and at least three banxe-* workspace trees. This expands the "do not destroy" scope and confirms that S6 ufw whitelist + 80/443 OpenClaw Web UI rules are essential, not optional.
 
 Action queued (deferred, low priority): a deeper read-only audit of /data/banxe-stack and /data/banxe-emi-stack to enumerate which services depend on the Ollama/LiteLLM cluster we are building.
+
+## 5.9 Memory features audit (2026-05-03, Sprint P3.8)
+
+Snapshot of memory layout on both EVO-X2 nodes after the GTT-cap removal and swap fixes.
+
+**EVO-X2 #1 (evo1)**
+- MemTotal: 32 GiB (BIOS allocates 96 GiB to amdgpu as VRAM via UMA — not configurable from GRUB).
+- GTT cap: 120 GiB (after removing `amdgpu.gttsize=59392` kernel arg; default-derived).
+- Swap: 8 GiB (0 used post-fix).
+- Transparent HugePages: `madvise`.
+- NUMA: 1 node (no remote-memory penalty).
+- HugePages: `HugePages_Total=32` (64 MiB pre-allocated).
+
+**EVO-X2 #2 (evo2)**
+- MemTotal: 62 GiB (BIOS allocates 64 GiB to amdgpu as VRAM).
+- GTT cap: 120 GiB.
+- Swap: 8 GiB (0 used).
+- Transparent HugePages: `madvise`.
+- NUMA: 1 node.
+- HugePages: `HugePages_Total=0`.
+
+**Key finding.** evo1 VRAM=96 GiB vs evo2 VRAM=64 GiB is a **BIOS UMA allocation difference** — both have 128 GiB physical, but evo1's BIOS reserves more for the iGPU. As a side effect, evo1 leaves only 32 GiB to the CPU side, while evo2 leaves 62 GiB. The earlier-measured throughput delta (evo1 = 37.78 tok/s vs evo2 = 72.40 tok/s on the same model) correlates with the CPU-available RAM split, not raw GPU capability — under VRAM pressure evo1 spills to GTT/host paths that evo2 does not need to traverse.
+
+**Action queued (deferred):** revisit BIOS UMA setting on evo1 to align with evo2 (64 GiB VRAM / 64 GiB CPU) once a maintenance window opens. Will not be done during the FCA CASS 15 deadline window.
+
+## 5.10 Legion storage layout (2026-05-03, Sprint P3.8)
+
+- **C:** 952 GiB total, 426 GiB free (Windows host, system + WSL VHD root).
+- **D:** 3.7 TiB total, 3.7 TiB free — currently **EMPTY**. Available for model staging, GGUF cache, or future Ollama mirror.
+- **WSL VHD:** 1 TiB allocated, 847 GiB free (`/` inside WSL).
+
+D: is the obvious target for any large local model cache or build artifacts. Mounting it into WSL (`/mnt/d`) is already supported by the default automount; symlink targets such as `~/models -> /mnt/d/models` would unlock all 3.7 TiB without growing the WSL VHD.
+
+## 5.11 ROCm status on evo2 (2026-05-03, Sprint P3.8 / P3.5a)
+
+- **Kernel side: ready.** `amdgpu` module loaded, `/dev/kfd` exposed, `/dev/dri/card0` + `renderD128` present, GPU PCI `1002:1586` rev c1 (Strix Halo Radeon 8060S iGPU @ c5:00.0) bound to `amdgpu`.
+- **Userspace side: empty.** No `rocminfo`, no `clinfo`, no `rocm-*` / `hip-*` packages, no `/opt/rocm*` directory.
+- **Current Ollama backend:** Vulkan via `/usr/local/bin/ollama serve` (no systemd unit on evo2; runs from boot via the upstream installer's init).
+- **Migration to ROCm 6.4 — feasible but deferred.** gfx1151 / Strix Halo support landed in ROCm 6.4; would require installing the AMD ROCm 6.4 deb repo, replacing the Ollama binary with the ROCm-enabled bundle, and adding `banxe` to `render` + `video` groups. Likely throughput improvement vs Vulkan on Strix Halo, but **out of scope for the FCA CASS 15 deadline** — re-open as its own sprint after 2026-05-07.
