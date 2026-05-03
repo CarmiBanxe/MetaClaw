@@ -357,3 +357,13 @@ Read-only hygiene snapshot.
 
 ### Verdict
 PASS. All hygiene assets present and functioning. The 04:00 backup is mid-flight (rsync in progress) — not a regression. Will inspect the completed log on next snapshot.
+
+## 28. P3.2 — pull progress snapshot 2026-05-03T05:15:09+02:00
+
+`ssh evo2 'tail -n 1 /tmp/ollama-pull-reasoning.log'`:
+
+```
+pulling 791d5d11998e:  20% ▕███               ▏  28 GB/142 GB   11 MB/s   2h43m
+```
+
+Legion local time: `2026-05-03T05:15:09+02:00`. Throughput stable at 11 MB/s; ETA ~2h43m. PID 27107 still active. Untouched.
