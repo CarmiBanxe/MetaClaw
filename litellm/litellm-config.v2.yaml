@@ -86,6 +86,49 @@ model_list:
       api_key: sk-rpc-glm47-2026
       timeout: 300
 
+  # glm-4.5-air-distributed — llama.cpp master on evo1:8081 (RPC worker on evo2:50052)
+  - model_name: glm-4.5-air-distributed
+    litellm_params:
+      model: openai/GLM-4.5-Air-Q4_K_M-00001-of-00002.gguf
+      api_base: http://192.168.0.72:8081/v1
+      api_key: sk-rpc-glm47-2026
+      timeout: 600
+
+  - model_name: glm-air
+    litellm_params:
+      model: openai/GLM-4.5-Air-Q4_K_M-00001-of-00002.gguf
+      api_base: http://192.168.0.72:8081/v1
+      api_key: sk-rpc-glm47-2026
+      timeout: 600
+
+
+  # ai (qwen3.5:35b) — Aider light, LB evo1+evo2
+  - model_name: ai
+    litellm_params:
+      model: ollama/qwen3.5:35b
+      api_base: http://192.168.0.72:11434
+      api_key: sk-banxe-evo1-local-2026
+      timeout: 240
+  - model_name: ai
+    litellm_params:
+      model: ollama/qwen3.5:35b
+      api_base: http://192.168.0.15:11434
+      api_key: sk-banxe-evo2-local-2026
+      timeout: 240
+
+  # ai-heavy (llama3.3:70b) — Aider heavy, LB evo1+evo2
+  - model_name: ai-heavy
+    litellm_params:
+      model: ollama/llama3.3:70b
+      api_base: http://192.168.0.72:11434
+      api_key: sk-banxe-evo1-local-2026
+      timeout: 600
+  - model_name: ai-heavy
+    litellm_params:
+      model: ollama/llama3.3:70b
+      api_base: http://192.168.0.15:11434
+      api_key: sk-banxe-evo2-local-2026
+      timeout: 600
 router_settings:
   routing_strategy: simple-shuffle
   num_retries: 2
