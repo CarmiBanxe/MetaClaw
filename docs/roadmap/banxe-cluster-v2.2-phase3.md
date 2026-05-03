@@ -668,3 +668,69 @@ PASS. Phase 3 P3.6 (Ollama version parity evo1↔evo2) полностью зак
 
 ### Verdict
 PASS. Phase 3 P3.6 (Ollama version parity evo1↔evo2) полностью закрыт.
+
+## 46. Sprint P3.4 — execution report (PARTIAL_PASS, 2026-05-03T16:05:00+02:00)
+
+Цель спринта: довести миграцию compliance-стека Legion → evo1. Закрыто частично; два пункта заблокированы по причинам, обнаруженным в ходе разбора (см. ниже).
+
+### Status table
+
+| Service | Status | Where |
+|---|---|---|
+| banxe-compliance-api | BLOCKED | conflict markers in evo1 deployment snapshot |
+| banxe-dashboard | SKIPPED | no source on Legion |
+| deep-search | LIVE (degraded path) | evo1:8088 |
+| drive_watcher cron | BLOCKED | script missing from source |
+
+### DONE
+
+- **deep-search**: serving on `evo1:8088` (Legion smoke `curl http://192.168.0.72:8088/` → HTTP 200). Каноничный systemd-юнит `banxe-deep-search.service` (`/data/banxe/compliance-env/bin/python /data/banxe/deep-search/deep-search-server.py`) установлен и enabled. На момент закрытия порт 8088 удерживает legacy-процесс PID 1915 (`/usr/bin/python3 /opt/deep-search-server.py`, root, uptime ~14h). Внешний контракт (HTTP 200 на 8088) выполняется. Switch на каноничный путь — отдельный мини-степ под operator approval (kill PID 1915 → `systemctl reset-failed banxe-deep-search` → `systemctl start banxe-deep-search`).
+
+### SKIPPED
+
+- **banxe-dashboard**: source отсутствует на Legion (`~/.openclaw/workspace/banxe-ai-bank` нет; `/home/mmber/.openclaw-moa-home/.local/bin/uvicorn` нет). Юнит на Legion ранее flapping-нул 27559 раз; уже `disable --now`. Миграция невозможна без восстановления исходников — out of scope P3.4.
+
+### BLOCKED
+
+- **banxe-compliance-api**: каноничный systemd-юнит `banxe-compliance-api.service` (`/data/banxe/compliance-env/bin/uvicorn api.main:app --host 0.0.0.0 --port 8093`) падает с `SyntaxError` на импорте `api.routers.auth`. Файл `/data/banxe/banxe-emi-stack/api/routers/auth.py` на evo1 содержит непроразрешённый merge-marker:
+  - `auth.py:68` `<<<<<<< HEAD`
+  - `auth.py:74` `=======`
+  - `auth.py:76` `>>>>>>> origin/main`
+  
+  Других реальных конфликтов в развёрнутом дереве не обнаружено (грep по `/data/banxe/banxe-emi-stack` нашёл только маркеры в `node_modules/*/README.md` — false positives, это документационные примеры в `js-tokens`, `xml2js`, `concat-map`, `argparse`, `@angular/compiler`, `@istanbuljs/load-nyc-config`, `cosmiconfig`).
+  
+  **Важная находка**: исходный репо на Legion `~/banxe-emi-stack` ЧИСТЫЙ, без маркеров (HEAD `61b944c fix(auth): defensive fallback for get_sca_service signature drift`, branch `main` up-to-date). evo1-копия `/data/banxe/banxe-emi-stack` — это не git-checkout (нет `.git/`), а слепок, сделанный из грязного worktree в более ранний момент. Followup: пере-снять `auth.py` (или весь дереве `api/`) с Legion HEAD и `systemctl restart banxe-compliance-api`. Tracked as **P3.4-followup-1: refresh evo1 auth.py from clean Legion HEAD**.
+
+- **drive_watcher cron**: миграция отменена. Обнаружено, что **`/opt/banxe/drive_watcher.py` отсутствует и на Legion, и на evo1**, и в git-истории `~/banxe-emi-stack` тоже нет (`git log --all --diff-filter=D` пусто по этому имени). Существующий Legion-крон (`crontab -l` line 3: `0 */6 * * * /opt/banxe/compliance/venv/bin/python /opt/banxe/drive_watcher.py >> /opt/banxe/compliance/watcher.log 2>&1`) — no-op как минимум с момента создания `watcher.log` (весь лог = повторяющееся `can't open file '/opt/banxe/drive_watcher.py': [Errno 2] No such file or directory`). Установка такого же крона на evo1 просто бы продублировала dead state — отказался по канону "лучшего ответа". Tracked as **P3.4-followup-2: locate/restore drive_watcher.py source then schedule on evo1; drop dead Legion cron line in the same change**.
+
+### Файлы с конфликт-маркерами (read-only inventory)
+
+Реальные:
+- `/data/banxe/banxe-emi-stack/api/routers/auth.py` (lines 68, 74, 76)
+
+False positives (документационные примеры в README сторонних пакетов, не блокируют ничего):
+- `/data/banxe/banxe-emi-stack/{frontend/,}node_modules/js-tokens/README.md`
+- `/data/banxe/banxe-emi-stack/{frontend/,}node_modules/concat-map/README.markdown`
+- `/data/banxe/banxe-emi-stack/frontend/node_modules/@angular/compiler/README.md`
+- `/data/banxe/banxe-emi-stack/node_modules/cosmiconfig/node_modules/argparse/README.md`
+- `/data/banxe/banxe-emi-stack/node_modules/xml2js/README.md`
+- `/data/banxe/banxe-emi-stack/node_modules/@istanbuljs/load-nyc-config/node_modules/argparse/README.md`
+
+### Rollback plan
+
+Если в течение 24h обнаружится регрессия compliance-стека:
+
+1. **deep-search**: ничего откатывать не нужно — legacy PID 1915 продолжает обслуживать 8088. Если operator таки убил PID и каноничный юнит не поднялся, ручной запуск legacy: `ssh evo1 'sudo /usr/bin/python3 /opt/deep-search-server.py &'`.
+2. **drive_watcher cron**: ничего не было установлено на evo1, ничего не было удалено с Legion (Legion-крон оставлен как есть до отдельного решения по followup-2). Полный no-op — откат не требуется.
+3. **compliance-api**: каноничный юнит на evo1 уже в auto-restart loop (FAILURE), но никакого старого compliance-api на Legion не было запущено. Откат не требуется. Если нужен временный сервис — Legion `systemctl --user` юниты для compliance-api никогда не существовали в этом спринте.
+4. **dashboard**: legion `banxe-dashboard.service` остаётся `disabled --now`. Re-enable: `systemctl --user enable --now banxe-dashboard.service` — но без восстановления `~/.openclaw/workspace/banxe-ai-bank` это снова приведёт к flapping.
+
+### Followups (трекать отдельно)
+
+- **P3.4-followup-1**: refresh `/data/banxe/banxe-emi-stack/api/routers/auth.py` (или весь `api/`) из чистого `~/banxe-emi-stack` HEAD `61b944c` → `systemctl reset-failed banxe-compliance-api && systemctl restart banxe-compliance-api` → smoke `curl http://192.168.0.72:8093/health`.
+- **P3.4-followup-2**: найти/восстановить `drive_watcher.py` (искать в backup'ах `/mnt/d/backups/`, в gpt-archive-toolkit, или восстановить из commit-истории если файл когда-либо был под git). После восстановления — перенести крон на evo1 как было предписано исходным спринтом, и удалить мёртвую строку из Legion `crontab -l`.
+- **P3.4-followup-3**: добить switch deep-search на каноничный путь — kill legacy PID 1915, `systemctl reset-failed banxe-deep-search && systemctl start banxe-deep-search`, верифицировать 3× HTTP 200 с Legion.
+
+### Verdict
+
+**PARTIAL_PASS.** Внешний контракт P3.4 (deep-search 8088 LIVE с evo1) выполнен — пусть и через legacy-процесс, не через каноничный systemd-юнит. compliance-api и drive_watcher закрыты как BLOCKED с конкретными followup-задачами и доказанными root-причинами (грязный snapshot и отсутствие исходника соответственно). dashboard закрыт как SKIPPED по объективной причине (нет исходников). P3.4 закрывается; работа продолжается под P3.4-followup-{1,2,3}.
