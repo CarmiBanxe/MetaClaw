@@ -220,3 +220,42 @@ Estimated: 2h install + basic workflows, 1h Atom setup. Deferred to Phase 4 (pos
   - evo2: ollama 0.22.1 (kernel 6.17.0-23-generic), hostname `banxe-NucBox-EVO-X2-2`.
 - evo1 ollama 0.20.7 → 0.22.x upgrade DEFERRED: in-flight `qwen3:235b-a22b` pull on evo2 makes evo1 the only LB fallback for `ai`/`ai-heavy`/`banxe-general`/`fast` routes; restarting ollama on evo1 right now would briefly degrade those routes. Will execute the upgrade in a follow-up window once P3.2 pull finishes. Tracked.
 - Result: PARTIAL PASS (hostname VERIFIED; version align deferred to safe window).
+
+## 23. Sprint P3.4 — execution report (PAPER PLAN, 2026-05-03)
+
+Audit-only inventory of BANXE services currently running on Legion that are scheduled to migrate to evo1 in a follow-up window (when in-flight P3.2 pull releases the LB fallback constraint).
+
+### Migration candidates (Legion → evo1 `/data/banxe/`)
+
+| # | Service | Unit / Cron | Cmd / WD | Listen | Deps |
+|---|---|---|---|---|---|
+| 1 | banxe-compliance-api | systemd --user `banxe-compliance-api.service` | `uvicorn api.main:app --host 0.0.0.0 --port 8093 --workers 1` · wd=`~/banxe-emi-stack` · EnvFile=`~/banxe-emi-stack/.env` · venv=`/opt/banxe/compliance/venv` | tcp/8093 | `/opt/banxe/*`, env in `~/banxe-emi-stack/.env` |
+| 2 | banxe-dashboard | systemd --user `banxe-dashboard.service` | `uvicorn dashboard.server:app --host 0.0.0.0 --port 8090` · wd=`~/.openclaw/workspace/banxe-ai-bank` · bin=`~/.openclaw-moa-home/.local/bin/uvicorn` | tcp/8090 | OpenClaw workspace tree |
+| 3 | deep-search | systemd --user `deep-search.service` | `python3 ~/deep-search-server.py` · bin=`~/playwright-env/bin/python3` | tcp/8088 | Playwright + chromium runtime |
+| 4 | drive_watcher (cron) | crontab `0 */6 * * *` | `/opt/banxe/compliance/venv/bin/python /opt/banxe/drive_watcher.py >> /opt/banxe/compliance/watcher.log 2>&1` | none | `/opt/banxe/*`, Google API token.json |
+
+### What stays on Legion
+- `litellm.service` (prod gateway :8080) — unchanged.
+- LiteLLM v2 on :4000 (manual) — unchanged.
+- `openclaw-tunnel-gmktec.service` (already SSH tunnel into evo1; lives on Legion intentionally).
+
+### Deferred execution plan (NOT YET RUN)
+1. On evo1: create `/data/banxe/{compliance,dashboard,deep-search}` and rsync source trees.
+2. Recreate systemd unit files under `/etc/systemd/system/` on evo1 with adjusted paths.
+3. Migrate `drive_watcher` cron from Legion crontab to evo1 system cron `/etc/cron.d/banxe-drive-watcher`.
+4. Disable corresponding `--user` units on Legion via `systemctl --user disable --now <unit>`; remove crontab line.
+5. Update LiteLLM/Continue.dev/internal callers (if any) from `legion:<port>` to `evo1:<port>`.
+6. 24h soak with health-check.
+
+### Result
+PAPER_PLAN. Migration deferred to a safe window after P3.2 reasoning model pull finishes (current ETA ~3h).
+
+## 24. Sprint P3.11 — preparation only (PARTIAL, 2026-05-03)
+
+- Created config dir `~/.config/banxe/` (perm 700) and env template `~/.config/banxe/telegram.env` (perm 600) with placeholders `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, `TELEGRAM_ENABLED=0`.
+- Installed `~/bin/banxe-telegram-notify` (executable shell helper). Reads env and is a no-op when `TELEGRAM_ENABLED!=1` or token missing. Safe to invoke from any cron or check script today.
+- NOT done yet (operator action): create bot via BotFather, paste `BOT_TOKEN` and `CHAT_ID` into the env file, set `TELEGRAM_ENABLED=1`, and wire calls in:
+  - `~/bin/check-llm-cluster.sh` (failure branch)
+  - `/opt/banxe/compliance/drive_watcher.py` (alert branch)
+  - `~/.openclaw/workspace-moa/scripts/daily-eval.sh` (final summary)
+- Result: PARTIAL (infra wiring stubbed; bot token wiring pending operator-action OPERATOR_RUN).
