@@ -300,6 +300,19 @@ Snapshot of memory layout on both EVO-X2 nodes after the GTT-cap removal and swa
 
 D: is the obvious target for any large local model cache or build artifacts. Mounting it into WSL (`/mnt/d`) is already supported by the default automount; symlink targets such as `~/models -> /mnt/d/models` would unlock all 3.7 TiB without growing the WSL VHD.
 
+**Sprint P3.9 (2026-05-03) — D: now in use.** Layout established:
+
+| Path | Purpose |
+|---|---|
+| `/mnt/d/models/` | GGUF cache for Legion-side llama.cpp / Ollama (currently `Qwen2.5-Coder-14B-Instruct-Q4_K_M.gguf`, 8.4 GiB). `~/models` is now a symlink to this directory. |
+| `/mnt/d/backups/evo1/` | Daily rsync mirror of `evo1:/data/`. |
+| `/mnt/d/backups/evo2/` | Daily rsync mirror of `evo2:/data/` (via `moriel-carmi@192.168.0.15`). |
+| `/mnt/d/training-data/` | Datasets staged from `banxe-training-data` repo. |
+| `/mnt/d/archives/` | Legacy code, ChatGPT exports, compliance docs. |
+
+Backup driver: `~/MetaClaw/scripts/backup-cluster.sh` (symlinked from `~/bin/backup-cluster.sh`).
+Cron: `0 4 * * *` — daily 04:00 local. Logs to `/mnt/d/backups/cron.log` and per-day `/mnt/d/backups/backup-YYYY-MM-DD.log`.
+
 ## 5.11 ROCm status on evo2 (2026-05-03, Sprint P3.8 / P3.5a)
 
 - **Kernel side: ready.** `amdgpu` module loaded, `/dev/kfd` exposed, `/dev/dri/card0` + `renderD128` present, GPU PCI `1002:1586` rev c1 (Strix Halo Radeon 8060S iGPU @ c5:00.0) bound to `amdgpu`.
