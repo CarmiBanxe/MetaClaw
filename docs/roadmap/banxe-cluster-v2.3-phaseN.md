@@ -168,3 +168,51 @@ Runtime environment почти готов, но service supervision для compl
 
 ### Verdict
 **v2.3 mini-sprints CLOSED**. 2/3 followups закрыты PASS, 1 DEFERRED по env key. Net coverage: внешний контракт compliance-стека на evo1 обеспечен (compliance-api 8194 + deep-search 8088 + node_exporter 9100 + glm-master 8081 — все на canonical systemd units, observable, smoke-OK).
+
+## §F3 — deep-search canonical switch (PASS, 2026-05-03T16:52:49+02:00)
+
+### Outcome
+PASS. Legacy /opt/deep-search-server.py (PID 1915, root, uptime 14h+) убит. Канонический systemd-юнит banxe-deep-search.service (compliance-env python /data/banxe/deep-search/deep-search-server.py) теперь serving на evo1:8088.
+
+### Steps
+1. systemctl stop banxe-deep-search.
+2. kill legacy PID 1915, 2s settle.
+3. systemctl reset-failed + start banxe-deep-search.
+4. Один промежуточный OSError при первом restart attempt (порт в TIME_WAIT после kill); второй attempt поднялся чисто.
+
+### Post-state
+- LISTEN 0.0.0.0:8088 by python PID 2813293 (canonical unit cgroup).
+- systemctl is-active banxe-deep-search = active.
+
+### Smoke (Legion → evo1:8088)
+- [1] / HTTP 200 time=0.0057s
+- [2] / HTTP 200 time=0.0065s
+- [3] / HTTP 200 time=0.0066s
+
+### Verdict
+PASS. Канонический путь подтверждён, legacy retired.
+
+## §FINAL — v2.3 mini-sprints summary (2026-05-03T16:52:49+02:00)
+
+| Followup | Status | Where |
+|---|---|---|
+| F1 — banxe-compliance-api unblock | PASS | evo1:8194, /health 200 (commit faab812) |
+| F3 — deep-search canonical | PASS | evo1:8088 (canonical unit, legacy PID 1915 retired) |
+| F-secrets — ANTHROPIC_API_KEY batch | DEFERRED | env key empty; re-run after export |
+
+### v2.2 §47 carryover закрыто
+- P3.4-followup-1 (auth.py refresh) → DONE (F1).
+- P3.4-followup-3 (deep-search canonical) → DONE (F3).
+
+### v2.2 §47 carryover OPEN
+- P3.4-followup-2 (drive_watcher.py source missing).
+- P3.2 / P4.3 BIOS UMA rebalance evo2 (qwen3:235b-a22b unlock).
+- MiroFish prod-hardening.
+- CVE-2026-25253 OpenClaw upgrade.
+- Phase 4 backlog P4.1–P4.6.
+- COMPLIANCE-OPS-2 (запрет manual uvicorn вне systemd).
+- Factory CI scope tweak (.venv exclude).
+- Factory secrets (ANTHROPIC_API_KEY × 14 PR repos).
+
+### Verdict
+v2.3 mini-sprints CLOSED. 2/3 PASS, 1 DEFERRED (env). Canonical observable services on evo1: glm-master 8081, ollama 11434, node_exporter 9100, deep-search 8088, banxe-compliance-api 8194.
