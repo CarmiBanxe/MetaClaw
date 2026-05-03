@@ -304,3 +304,43 @@ PARTIAL PASS. Observability core (Grafana datasource, Prometheus self-scrape, Li
 ### P3.2 pull progress snapshot (informational)
 
 `tail -n 1 /tmp/ollama-pull-reasoning.log` on evo2 → `pulling 791d5d11998e: 3% ▕ ▏ 4.3 GB/142 GB 11 MB/s 3h15m`. PID 27107 active. Not interfered with.
+
+## 26. Sprint P3.7 — verify v2 (PARTIAL PASS, 2026-05-03)
+
+Re-snapshot during the in-flight evo2 pull. All probes routed via `ssh evo2` (Legion outbound curl is sandboxed for non-loopback HTTP).
+
+### Prometheus locator
+- `evo2:9090/-/healthy` → `Prometheus Server is Healthy.` ✓ (canonical Prometheus host)
+- `evo1:9090/-/healthy` → empty (no Prometheus on evo1)
+- Legion `127.0.0.1:9090` → not run (sandbox); not expected to host Prometheus.
+
+### Targets (`/api/v1/targets`)
+`total: 4 | up: 4 | down: 0 | jobs: ['litellm_v4000', 'ollama_blackbox', 'prometheus']`
+- `litellm_v4000` `100.101.218.26:4000` → up
+- `ollama_blackbox` `http://192.168.0.72:11434/api/tags` → up
+- `ollama_blackbox` `http://192.168.0.15:11434/api/tags` → up
+- `prometheus` `localhost:9090` → up
+
+### LiteLLM v2 `/metrics/` (Legion :4000, PID 3504547)
+First 600 chars (truncated, GC counters as canary that the endpoint is alive):
+```
+# HELP python_gc_objects_collected_total Objects collected during gc
+# TYPE python_gc_objects_collected_total counter
+python_gc_objects_collected_total{generation="0"} 3131.0
+python_gc_objects_collected_total{generation="1"} 827.0
+python_gc_objects_collected_total{generation="2"} 90.0
+# HELP python_gc_objects_uncollectable_total Uncollectable objects found during GC
+# TYPE python_gc_objects_uncollectable_total counter
+python_gc_objects_uncollectable_total{generation="0"} 0.0
+python_gc_objects_uncollectable_total{generation="1"} 0.0
+python_gc_objects_uncollectable_total{generation="2"} 0.0
+```
+LiteLLM v2 process: PID 3504547 + worker 3504915, listening `0.0.0.0:4000`.
+
+### node_exporter — still missing on both nodes
+- `evo1:9100/metrics` → empty (no listener)
+- `evo2:9100/metrics` → empty (no listener)
+Same gap as §25; tracked as P3.7c. Inference path untouched.
+
+### Verdict
+PARTIAL PASS — same shape as §25: observability core (Prometheus self / LiteLLM / Ollama blackbox) all up, node_exporter still unwired.
