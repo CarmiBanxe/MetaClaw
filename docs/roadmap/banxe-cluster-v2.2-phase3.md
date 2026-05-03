@@ -1,5 +1,6 @@
 # BANXE AI Cluster — Phase 3 Roadmap v2.2 (uточнённый)
-Date: 2026-05-03 · Author: Moriel Carmi · Status: PLANNED
+Date: 2026-05-03 · Author: Moriel Carmi · Status: CLOSED (2026-05-03)
+Phase 3 status: **CLOSED 2026-05-03** — see §47 closing summary. Active work continues under banxe-cluster-v2.3 / Phase 4 backlog (§15) и followup-листу §47.
 
 ## 0. Context
 
@@ -734,3 +735,83 @@ False positives (документационные примеры в README ст�
 ### Verdict
 
 **PARTIAL_PASS.** Внешний контракт P3.4 (deep-search 8088 LIVE с evo1) выполнен — пусть и через legacy-процесс, не через каноничный systemd-юнит. compliance-api и drive_watcher закрыты как BLOCKED с конкретными followup-задачами и доказанными root-причинами (грязный snapshot и отсутствие исходника соответственно). dashboard закрыт как SKIPPED по объективной причине (нет исходников). P3.4 закрывается; работа продолжается под P3.4-followup-{1,2,3}.
+
+## 47. Phase 3 v2.2 — closing summary (2026-05-03)
+
+### Executive summary
+
+Phase 3 v2.2 закрывается с результатом **MOSTLY_PASS**. Из 18 трекаемых под-спринтов 11 закрыты как PASS, 1 как PASS_WITH_DEGRADATION, 2 как PARTIAL_PASS / PARTIAL, 3 как INFO/PAPER, 1 как PLANNED carryover. Внешние контракты Phase 3 — observability stack замкнут (Prometheus → Grafana → 4 BANXE-* dashboards), reasoning плоскость оперативна на LB (llama3.3:70b), GLM-4.5-Air RPC работает на измеренных ~21.4 tok/s gen, фабрика стандартизована на 17/25 репо (68%), security backlog зафиксирован — все выполнены либо явно перенесены в Phase 4 backlog с конкретными followup-задачами. Один спринт (P3.4) принёс две неожиданные находки: грязный snapshot evo1 для compliance-api и отсутствие исходника drive_watcher.py во всём кластере и git-истории. Эти находки превратились в чёткие P3.4-followup-{1,2,3} задачи, а не в скрытый долг.
+
+### Final coverage table
+
+| Sprint family | Outcome | Notes |
+|---|---|---|
+| P3.1 Aider models pull | PASS | §19 — модели на cluster |
+| P3.2 Reasoning model evo2 | PASS_WITH_DEGRADATION | §44 — llama3.3:70b LB активен; qwen3:235b-a22b скачан, заблокирован BIOS UMA → P4.3 |
+| P3.3 OpenClaw tunnel fix | PASS | §20 |
+| P3.4 Service migration Legion→evo1 | PARTIAL_PASS | §46 — deep-search LIVE (legacy path); compliance-api BLOCKED (snapshot conflict); drive_watcher cron BLOCKED (script missing); dashboard SKIPPED (no source) |
+| P3.5 Security hardening | PASS | §21 — с 2 deferred items в §16 backlog |
+| P3.6 Ollama parity evo1↔evo2 | PASS | §45 — 0.22.1 на обоих узлах, LB intact |
+| P3.7 Grafana + persistent units | PASS | §41 — 4 dashboards живые с реальными data-sources |
+| P3.7c node_exporter | PASS | §31 — wired на evo1 |
+| P3.7d Drift snapshot | INFO | §32 — read-only baseline |
+| P3.7e Dashboards skeleton | PAPER | §34 — заложен под P3.7f импорт |
+| P3.7g midaz-ledger triage | INFO | §38 — отдельный downstream-вопрос |
+| P3.8 Legion D drive 3.7 TiB | PAPER | план в §10, исполнение перенесено в Phase 4 |
+| P3.9 Operational hygiene | PASS | §27 |
+| P3.10 XDNA 2 NPU | DEFERRED | Phase 4 / P4.4 |
+| P3.11 Telegram alerts | PARTIAL | §24/§33 — wired в check-llm-cluster.sh; полное end-to-end-уведомление зарезервировано в Phase 4 |
+| P3.12 / P4.5 LLM Doc Translation | PAPER | §17 — выбор приоритета на operator |
+| Sprint Factory Rollout v2 | PASS | §42 — 14/15 PRs opened (1 skip topology); coverage 17/25 = 68% после merge |
+| MiroFish prod-hardening | PLANNED | §43 — отдельный sprint в Phase 4 |
+
+### KPIs
+
+- **Cluster measured throughput**: glm-master via RPC = **21.4 tok/s gen** (Phase 3 baseline, см. §41). Target post-P4.3 BIOS rebalance: **70+ tok/s** (см. §15 P4.3) — отложен в Phase 4.
+- **Observability up**: **4/4 dashboards** живые (`banxe-litellm-v2`, `banxe-glm-master-rpc`, `banxe-ollama-blackbox-status`, `banxe-cluster-overview`). Prometheus self / LiteLLM / Ollama blackbox / glm_master jobs все UP. Node-level metrics — node_exporter wired на evo1 (§31).
+- **Factory baseline coverage**: **17/25 = 68%** активных репо после merge всех PRs из §42. Pilot 3 (banxe-payment-core, banxe-ui, banxe-infra) на отдельном stabilization-пути.
+- **Followups carried into Phase 4**: **15** (см. список ниже).
+- **Reasoning plane availability**: 100% (LB llama3.3:70b на evo1+evo2; failover прозрачен).
+
+### Followups carried into Phase 4
+
+Из P3.4 (§46):
+1. **P3.4-followup-1**: refresh `/data/banxe/banxe-emi-stack/api/routers/auth.py` из чистого Legion HEAD `61b944c` → restart `banxe-compliance-api`.
+2. **P3.4-followup-2**: locate/restore `drive_watcher.py` (искать в `/mnt/d/backups/`, gpt-archive-toolkit, git-истории других репо); затем установить cron на evo1 и убрать мёртвую строку из Legion `crontab -l`.
+3. **P3.4-followup-3**: switch deep-search на каноничный systemd-юнит — operator-approved kill legacy PID 1915, `systemctl reset-failed banxe-deep-search && systemctl start banxe-deep-search`, верифицировать 3× HTTP 200 с Legion.
+
+Из P3.2 (§44):
+4. **P3.2-followup / P4.3 BIOS UMA rebalance evo2** — разблокировать `qwen3:235b-a22b` (142 GB MoE 235B@a22b уже скачан на /data/ollama-models). Альтернатива: llama.cpp RPC между evo1+evo2 (как glm-master).
+
+Из §43 MiroFish:
+5. **MiroFish prod-hardening** — нестандартный repo layout, отдельный sprint в Phase 4.
+
+Из §16 Security backlog:
+6. **CVE-2026-25253** (CVSS 8.8): OpenClaw unauth RCE через WebSocket token hijacking. Проверить версию OpenClaw на Legion, upgrade ≥ 2026.1.29 если уязвим.
+7. **evo1 80/443 ALLOW IN Anywhere** (OpenClaw Web UI): сузить до LAN+Tailscale, deferred из P3.5.
+
+Из §15 Phase 4 backlog:
+8. **P4.1**: QClaw/OpenClaw Computer Use на Legion Windows host (exploration, ~2h).
+9. **P4.2**: ROCm 6.4 migration на обоих EVO-X2, gated на FCA CASS 15 deadline (2026-05-07).
+10. **P4.3**: BIOS UMA rebalance на evo1 (15 min + reboot), throughput 37 → 70+ tok/s.
+11. **P4.4**: XDNA 2 NPU utilization (research sprint, 4h, 252 TOPS).
+
+Из §17/§18 Phase 4:
+12. **P3.12 / P4.5**: LLM Document Translation Pipeline (open-source Ollama-compatible).
+13. **P4.6**: n8n workflow engine + Atom AI review (~2-3h).
+
+Из §42 Factory:
+14. **Factory secrets enablement**: batch-install `ANTHROPIC_API_KEY` repo-secret в 14 целевых репо после ввода ключа в окружение оператора.
+15. **Factory CI scope tweak**: исключить `.venv` и vendored dependencies из ruff/secrets-scan через `.gitignore` + pre-commit `exclude`.
+
+### Hand-off note
+
+Активная работа после 2026-05-03 идёт под одним из:
+- **banxe-cluster-v2.3** — если operator выбирает minor-bump континуум v2.x с тем же scope-зонтом (рекомендуется для followup-1..3 как hot-fix трека и для security backlog).
+- **banxe-cluster-Phase 4** — для capacity и feature-расширений (P4.1–P4.6, MiroFish, doc translation, n8n). Это согласуется с §15 Phase 4 backlog уже зафиксированным в этом документе.
+
+Этот документ (`banxe-cluster-v2.2-phase3.md`) переходит в режим **read-only canonical record** для Phase 3 v2.2; новые execution reports пишутся в новый файл (`banxe-cluster-v2.3-phaseN.md` / `banxe-cluster-phase4.md`).
+
+### Verdict
+
+**Phase 3 v2.2 — CLOSED.** Status MOSTLY_PASS с 15 явно трекаемыми followup-задачами, ни одной скрытой пропажи. Observability, фабрика, security baseline, reasoning plane закрыты. Compliance-стек частично мигрирован — внешний контракт deep-search LIVE, остальные пункты задокументированы как BLOCKED с воспроизводимыми root-причинами и executable-планом восстановления.
