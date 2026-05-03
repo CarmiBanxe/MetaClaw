@@ -658,3 +658,13 @@ PASS_WITH_DEGRADATION. Reasoning плоскость оперативна на ll
 
 ### Verdict
 PASS. Phase 3 P3.6 (Ollama version parity evo1↔evo2) полностью закрыт.
+
+## 45. Sprint P3.6 — finalize (PASS, 2026-05-03T15:18:18+02:00)
+
+- evo1 ollama upgraded: `0.20.7` → `ollama version is 0.22.1` через `curl -fsSL https://ollama.com/install.sh | sudo sh`.
+- Service active, `/api/tags` отвечает 200.
+- LiteLLM v2 LB-маршрут `ai` прошёл sanity smoke-test без регрессии (`completion_tokens > 0`).
+- Parity достигнута: evo1=ollama version is 0.22.1, evo2=0.22.1.
+
+### Verdict
+PASS. Phase 3 P3.6 (Ollama version parity evo1↔evo2) полностью закрыт.
