@@ -259,3 +259,48 @@ PAPER_PLAN. Migration deferred to a safe window after P3.2 reasoning model pull 
   - `/opt/banxe/compliance/drive_watcher.py` (alert branch)
   - `~/.openclaw/workspace-moa/scripts/daily-eval.sh` (final summary)
 - Result: PARTIAL (infra wiring stubbed; bot token wiring pending operator-action OPERATOR_RUN).
+
+## 25. Sprint P3.7 — verify (PARTIAL PASS, 2026-05-03)
+
+Read-only verification of the observability stack provisioned in P3.7. Executed during the in-flight `qwen3:235b-a22b` pull on evo2 (PID 27107) without interfering with the pull.
+
+### Grafana datasource — PASS
+
+`GET http://localhost:3000/api/datasources` (via `ssh evo2`) returns one entry:
+
+| Field | Value |
+|---|---|
+| `id` / `uid` | `1` / `cfkwbx1yvr6dce` |
+| `name` / `type` | `Prometheus` / `prometheus` |
+| `url` / `access` | `http://prometheus:9090` / `proxy` |
+| `isDefault` | `true` |
+| `readOnly` | `false` |
+
+### Prometheus targets — PASS (for what is currently scraped)
+
+`GET http://localhost:9090/api/v1/targets` reports 4 active targets, **0 dropped**, all `health: "up"`, last scrape successful at `2026-05-03T02:40:2x`:
+
+| Job | Instance | Health |
+|---|---|---|
+| `litellm_v4000` | `100.101.218.26:4000` | up |
+| `ollama_blackbox` | `http://192.168.0.72:11434/api/tags` (evo1) | up |
+| `ollama_blackbox` | `http://192.168.0.15:11434/api/tags` (evo2) | up |
+| `prometheus` | `localhost:9090` | up |
+
+### Gap finding — node_exporter is NOT scraped (PARTIAL)
+
+The "Node Exporter Full" Grafana dashboard (uid `aedcea76-...`, imported in P3.7) has **no data backing it** today:
+
+- `pgrep -fa node_exporter` on evo1 → no process; `:9100` not listening.
+- `pgrep -fa node_exporter` on evo2 → no process; `:9100` not listening.
+- No `node_exporter` job declared in Prometheus's `activeTargets`.
+
+The dashboard renders panels but every query returns empty until either (a) `node_exporter` is installed and started on evo1 + evo2 and (b) a `node` job is added to Prometheus scrape config. Both are out of scope for the read-only verify; queued as a follow-up under §16 Security backlog (track as P3.7c).
+
+### Verdict
+
+PARTIAL PASS. Observability core (Grafana datasource, Prometheus self-scrape, LiteLLM scrape, Ollama blackbox probes) is healthy. Node-level metrics (CPU/mem/disk/net via node_exporter) are not yet wired — dashboard imported but unused. Inference path untouched.
+
+### P3.2 pull progress snapshot (informational)
+
+`tail -n 1 /tmp/ollama-pull-reasoning.log` on evo2 → `pulling 791d5d11998e: 3% ▕ ▏ 4.3 GB/142 GB 11 MB/s 3h15m`. PID 27107 active. Not interfered with.
