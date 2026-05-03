@@ -115,3 +115,28 @@ Per ADR-018 (banxe-architecture/decisions/ADR-018-hybrid-5-layer-ai-compute.md):
 
 ### Reusability
 Canonical target reusable for any future project (regtech, AI products, personal R&D). Models swap, Layers stay.
+
+## 8. Canonical target architecture (5-layer hybrid) — LOCKED 2026-05-03T18:34:15+02:00
+
+Per ADR-018 (banxe-architecture/decisions/ADR-018-hybrid-5-layer-ai-compute.md):
+
+| Layer | Scope | Hardware | Throughput target |
+|---|---|---|---|
+| 1 — Reasoning | 70B–235B via llama.cpp RPC | evo1 master + evo2 worker (USB4) | 5–25 t/s gen |
+| 2 — Mid-size | 10B–70B Ollama LB | evo1 + evo2 iGPU | 15–35 t/s gen |
+| 3 — Small specialized | ≤7B via XDNA 2 NPU | evo1 + evo2 NPU (252 TOPS aggregate) | sub-10ms latency |
+| 4 — Cloud meta | PR review, scaffolding | Claude Code (cloud), deny_paths enforced | ~1 s |
+| 5 — Routing | All traffic | LiteLLM v2 :4000 (Legion systemd) | <40 ms overhead |
+
+### BIOS UMA (asymmetric, canonical)
+- **evo1**: 96 GiB iGPU / 32 GiB CPU (AI heavy).
+- **evo2**: 32 GiB iGPU / 96 GiB CPU (CPU + DB heavy).
+
+### Required sprints to reach 100%
+1. **P4.3-evo2** — BIOS rebalance evo2 to 32/96 (15 min + reboot).
+2. **P4.3-Q235** — convert qwen3:235b-a22b to Q4_K_M GGUF, second llama.cpp RPC master :8082 (~3-4 h).
+3. **P4.4-NPU** — AMD Ryzen AI SDK install on both evo nodes, deploy 2-3 small ONNX models, wire LiteLLM aliases (~4 h research + setup).
+4. **P4.2-ROCm** (optional) — Ollama Vulkan → ROCm 6.4, +30-50% throughput (~2 h).
+
+### Reusability
+Canonical target reusable for any future project (regtech, AI products, personal R&D). Models swap, Layers stay.
