@@ -9,7 +9,6 @@ on:
 permissions:
   contents: read
   pull-requests: write
-  id-token: write
 
 jobs:
   guardian:
@@ -29,8 +28,7 @@ jobs:
       - name: Connect to Tailscale (MagicDNS for evo1)
         uses: tailscale/github-action@v3
         with:
-          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
-          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          authkey: ${{ secrets.TS_AUTHKEY }}
           tags: tag:github-runner
           version: latest
 
