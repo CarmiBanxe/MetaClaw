@@ -486,3 +486,16 @@ JSON-скелеты для 4 дашбордов из §29 размещены н�
 
 ### Verdict
 PAPER PASS. Артефакты на месте, готовы к импорту.
+
+## 35. Sprint P3.7b-tweak — glm-master /metrics + Prometheus scrape (PASS, 2026-05-03T06:19:58+02:00)
+
+- Добавлен флаг `--metrics` в ExecStart glm-master.service (между `--threads 16` и `--port 8081`). Backup unit'а сохранён в `/etc/systemd/system/glm-master.service.bak.<ts>`.
+- `systemctl daemon-reload` + `systemctl restart glm-master` → re-mmap 69 GiB GGUF + reconnect to RPC worker evo2:50052 → `/health` returned `{"status":"ok"}` после ~3 минут прогрева.
+- Эндпоинт `/metrics` теперь экспонирует llama.cpp counter'ы: `llamacpp:requests_processing`, `llamacpp:tokens_predicted`, `llamacpp:tokens_predicted_seconds`, `llamacpp:prompt_tokens_total`, `llamacpp:tokens_predicted_total` и т.д.
+- В `/home/moriel-carmi/monitoring/prometheus.yml` добавлен scrape job `glm_master` с Bearer auth (sk-rpc-glm47-2026 хранится только в config-файле prometheus, не в коммите).
+- promtool check ok, SIGHUP reload без рестарта контейнера.
+- targets: total=7 up=7 (добавлен `glm_master http://192.168.0.72:8081 up`).
+- Готовит §29 dashboard `BANXE-glm-master-RPC` к импорту: prompt/gen tok/s теперь имеют реальный source.
+
+### Verdict
+PASS.
