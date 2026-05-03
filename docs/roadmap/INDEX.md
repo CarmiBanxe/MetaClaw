@@ -55,3 +55,6 @@ Source of truth: `~/MetaClaw/docs/roadmap/banxe-cluster-v2.{2-phase3,3-phaseN}.m
 - FCA CASS 15 deadline (7 May 2026) → активизирует Block E + J P0.
 - BIOS UMA rebalance (P4.3) → разблокирует qwen3:235b-a22b reasoning.
 - Pilot 3 PR merge → закрывает Factory Rollout v2 фактически.
+
+## 5. Canonical target architecture (LOCKED)
+Per **ADR-018** (`~/banxe-architecture/decisions/ADR-018-hybrid-5-layer-ai-compute.md`): **5-layer hybrid AI compute** — Reasoning RPC / Mid-size LB / Small NPU / Cloud meta / LiteLLM router. Asymmetric BIOS UMA (evo1=96/32 AI heavy, evo2=32/96 CPU heavy). See HW-MODEL-UPGRADE-matrix.md §8 for sprint plan to 100%.
