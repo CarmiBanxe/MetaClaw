@@ -9,6 +9,7 @@ on:
 permissions:
   contents: read
   pull-requests: write
+  id-token: write
 
 jobs:
   guardian:
@@ -24,6 +25,14 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
+
+      - name: Connect to Tailscale (MagicDNS for evo1)
+        uses: tailscale/github-action@v3
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:github-runner
+          version: latest
 
       - name: Resolve guardian URL for ${{ matrix.family }}
         id: url
