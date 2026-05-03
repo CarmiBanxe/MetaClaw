@@ -447,3 +447,20 @@ Verification:
 - `ss -tln` → `LISTEN 0 4096 *:9100 *:*`
 - `ssh evo2 'curl http://192.168.0.72:9100/metrics | head -c 200'` → `# HELP apt_autoremove_pending ... apt_autoremove_pending 243 # HELP apt_package_cache_timestamp_seconds ...` ✓ (real Debian/Ubuntu node_exporter metrics)
 - ufw rules added with comments `node-exporter-9100-LAN` and `node-exporter-9100-tailscale`.
+
+## 32. P3.7d — drift snapshot evo1 (2026-05-03T05:57:27+02:00)
+
+Не относится к нашему sprint'у; зафиксировано как baseline для следующих наблюдений.
+
+### Финдинги
+- `PID 1934 systemd -c .config.json` (root, parent=1) — главный потребитель CPU (~2938%, ~30 vCPU). cgroup: `system.slice/systemd.service` — легитимный systemd-юнит. uptime 4h+. Это стартер BANXE/Ballerine compose-стека на evo1.
+- 15 активных docker-контейнеров: ballerine workflow-service, banxe-mock-aspsp, banxe-frankfurter, midaz-ledger (Restarting), midaz-rabbitmq, midaz-mongodb, mirofish, banxe-marble-frontend/backend/postgres, banxe-marble-firebase, jube.webapi, jube.jobs.
+- `midaz-ledger` в restart-цикле ('Restarting (1) 21 seconds ago') — отдельная зависимость стека, не наш scope.
+- glm-master (`PID 346725 llama-server`) idle, ~2% CPU. Ollama runner (qwen3:30b-a3b cached) ~12% CPU.
+- load average ~34.9 — стабильный, не I/O-wait (us=99% sy=1% wa=0%). Pull qwen3:235b-a22b идёт на evo2, к этому load не относится.
+
+### Решение
+Действие: НИКАКОЕ. BANXE compose-стек работает штатно, GLM-4.5-Air RPC и Ollama не затрагиваются.
+
+### Технический долг
+Открыть follow-up: 'Investigate midaz-ledger restart loop on evo1 compose stack' (репо banxe-payment-core или developer-core, не P3.x).
