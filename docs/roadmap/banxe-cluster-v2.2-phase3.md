@@ -367,3 +367,57 @@ pulling 791d5d11998e:  20% ▕███               ▏  28 GB/142 GB   11 MB/
 ```
 
 Legion local time: `2026-05-03T05:15:09+02:00`. Throughput stable at 11 MB/s; ETA ~2h43m. PID 27107 still active. Untouched.
+
+## 29. Sprint P3.7 — dashboards plan v0.1 (paper)
+
+Probe of `http://192.168.0.15:3000/api/search` returned `401 Unauthorized` (Grafana requires auth; admin creds exist but un-authed `/api/search` is correctly refused). No anonymous dashboard listing — proceeding on paper.
+
+Four dashboards proposed for the next observability sprint. All sourced from already-up Prometheus targets where possible; gaps note `requires-node_exporter` (P3.7c).
+
+### 1. `BANXE-LiteLLM-v2`
+Source: `litellm_v4000` job (already up, scraping `100.101.218.26:4000/metrics`).
+
+| Panel | Metric (PromQL) |
+|---|---|
+| Requests/sec per model | `sum by (model) (rate(litellm_request_total[1m]))` |
+| Latency p50/p95/p99 | `histogram_quantile(0.50, sum by (le) (rate(litellm_request_latency_seconds_bucket[5m])))` etc. |
+| Error rate | `sum(rate(litellm_request_total{status=~"5.."}[5m])) / sum(rate(litellm_request_total[5m]))` |
+| Fallback rate | `sum(rate(litellm_fallback_total[5m]))` |
+| Token throughput | `sum by (model) (rate(litellm_total_tokens[1m]))` |
+
+### 2. `BANXE-Ollama-Cluster`
+Source: `ollama_blackbox` jobs (per-host blackbox probes) + ad-hoc PromQL.
+
+| Panel | Metric |
+|---|---|
+| Per-host API up | `probe_success{job="ollama_blackbox"}` |
+| Model load count | derived from `/api/tags` length (requires lightweight exporter — write later) |
+| VRAM/GTT proxy | `node_memory_MemAvailable_bytes` (**requires-node_exporter**) |
+| Last pull duration | scrape ollama log — requires log exporter (deferred to P3.7d) |
+
+### 3. `BANXE-glm-master-RPC`
+Source: scrape `evo1:8081/metrics` (llama.cpp `/metrics` endpoint, opt-in flag `--metrics`) — needs glm-master unit to add `--metrics` to ExecStart in a future P3.7b-tweak.
+
+| Panel | Metric |
+|---|---|
+| 8081 health | `probe_success{instance="http://192.168.0.72:8081/health"}` (add to blackbox config) |
+| RPC worker state | scrape `evo2:50052` via TCP probe (blackbox `tcp_connect`) |
+| Prompt tok/s | `llama_request_prompt_tokens_per_second` (when `--metrics` enabled) |
+| Gen tok/s | `llama_request_eval_tokens_per_second` (when `--metrics` enabled) |
+
+### 4. `BANXE-Node-Exporter`
+**Requires-node_exporter** (P3.7c). Standard panels from dashboard 1860:
+
+| Panel | Metric |
+|---|---|
+| CPU% | `100 - avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[1m]) * 100)` |
+| RAM | `node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes` |
+| Swap | `node_memory_SwapFree_bytes / node_memory_SwapTotal_bytes` |
+| Disk I/O | `rate(node_disk_io_time_seconds_total[1m])` |
+| Network | `rate(node_network_receive_bytes_total[1m])` + transmit |
+
+### Implementation order
+1. P3.7c — install node_exporter on evo1 + evo2; add `node` job to Prometheus scrape config; verify in `BANXE-Node-Exporter`.
+2. P3.7b-tweak — add `--metrics` to glm-master ExecStart; add scrape of `evo1:8081/metrics` to Prometheus; build `BANXE-glm-master-RPC`.
+3. Build `BANXE-LiteLLM-v2` (no extra exporters needed — data already scraped).
+4. Build `BANXE-Ollama-Cluster` (extend blackbox config + tiny exporter for `/api/tags` length).
