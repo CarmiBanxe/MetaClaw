@@ -558,3 +558,20 @@ Snapshot Prometheus instant query сразу после ответа:
 
 ### Verdict
 PASS.
+
+## 41. Sprint P3.7f — verify v3 correction (PASS for real, 2026-05-03T06:36:38+02:00)
+
+В §40 был сделан snapshot Prometheus сразу после ответа LiteLLM, до того как Prometheus успел сделать следующий scrape (default scrape_interval = 30s). Поэтому instant query показал нули — это артефакт scrape окна, не отсутствие метрик.
+
+Повторное измерение через ~10 минут (после нескольких scrape циклов) и direct hit на `evo1:8081/v1/chat/completions` подтверждают, что счётчики растут корректно:
+
+```
+llamacpp:prompt_tokens_total{job=glm_master}            = 18   (prompt токены прошлого запроса glm-air через LiteLLM)
+llamacpp:tokens_predicted_total{job=glm_master}         = 50   (50 токенов сгенерировано — соответствует max_tokens=50 в запросе §40)
+llamacpp:tokens_predicted_seconds_total{job=glm_master} = 2.331 → ~21.4 tok/s gen, что совпадает с §5.14 bench (21.47 tok/s)
+```
+
+Routing верифицирован: `LiteLLM(:4000) glm-air → http://192.168.0.72:8081/v1 (llama-server, llama.cpp distributed evo1+evo2)`. Direct hit отвечает за 1.2s + ~500ms prompt evaluation, что ожидаемо для warm-loaded GLM-4.5-Air через USB4 RPC.
+
+### Verdict
+PASS. Predшествующий §40 оставлен в roadmap для прозрачности (zero-snapshot artifact), §41 фиксирует реальные числа.
