@@ -472,3 +472,17 @@ Verification:
 - Snapshot скрипта зафиксирован в `docs/ops/check-llm-cluster.sh.snapshot` для версионности (исходник лежит вне MetaClaw в `~/bin/`).
 - Note: pre-commit на repo-wide `git add -A` шумит ruff-проверками внутри `.venv/` (не наши файлы). Закрепили `.venv/` в `.gitignore`, чтобы будущие add'ы не вытягивали 1000+ файлов сторонних пакетов.
 - Result: PARTIAL PASS. Bot token wiring остаётся за оператором (BotFather → `~/.config/banxe/telegram.env` → `TELEGRAM_ENABLED=1`).
+
+## 34. Sprint P3.7e — Grafana dashboards skeleton (PAPER PASS, 2026-05-03T06:05:29+02:00)
+
+JSON-скелеты для 4 дашбордов из §29 размещены на evo2 в `/home/moriel-carmi/monitoring/grafana/dashboards/`:
+
+- `banxe-litellm-v2.json` — req/s per model, p50/p95/p99 latency, error rate, fallback rate, token throughput.
+- `banxe-ollama-cluster.json` — per-host API up, probe duration; модель-load count помечен как ожидающий exporter.
+- `banxe-glm-master-rpc.json` — health 8081; prompt/gen tok/s ожидают `--metrics` в glm-master ExecStart (P3.7b-tweak); RPC worker — tcp_connect blackbox.
+- `banxe-node-exporter.json` — CPU%, RAM, swap, disk I/O, network rx/tx (метрики уже есть после P3.7c).
+
+Все файлы json-валидны. Импорт в Grafana отложен до отдельного sprint'а P3.7f (через provisioning или `docker exec`-curl), чтобы не трогать живой dashboard set.
+
+### Verdict
+PAPER PASS. Артефакты на месте, готовы к импорту.
