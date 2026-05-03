@@ -648,3 +648,13 @@ PASS_WITH_DEGRADATION. Reasoning плоскость оперативна на ll
 
 ### Verdict
 PASS_WITH_DEGRADATION. Reasoning плоскость оперативна на llama3.3:70b LB. P4.3 (BIOS UMA rebalance evo2) повышен в приоритете для разблокировки qwen3:235b-a22b.
+
+## 45. Sprint P3.6 — finalize (PASS, 2026-05-03T15:15:30+02:00)
+
+- evo1 ollama upgraded: 0.20.7 → `ollama version is 0.22.1` через `curl -fsSL https://ollama.com/install.sh | sudo sh`.
+- `systemctl restart ollama` + `is-active = active`.
+- `/api/tags` отвечает 200 с известным списком моделей.
+- LiteLLM v2 LB-маршруты ai/ai-heavy/banxe-general/fast прошли smoke-test без регрессии.
+
+### Verdict
+PASS. Phase 3 P3.6 (Ollama version parity evo1↔evo2) полностью закрыт.
