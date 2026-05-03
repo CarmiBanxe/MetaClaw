@@ -421,3 +421,18 @@ Source: scrape `evo1:8081/metrics` (llama.cpp `/metrics` endpoint, opt-in flag `
 2. P3.7b-tweak — add `--metrics` to glm-master ExecStart; add scrape of `evo1:8081/metrics` to Prometheus; build `BANXE-glm-master-RPC`.
 3. Build `BANXE-LiteLLM-v2` (no extra exporters needed — data already scraped).
 4. Build `BANXE-Ollama-Cluster` (extend blackbox config + tiny exporter for `/api/tags` length).
+
+## 30. Sprint P3.7c — locate (PASS, 2026-05-03)
+
+Prometheus runs as a Docker container `banxe-prometheus` (image `prom/prometheus:latest`) on evo2, plus sister containers `banxe-grafana` (3000) and `banxe-blackbox` (9115). Compose project root: `/home/moriel-carmi/monitoring/`.
+
+**Config bind:** host `/home/moriel-carmi/monitoring/prometheus.yml` → container `/etc/prometheus/prometheus.yml` (owned `moriel-carmi:moriel-carmi`, mode 0644 — editable without sudo).
+
+**Container start args:** `/bin/prometheus --config.file=/etc/prometheus/prometheus.yml --storage.tsdb.retention.time=14d`. **No `--web.enable-lifecycle`** — therefore `POST /-/reload` would return 405. **Reload path: `docker kill -s SIGHUP banxe-prometheus`** (Prometheus reloads its config on SIGHUP since 2.x; container is **not** restarted, only the running process re-reads its yaml).
+
+**Current scrape jobs (3):**
+1. `prometheus` → `localhost:9090`
+2. `litellm_v4000` → `100.101.218.26:4000` (`/metrics`)
+3. `ollama_blackbox` → `http://192.168.0.72:11434/api/tags`, `http://192.168.0.15:11434/api/tags` (via blackbox 9115)
+
+Active targets reported as 4 because `ollama_blackbox` expands to two targets. Adding job `node` with two targets will bring `up=6/6` once O2-O4 land.
