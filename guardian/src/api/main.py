@@ -42,6 +42,7 @@ def audit(req: AuditRequest, store: ClickHouseAuditStore = Depends(get_store)) -
         scope=req.scope,
         subject_type=req.subject_type,
         subject_id=req.subject_id,
+        context=req.context,
     )
     verdict = Verdict(
         result=outcome.result,
