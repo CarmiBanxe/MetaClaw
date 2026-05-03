@@ -211,3 +211,12 @@ Estimated: 2h install + basic workflows, 1h Atom setup. Deferred to Phase 4 (pos
 - 3389/tcp on evo1 already constrained to LAN + Tailscale (S6 prior work); kept as-is, no public exposure.
 - Other audit (no change): SSH 22/2222 ⇒ LAN+Tailscale, Ollama 11434 ⇒ LAN+Tailscale, GLM 8081 ⇒ LAN+WSL+Tailscale (added in P3.7b/P4 wiring).
 - Result: PASS.
+
+## 22. Sprint P3.6 — execution report (PARTIAL PASS, 2026-05-03)
+
+- evo2 hostname already canonical: `banxe-NucBox-EVO-X2-2` (no `hostnamectl set-hostname` needed). VERIFIED.
+- ROCm/Ollama parity audit:
+  - evo1: ollama 0.20.7 (kernel 6.17.0-22-generic), hostname `banxe-NucBox-EVO-X2`.
+  - evo2: ollama 0.22.1 (kernel 6.17.0-23-generic), hostname `banxe-NucBox-EVO-X2-2`.
+- evo1 ollama 0.20.7 → 0.22.x upgrade DEFERRED: in-flight `qwen3:235b-a22b` pull on evo2 makes evo1 the only LB fallback for `ai`/`ai-heavy`/`banxe-general`/`fast` routes; restarting ollama on evo1 right now would briefly degrade those routes. Will execute the upgrade in a follow-up window once P3.2 pull finishes. Tracked.
+- Result: PARTIAL PASS (hostname VERIFIED; version align deferred to safe window).
