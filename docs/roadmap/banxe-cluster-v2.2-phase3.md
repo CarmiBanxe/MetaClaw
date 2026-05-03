@@ -158,3 +158,31 @@ Integration plan:
 BANXE use cases: KYC doc translation (AR/ZH/HI/TR → EN), AML statement screening, client complaint handling, EBA/FCA regulatory memo translation (FR/EN → RU), legal evidence extraction (FR → EN for ss1-type cases), merchant onboarding docs (braslina workflow).
 
 Estimate: 1 hour install + wire. Priority depends on FCA CASS 15 deadline needs.
+
+## 18. Phase 4 item: P4.6 — n8n workflow engine + Atom AI review (2-3 hours)
+
+Dependency chain: n8n install → create BANXE workflows → n8n-atom VS Code extension.
+
+Step 1: Install n8n on evo2 via Docker (evo2 has Docker + 1.7 TiB free):
+  docker run -d --name banxe-n8n --restart unless-stopped -p 5678:5678 -v /data/n8n:/home/node/.n8n n8nio/n8n
+
+Step 2: Create BANXE workflows in n8n UI (http://192.168.0.15:5678):
+  - Payment flow: webhook trigger → validate → process via BANXE API → notify via Telegram
+  - KYC automation: scheduled trigger → fetch pending applications → LLM analysis via LiteLLM :4000 → approve/flag
+  - Reconciliation: daily cron → fetch bank data → compare with internal ledger → generate report
+  - Compliance monitoring: event trigger → scan documents (translated via P3.12) → alert if red flags
+
+Step 3: Install n8n-atom VS Code extension on Legion:
+  - Source: github.com/khanh-atom/n8n-atom
+  - Converts n8n workflows to readable markdown/JSON for AI review
+  - AI (Continue.dev / Claude Code) reads workflows, suggests optimizations
+  - Use case: optimize payment latency, reduce KYC false positives, improve reconciliation accuracy
+
+Integration with existing stack:
+  - n8n → LiteLLM :4000 (model=banxe-general) for LLM-powered workflow nodes
+  - n8n → OpenClaw (webhook triggers for agent tasks)
+  - n8n → TranslateBooksWithLLMs (P3.12) for document translation nodes
+  - n8n → Telegram bot (P3.11) for notification nodes
+  - Atom → Continue.dev for AI-powered workflow optimization in VS Code
+
+Estimated: 2h install + basic workflows, 1h Atom setup. Deferred to Phase 4 (post FCA CASS 15).
