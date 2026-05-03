@@ -186,3 +186,11 @@ Integration with existing stack:
   - Atom → Continue.dev for AI-powered workflow optimization in VS Code
 
 Estimated: 2h install + basic workflows, 1h Atom setup. Deferred to Phase 4 (post FCA CASS 15).
+
+## 19. Sprint P3.1 — execution report (PASS, 2026-05-03)
+
+- evo1: qwen3.5:35b (23 GB), llama3.3:70b (42 GB) present.
+- evo2: qwen3.5:35b (23 GB), llama3.3:70b (42 GB) present.
+- LiteLLM v2 (:4000) routes added: `ai` (qwen3.5:35b LB evo1+evo2), `ai-heavy` (llama3.3:70b LB evo1+evo2).
+- Smoke from Legion: `ai` and `ai-heavy` produce completions via gateway master_key sk-banxe-llm-gateway-2026.
+- Exit-gate: 4 pulls succeed; LiteLLM-mediated completions confirmed. PASS.
