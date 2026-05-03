@@ -506,3 +506,17 @@ PASS.
 
 ### Verdict
 PASS confirmed. §29 dashboard `BANXE-glm-master-RPC` теперь имеет полноценный data-source и готов к импорту в Grafana следующим шагом (P3.7f).
+
+## 37. Sprint P3.7f — Grafana dashboards import (PASS, 2026-05-03T06:28:58+02:00)
+
+- Auth: `admin:banxe2026` (env `GF_SECURITY_ADMIN_PASSWORD`); Grafana version 13.0.1.
+- Импортированы 4 dashboards из §34 через `POST /api/dashboards/db` с `overwrite: true`:
+  - BANXE-LiteLLM-v2
+  - BANXE-Ollama-Cluster
+  - BANXE-glm-master-RPC
+  - BANXE-Node-Exporter
+- Datasource Prometheus подтверждён (создан, если отсутствовал; URL `http://banxe-prometheus:9090`, default).
+- Никакого рестарта Grafana, никакого касания существующих dashboards (overwrite по uid; первый импорт = создание).
+
+### Verdict
+PASS.
