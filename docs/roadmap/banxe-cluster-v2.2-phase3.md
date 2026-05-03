@@ -499,3 +499,10 @@ PAPER PASS. Артефакты на месте, готовы к импорту.
 
 ### Verdict
 PASS.
+
+## 36. Sprint P3.7b-tweak — verify v2 (2026-05-03T06:26:52+02:00)
+
+После повторного зондирования: `glm_master` действительно подхвачен Prometheus после SIGHUP — `total=7 up=7`, target `glm_master 192.168.0.72:8081 up`. Bearer-auth (`sk-rpc-glm47-2026`) работает корректно. Метрики `llamacpp:prompt_tokens_total`, `llamacpp:tokens_predicted_total`, `llamacpp:tokens_predicted_seconds_total` уже копятся (нулевые до первого запроса, что ожидаемо).
+
+### Verdict
+PASS confirmed. §29 dashboard `BANXE-glm-master-RPC` теперь имеет полноценный data-source и готов к импорту в Grafana следующим шагом (P3.7f).
