@@ -575,3 +575,40 @@ Routing верифицирован: `LiteLLM(:4000) glm-air → http://192.168.0
 
 ### Verdict
 PASS. Predшествующий §40 оставлен в roadmap для прозрачности (zero-snapshot artifact), §41 фиксирует реальные числа.
+
+## 42. Sprint Factory Rollout v2 — DONE (2026-05-03T14:42:17+02:00)
+
+- 15 eligible repos processed; **14 onboarding PRs opened**; **1 skipped** due to branch topology (MiroFish — repo использует нестандартный layout, отдельный sprint в §43).
+- Factory Baseline v2: стандартизованные `.claude/settings.json`, `.github/workflows/claude.yml`, `.github/workflows/factory-guard.yml` пропагированы по активным репо.
+- Post-rollout wave (operator-side):
+  - Review/merge 14 PRs.
+  - Verify CI health (factory-guard + claude.yml job в каждом репо).
+  - Fix scan scope issues, где проверки задевают `.venv` и vendored dependencies (ruff/secrets-scan нужно ограничить через .gitignore + `--exclude` или pre-commit `exclude`).
+- Secrets enablement: rollout прошёл без выставления `ANTHROPIC_API_KEY` repo-secret (env var был пуст). Сделать отдельным batch'ем после ввода ключа в окружение оператора:
+  `for r in <14 repos>; do echo "" | gh secret set ANTHROPIC_API_KEY -R "CarmiBanxe/" --body -; done`.
+- Pilot track separated: `banxe-payment-core`, `banxe-ui`, `banxe-infra` остаются на отдельном stabilization-пути (PR #1 в каждом, со своими hotfix-коммитами). В v2 rollout они намеренно не трогались.
+
+### Verdict
+PASS. Factory Baseline v2 раскатан на 14 из 15 eligible (93%). Коэффициент покрытия фабрики поднимается с 3/25 → 17/25 (68%) после merge всех PR.
+
+## 43. Sprint MiroFish prod-hardening (PLANNED, 2026-05-03T14:42:17+02:00)
+
+Snapshot §"MiroFish health" (factual on 2026-05-03T14:42:17+02:00):
+- Контейнер `mirofish` (image `ghcr.io/666ghj/mirofish:latest`) Up 13h, без restart-цикла.
+- Frontend (Vite, host port 3001 → ctr 3000): `HTTP 200` за 154ms.
+- Backend (Flask, host port 5004 → ctr 5001): `/health HTTP 200` за 90ms.
+- ⚠️ Backend в **Flask development mode**: `Debug mode: on`, debugger PIN `627-367-629` экспонирован в логах. Это не prod-grade.
+- ⚠️ Frontend пробует `xdg-open` при старте — `spawn xdg-open ENOENT` (косметическая ошибка в headless контейнере).
+- ⚠️ IPv6 listener (`[::]:3001/5004`) не отвечает в 3s timeout (LAN ходит через IPv4 — не блокер).
+
+### Plan (отдельный sprint в репо `~/MiroFish` или compose-файле на evo1)
+1. Backend: переключить с Flask dev server на gunicorn (`gunicorn -w 4 -b 0.0.0.0:5001 app:app` или uWSGI). Установить `FLASK_ENV=production`, `FLASK_DEBUG=0`. Снести debugger PIN из логов.
+2. Frontend: добавить `--no-open` в vite команду (`vite --host --no-open`) — устранит `xdg-open ENOENT`.
+3. IPv6: либо убрать `[::]` биндинг из compose (оставить только `0.0.0.0`), либо разрешить IPv6 на host (опционально, не критично).
+4. Secrets / debug PIN: после prod-сборки убедиться, что debugger PIN больше не появляется в `docker logs mirofish`.
+5. Health-check unit: в compose добавить `healthcheck:` секцию для backend (curl /health → 200) и frontend (curl / → 200).
+
+Estimated: 30 минут на правки + 5 минут на rebuild + smoke-test.
+
+### Status
+PLANNED. Не блокирует Phase 3. Открыть отдельный issue в репо `MiroFish` или `developer-core`.
