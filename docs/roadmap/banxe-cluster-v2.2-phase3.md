@@ -141,3 +141,20 @@ P4.4 — XDNA 2 NPU utilization (research sprint, 4h).
 
 - CVE-2026-25253 (CVSS 8.8): OpenClaw unauthenticated RCE via WebSocket token hijacking. Affects versions <2026.1.29. ACTION: verify current OpenClaw version on Legion; if vulnerable, upgrade immediately. Ref: QClaw-OpenClaw architecture doc §Security.
 - evo1 80/443 ALLOW IN Anywhere (OpenClaw Web UI): restrict to LAN+Tailscale. Deferred from P3.5.
+
+## 17. Sprint P3.12 / P4.5 — LLM Document Translation Pipeline (priority TBD)
+
+Source: hydropix/TranslateBooksWithLLMs (open-source, Ollama-compatible).
+Use case: auto-translate client documents (KYC passports, AML bank statements, complaints, regulatory filings, legal docs) from any language to EN/RU/FR for compliance agents.
+
+Integration plan:
+- Install on evo1: pip install or git clone + pip install -e in /data/banxe/tools/translate/
+- Config: Ollama backend http://127.0.0.1:11434, model qwen3:30b-a3b (multilingual MoE, 100+ languages)
+- Workflow: client upload → BANXE intake API → translate to EN → store in /data/banxe/compliance/translated/{client_id}/ → OpenClaw compliance/support/legal agent picks up translated doc
+- Supported formats: EPUB, SRT, DOCX, TXT (preserves formatting)
+- Post-translation: literary polish pass for readable output
+- Fallback model: glm-4.7-flash (fast, lower quality) or GLM-4.5-Air 105B (best quality, via RPC)
+
+BANXE use cases: KYC doc translation (AR/ZH/HI/TR → EN), AML statement screening, client complaint handling, EBA/FCA regulatory memo translation (FR/EN → RU), legal evidence extraction (FR → EN for ss1-type cases), merchant onboarding docs (braslina workflow).
+
+Estimate: 1 hour install + wire. Priority depends on FCA CASS 15 deadline needs.
