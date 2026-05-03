@@ -348,3 +348,31 @@ Fix (sudo on each node): `sudo systemctl enable --now systemd-networkd`. Both fi
 - ICMP `evo1 → 10.0.0.2`: 3/3 packets, 0% loss, RTT min/avg/max = 0.123/0.183/0.295 ms.
 
 USB4 /30 link is now persistent across reboots. RPC throughput re-validation (iperf3) deferred to next dedicated S5 sprint.
+
+## 5.14 glm-master permanent systemd unit (2026-05-03, Sprint P3.7b)
+
+Replaces the original transient `systemd-run` invocation that did not survive evo1 reboot. Permanent unit installed at `/etc/systemd/system/glm-master.service` on evo1.
+
+**Unit summary**
+- ExecStart: `/data/llama-cpp/llama.cpp/build/bin/llama-server` with `--rpc 10.0.0.2:50052 --n-gpu-layers 999 --flash-attn on --ctx-size 8192 --threads 16 --port 8081 --host 0.0.0.0`
+- Model: `/data/models/GLM-4.5-Air-Q4_K_M-00001-of-00002.gguf` (47 GiB part 1 + 22 GiB part 2 auto-loaded; 69 GiB total)
+- Env: `HSA_OVERRIDE_GFX_VERSION=11.5.1`
+- User/Group: `banxe:banxe`; `Restart=always`, `RestartSec=15`, `TimeoutStartSec=300`
+- WantedBy: `multi-user.target` (auto-start at boot)
+- API key: `sk-rpc-glm47-2026`
+
+**Status (2026-05-03)**
+- `systemctl is-active glm-master` → `active`
+- `systemctl is-enabled glm-master` → `enabled`
+- Listens on `0.0.0.0:8081` (pid 346725)
+- Worker on evo2: `rpc-server --host 10.0.0.2 --port 50052 -d Vulkan0 --threads 16` (pid 14192)
+
+**Bench (50-token completion, 2026-05-03 04:01)**
+| Metric | Value |
+|---|---|
+| Prompt eval | 32.52 tok/s (15 tok / 461 ms) |
+| Generation | 21.47 tok/s (50 tok / 2329 ms) |
+| Total | 65 tok / 2790 ms |
+| Health endpoint | `{"status":"ok"}` |
+
+Generation throughput (~21 tok/s) is consistent with USB4-RPC distributed inference of a 105B-class model split across two Strix Halo iGPUs; compares favourably with single-node Vulkan inference of the same model.
