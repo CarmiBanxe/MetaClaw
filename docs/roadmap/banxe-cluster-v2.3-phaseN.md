@@ -82,3 +82,34 @@ Runtime environment почти готов, но service supervision для compl
 - COMPLIANCE-OPS-2 → OPEN (audit + wrapper).
 - COMPLIANCE-OPS-3 → OPEN (smoke harness).
 - F1 (auth.py refresh) → DONE; deps install → DONE; service active → BLOCKED on COMPLIANCE-OPS-1.
+
+## §F1 — banxe-compliance-api unblock (PASS, 2026-05-03T16:49:58+02:00)
+
+### Outcome
+**PASS.** Service `banxe-compliance-api` поднят на `evo1:8194`, `/health` и `/docs` отвечают HTTP 200 за <40ms.
+
+### Steps executed
+1. Refresh `/data/banxe/banxe-emi-stack/api/routers/auth.py` from Legion HEAD `61b944c` (rsync, md5 `7d2d3738...`, 218 строк, 0 markers).
+2. Install missing Python deps via `pip install -r requirements.txt`: SQLAlchemy 2.0.49, asyncpg 0.31.0, PyJWT, etc.
+3. Port shift: 8093 → 8094 → 8194 (8093 и 8094 заняты legacy `banxe-api.service` → "Banxe Collective LexisNexis Compliance API", root, uptime 14h+, отдельный compliance стек, не наш scope).
+4. ufw on evo1: `8194/tcp ALLOW IN` для `192.168.0.0/24` + `100.64.0.0/10`.
+5. `systemctl restart banxe-compliance-api` → `active`.
+
+### Smoke (Legion → evo1:8194)
+```
+[1] /health HTTP 200 time=0.038s
+[1] /docs   HTTP 200 time=0.008s
+[2] /health HTTP 200 time=0.006s
+[2] /docs   HTTP 200 time=0.005s
+[3] /health HTTP 200 time=0.007s
+[3] /docs   HTTP 200 time=0.006s
+```
+
+### Notes / coexistence
+- legacy `banxe-api.service` (root, WD `/data/banxe/compliance`) продолжает работать на 127.0.0.1:8093 + 8094 (он использует второй сокет как worker handle). Не наш scope, оставлен как есть.
+- COMPLIANCE-OPS-1 (port-binding) **закрыт** через port shift, не через kill legacy.
+- COMPLIANCE-OPS-3 smoke harness подтверждает наличие `/health` endpoint в FastAPI app (как мы зафиксировали в grep `api/main.py:6`).
+- Legacy `/etc/systemd/system/banxe-api.service` остаётся отдельным трекером — если когда-то понадобится консолидировать, сделать через P3.4-followup-4 (rename/decommission старого).
+
+### Verdict
+**PASS.** Внешний контракт F1 выполнен; canonical service на evo1 запущен, observable, test-OK.
