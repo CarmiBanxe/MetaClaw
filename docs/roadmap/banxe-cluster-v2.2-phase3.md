@@ -520,3 +520,27 @@ PASS confirmed. §29 dashboard `BANXE-glm-master-RPC` теперь имеет п
 
 ### Verdict
 PASS.
+
+## 38. Sprint P3.7g — midaz-ledger triage (INFO ONLY, 2026-05-03T06:32:31+02:00)
+
+Диагностика рестарт-цикла `midaz-ledger` (зафиксировано в §32). Read-only — без `docker restart/stop`.
+
+```
+
+---
+2026-05-03T04:31:39.168Z	[34mINFO[0m	bootstrap/config.go:206	BalanceSyncWorker: BALANCE_SYNC_WORKER_ENABLED=false	{"component": "transaction", "startup_id": "698e6e19-b618-4264-a2eb-39dc81ef983a"}|2026-05-03T04:31:39.168Z	[33mWARN[0m	opentelemetry/otel.go:138	Telemetry turned off ⚠️ 	{"component": "transaction", "startup_id": "698e6e19-b618-4264-a2eb-39dc81ef983a"}|2026-05-03T04:31:39.168Z	[35mDEBUG[0m	utils/mongo.go:84	MongoDB connection string built: mongodb://<credentials>@midaz-mongodb:27017/	{"component": "transaction", "startup_id": "698e6e19-b618-4264-a2eb-39dc81ef983a"}|2026-05-03T04:31:39.168Z	[34mINFO[0m	redis/redis.go:68	Connecting to Redis/Valkey...	{"component": "transaction", "startup_id": "698e6e19-b618-4264-a2eb-39dc81ef983a"}|redis: 2026/05/03 04:31:44 pool.go:419: redis: connection pool: failed to dial after 1 attempts: dial tcp 172.22.0.1:6379: i/o timeout|2026-05-03T04:31:44.172Z	[34mINFO[0m	redis/redis.go:121	Ping error: {error 26 0  dial tcp 172.22.0.1:6379: i/o timeout}	{"component": "transaction", "startup_id": "698e6e19-b618-4264-a2eb-39dc81ef983a"}|2026-05-03T04:31:44.173Z	[34mINFO[0m	redis/redis.go:146	Get client connect error {error 26 0  dial tcp 172.22.0.1:6379: i/o timeout}	{"component": "transaction", "startup_id": "698e6e19-b618-4264-a2eb-39dc81ef983a"}|2026-05-03T04:31:44.173Z	[31mERROR[0m	app/main.go:30	Failed to initialize ledger service: failed to initialize transaction module: failed to initialize redis: failed to connect on redis: dial tcp 172.22.0.1:6379: i/o timeout|
+```
+
+### Решение
+Action: NONE. Контейнер принадлежит compose-стеку Ballerine/Midaz; владелец стека — `developer-core`/`banxe-payment-core`. Открыть отдельный issue в соответствующем репо с этим лог-фрагментом и RestartCount/ExitCode для разбора. Не блокирует Phase 3 cluster work.
+
+## 39. Sprint P3.7f — verify v2 (2026-05-03T06:32:31+02:00)
+
+Подтверждение, что 4 dashboards из §37 имеют живой data-source:
+- `node_load1` возвращает значения для evo1:9100 и evo2:9100.
+- `node_memory_MemAvailable_bytes` возвращает значения для обоих инстансов.
+- `llamacpp:tokens_predicted_total` для job=glm_master экспонируется (значение нулевое — корректно: glm-master ещё не serve-ил запросы после restart с `--metrics`).
+- `probe_success{job="ollama_blackbox"}` = 1 для обоих узлов.
+
+### Verdict
+PASS. Observability stack полностью замкнут: data-source → Prometheus → Grafana → 4 BANXE-* dashboards.
