@@ -20,7 +20,15 @@ Hot trees, относящиеся к v2.3:
 
 ## 2. Mini-sprints (this session)
 
-(reports appended below per execution)
+### F-secrets — DEFERRED (no env key, 2026-05-03)
+
+Проверка окружения: `echo "${#ANTHROPIC_API_KEY}"` = `0`. Env-переменная `ANTHROPIC_API_KEY` не установлена в shell этой сессии.
+
+Per sprint canon: "If F-secrets has no env key — write DEFERRED note, do NOT request key from operator." Соответственно batch-выставление repo-secret отменено в этой сессии.
+
+Status: **DEFERRED**. Пока operator не экспортирует `ANTHROPIC_API_KEY` в окружение и не перезапустит mini-sprint F-secrets, repo-secret не будет выставлен на 14 целевых факторных репо (`factory/ai-onboarding` ветки из v2.2 §42).
+
+Re-entry plan: оператор делает `export ANTHROPIC_API_KEY=...` (в `~/.bashrc` или ad-hoc), затем re-run F-secrets шаг — он сам отфильтрует через `gh pr list` репо с открытыми PR `factory/ai-onboarding` от своего аккаунта и сделает idempotent `gh secret list | grep -q ... || gh secret set ...` per репо.
 
 ## 3. Open / WIP / DONE table
 
@@ -28,7 +36,7 @@ Hot trees, относящиеся к v2.3:
 |---|---|---|---|
 | F1 — compliance-api unblock | WIP | this session | §F1 |
 | F3 — deep-search canonical switch | WIP | this session | §F3 |
-| F-secrets — ANTHROPIC_API_KEY batch | WIP | this session | §F-secrets |
+| F-secrets — ANTHROPIC_API_KEY batch | DEFERRED | operator (re-run with env key) | §F-secrets |
 | F2 — drive_watcher restore | OPEN | TBD | v2.2 §46 P3.4-followup-2 |
 | CVE-2026-25253 OpenClaw upgrade | OPEN | TBD | v2.2 §16 |
 | firewall-evo1 LAN+Tailscale | OPEN | TBD | v2.2 §16 |
