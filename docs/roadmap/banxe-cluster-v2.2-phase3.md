@@ -479,3 +479,35 @@ prometheus        localhost:9090                    up
 
 ### Verdict
 PASS. Observability backbone now complete for §29 dashboard plan v0.1: `BANXE-Node-Exporter` panels become buildable next sprint.
+
+## 31. Sprint P3.7c — verify (PASS, 2026-05-03T05:51:08+02:00)
+
+node_exporter live on both nodes; Prometheus picked up scrape targets after SIGHUP reload.
+
+### Targets (`/api/v1/targets` from banxe-prometheus container)
+
+```
+total=6 up=6
+litellm_v4000     100.101.218.26:4000               up
+node              192.168.0.72:9100                 up
+node              192.168.0.15:9100                 up
+ollama_blackbox   http://192.168.0.72:11434/...     up
+ollama_blackbox   http://192.168.0.15:11434/...     up
+prometheus        localhost:9090                    up
+```
+
+### node_load1 query end-to-end
+
+```
+192.168.0.72:9100	34.84
+192.168.0.15:9100	0.06
+```
+
+### Notes
+
+- evo2:9100 was initially `down` because the Prometheus container on evo2 lives on docker compose network `172.18.0.0/16` and the host ufw allow rules only covered LAN+Tailscale. Added third allow `172.16.0.0/12` (docker label "node-exporter-9100-docker"); reload; up=6/6.
+- evo1:9100 reachable from Legion (WSL2 `172.22.56.223` falls under existing 172.16/12 allow on evo1 from prior P4 GLM rule; the same `172.16.0.0/12` allow was added to evo2 here).
+- node_exporter package version 1.7.0-1ubuntu0.3 with full collectors timer set (apt, ipmitool-sensor, mellanox-hca-temp, nvme, smartmon).
+
+### Verdict
+PASS. Observability backbone now complete for §29 dashboard plan v0.1: `BANXE-Node-Exporter` panels become buildable next sprint.
