@@ -319,3 +319,25 @@ Cron: `0 4 * * *` — daily 04:00 local. Logs to `/mnt/d/backups/cron.log` and p
 - **Userspace side: empty.** No `rocminfo`, no `clinfo`, no `rocm-*` / `hip-*` packages, no `/opt/rocm*` directory.
 - **Current Ollama backend:** Vulkan via `/usr/local/bin/ollama serve` (no systemd unit on evo2; runs from boot via the upstream installer's init).
 - **Migration to ROCm 6.4 — feasible but deferred.** gfx1151 / Strix Halo support landed in ROCm 6.4; would require installing the AMD ROCm 6.4 deb repo, replacing the Ollama binary with the ROCm-enabled bundle, and adding `banxe` to `render` + `video` groups. Likely throughput improvement vs Vulkan on Strix Halo, but **out of scope for the FCA CASS 15 deadline** — re-open as its own sprint after 2026-05-07.
+
+## 5.12 Grafana on evo2 — datasource + Node Exporter dashboard (2026-05-03, Sprint P3.7)
+
+Grafana provisioned via API (no browser needed). All calls executed from `ssh evo2 'curl localhost:3000/...'` to avoid Legion sandbox.
+
+- **Datasource:** `Prometheus` (id=1, uid=`cfkwbx1yvr6dce`), URL `http://prometheus:9090`, `access=proxy`, `isDefault=true`. POST to `/api/datasources` returned `Datasource added`.
+- **Dashboard:** `Node Exporter Full` (Grafana.com ID 1860) imported. Title `Node Exporter Full`, uid `aedcea76-6b24-4aa0-a6ae-d32527b1712a`, URL path `/d/aedcea76-6b24-4aa0-a6ae-d32527b1712a/node-exporter-full`. Imported via `/api/dashboards/import` with the JSON wrapped to inject `DS_PROMETHEUS=Prometheus`.
+
+Caveat: dashboard targets resolve only if Prometheus actually scrapes `node_exporter` instances at the URL above. Validate with `up{job="node"}` queries before declaring SRE coverage complete.
+
+## 5.13 USB4 link IP persistence — networkd not enabled (2026-05-03, Sprint P3.7)
+
+Diagnostic confirms the persistence claim from §5.7 was incomplete. On both EVO-X2 nodes:
+
+| Node | networkd unit | thunderbolt0 IP (now) | Configured (`10-thunderbolt0.network`) |
+|---|---|---|---|
+| evo1 | disabled, inactive | `169.254.83.50/16` (NM link-local) | `10.0.0.1/30` |
+| evo2 | disabled, inactive | `169.254.137.188/16` (NM link-local) | `10.0.0.2/30` |
+
+Root cause: `/etc/systemd/network/10-thunderbolt0.network` was written but `systemd-networkd` was never enabled, so NetworkManager's link-local fallback owns the interface. The S5.1 RPC throughput numbers (9.12 Gbit/s) were measured before this regression; current state must be re-validated after the fix.
+
+Fix (sudo on each node): `sudo systemctl enable --now systemd-networkd`. Both fixes printed via OPERATOR_RUN. NetworkManager keeps its 169.254/16 as a secondary address; routes for 10.0.0.0/30 will be added by networkd. No reboot required.
