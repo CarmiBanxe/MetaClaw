@@ -203,3 +203,11 @@ Estimated: 2h install + basic workflows, 1h Atom setup. Deferred to Phase 4 (pos
 - Hardened ExecStart with `-o ExitOnForwardFailure=yes` so the tunnel exits immediately if local forwarding can't be established (prevents silent half-broken state).
 - Exit-gate verified: 60s evo1 sshd silence confirmed; `127.0.0.1:18791` listening on Legion (LocalForward to OpenClaw 18790).
 - Result: PASS.
+
+## 21. Sprint P3.5 — execution report (PASS, 2026-05-03)
+
+- Closed inbound exposure on evo1: `80/tcp` and `443/tcp` were `ALLOW IN Anywhere` (v4 + v6) for OpenClaw UI; narrowed to `192.168.0.0/24` (LAN) and `100.64.0.0/10` (Tailscale) only. `127.0.0.1` loopback rule preserved.
+- ROCm validated on evo1: `rocminfo` reports agent `gfx1151` ("AMD RYZEN AI MAX+ 395 w/ Radeon 8060S"). Confirms ROCm/HSA stack is intact for the GLM-4.5-Air RPC path.
+- 3389/tcp on evo1 already constrained to LAN + Tailscale (S6 prior work); kept as-is, no public exposure.
+- Other audit (no change): SSH 22/2222 ⇒ LAN+Tailscale, Ollama 11434 ⇒ LAN+Tailscale, GLM 8081 ⇒ LAN+WSL+Tailscale (added in P3.7b/P4 wiring).
+- Result: PASS.
