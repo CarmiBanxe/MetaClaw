@@ -630,3 +630,21 @@ PLANNED. Не блокирует Phase 3. Открыть отдельный issu
 
 ### Verdict
 PASS_WITH_DEGRADATION. Reasoning плоскость оперативна на llama3.3:70b LB. P4.3 (BIOS UMA rebalance evo2) повышен в приоритете для разблокировки qwen3:235b-a22b.
+
+## 44. Sprint P3.2 — execution report (PASS_WITH_DEGRADATION, 2026-05-03T15:04:09+02:00)
+
+### Финдинг
+`qwen3:235b-a22b` (142 GB Q4_K_M MoE 235B@a22b) физически не помещается на evo2 при текущем BIOS UMA split (64 GiB CPU / 64 GiB iGPU = 184 GiB UMA total):
+- Vulkan path: `radv/amdgpu: Failed to allocate a buffer: size 948 MB` × N → OOM kill ollama runner.
+- CPU-only path (`num_gpu=0`, `num_ctx=8192`, `num_parallel=1`): `requires more system memory (134.0 GiB) than is available (63.8 GiB)`.
+
+### Решение
+- Reasoning route переключён на `llama3.3:70b` LB evo1+evo2 (PASS_WITH_DEGRADATION). Меньшая модель, но операбельная.
+- `qwen3:235b-a22b` остаётся скачанной на /data/ollama-models на evo2 (142 GB), готова к использованию после P4.3 BIOS UMA rebalance (CPU‑side 64→96 GiB) ИЛИ через llama.cpp RPC (как glm-master, master/worker между evo1+evo2). См. follow-up §"P3.2-followup".
+- Pull сам по себе закончился успешно — это инфраструктурно достижимая модель, просто требует BIOS rebalance перед запуском.
+
+### Ollama config tweak (применён)
+- `OLLAMA_NUM_PARALLEL=2 → 1` в /etc/systemd/system/ollama.service.d/override.conf (снижает KV cache per-request × 2). Применено к ollama service на evo2.
+
+### Verdict
+PASS_WITH_DEGRADATION. Reasoning плоскость оперативна на llama3.3:70b LB. P4.3 (BIOS UMA rebalance evo2) повышен в приоритете для разблокировки qwen3:235b-a22b.

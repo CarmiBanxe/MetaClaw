@@ -137,6 +137,19 @@ model_list:
       api_key: sk-banxe-evo2-local-2026
       timeout: 1200
 
+  - model_name: reasoning
+    litellm_params:
+      model: ollama/llama3.3:70b
+      api_base: http://192.168.0.72:11434
+      api_key: sk-banxe-evo1-local-2026
+      timeout: 600
+  - model_name: reasoning
+    litellm_params:
+      model: ollama/llama3.3:70b
+      api_base: http://192.168.0.15:11434
+      api_key: sk-banxe-evo2-local-2026
+      timeout: 600
+
   # reasoning (llama3.3:70b) — LB evo1+evo2 (qwen3:235b-a22b BLOCKED_HARDWARE: 134 GiB > 64 GiB UMA on evo2)
   - model_name: reasoning
     litellm_params:
