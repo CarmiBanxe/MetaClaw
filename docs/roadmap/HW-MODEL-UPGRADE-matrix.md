@@ -56,8 +56,8 @@ Plus llama.cpp distributed (glm-master on evo1):
 ## 4. Model upgrade triggers (carryover)
 | Model | Status | Blocker | Resolves with | Deadline / Trigger |
 |---|---|---|---|---|
-| qwen3:235b-a22b | DOWNLOADED 142 GiB on evo2 | requires 134 GiB system memory > 64 GiB CPU on evo2 | P4.3 BIOS UMA rebalance evo2 (96 CPU / 32 iGPU) OR llama.cpp RPC like glm-master | post FCA CASS 15 (after 7 May 2026) |
-| qwen3:235b-a22b-banxe | DOWNLOADED 142 GiB on evo2 (variant, 3h old) | same UMA blocker | same as above | same |
+| qwen3:235b-a22b | REQUANTIZING to Q3_K_S (~80 GiB), ETA 30-60 min | Q4_K_M (133 GiB) too large for 96 GiB UMA after 4 failed attempts (Ollama direct OOM, Ollama CPU-only refused, llama-server standalone OOM, llama.cpp RPC split OOM) | Q3_K_S requantize (path b) OR Ollama 0.24+ MoE-aware loader (path c) | qwen3:235b-a22b-q3ks PID 46244 evo2 |
+| qwen3:235b-a22b-banxe | DOWNLOADED 142 GiB on evo2 (variant) | same Q4_K_M size blocker | same paths as base model | same |
 | GLM-4.5-Air | LIVE 21.4 tok/s gen | none | active baseline | — |
 | llama3.3:70b LB | LIVE | none | active reasoning fallback | — |
 | qwen3.5:35b LB | LIVE | none | active ai alias | — |
@@ -72,12 +72,11 @@ Plus llama.cpp distributed (glm-master on evo1):
 ## 5. Hardware upgrade path (from §15 Phase 4 backlog)
 | Item | Action | Expected delta | Trigger | Risk |
 |---|---|---|---|---|
-| P4.2 ROCm 6.4 migration | Replace Vulkan path on both evo nodes | +30-50% throughput on gfx1151 | post FCA CASS 15 (≥ 8 May 2026) | medium — может потребоваться kernel/firmware update |
-| P4.3 BIOS UMA evo2 rebalance | 64/64 → 96 iGPU / 32 CPU split (consistent with evo1) | НЕ для qwen3:235b-a22b unblock (тот наоборот хочет CPU‑side, см. note) | manual BIOS step + reboot | low |
-| P4.3-alt BIOS UMA evo2 rebalance (alt) | 64/64 → 32 iGPU / 96 CPU | unlock qwen3:235b-a22b (134 GiB needs CPU side) | manual BIOS step + reboot, ~15 min | low |
-| P4.4 XDNA 2 NPU | Enable ~100 TOPS aggregate NPU (50 per node × 2) via AMD Ryzen AI SDK + onnxruntime-vitis-ai | sub-10W inference path для small models | research sprint, 4h | high — SDK мало‑известен |
-| USB4 RPC link | Already up (10.0.0.1/30 ↔ 10.0.0.2/30, 9.12 Gbit/s, 0.49 ms RTT) | distributed inference enabled | DONE (Phase 3 S5) | — |
-| qwen3:235b-a22b via llama.cpp RPC | Skip Ollama, use llama-server master/worker like glm-master | unblock БЕЗ BIOS rebalance | required GGUF conversion (~2-3h) | medium — separate model artifact |
+| P4.2 ROCm 6.3 migration | Flip Ollama OLLAMA_LLM_LIBRARY=vulkan→rocm on both evo nodes | (intended +30-50% throughput) | ❌ **BLOCKED 2026-05-04** — HIP buffer alloc fails on gfx1151+UMA для всех model sizes; defer ROCm 7.0+ или kernel ≥6.13 HSA fixes | medium → realized |
+| P4.3-evo2 BIOS UMA rebalance | 64/64 → 32 iGPU / 96 CPU on evo2 | +31 GiB to CPU side (62→93 GiB visible) | ✅ **DONE 2026-05-04** (operator BIOS edit + reboot per runbook a971439) | low → completed |
+| P4.4 XDNA 2 NPU | Enable ~100 TOPS aggregate NPU (50 per node × 2) via AMD Ryzen AI SDK + onnxruntime-vitis-ai | sub-10W inference path для small models | ⏸️ PAUSED 2026-05-04 — discovery DONE (runbook 156e10d), install gated on operator decision | high — SDK мало‑известен |
+| USB4 RPC link | Already up (10.0.0.1/30 ↔ 10.0.0.2/30, 9.12 Gbit/s, 0.642 ms RTT) | distributed inference enabled | ✅ DONE (Phase 3 S5) | — |
+| qwen3:235b-a22b via llama.cpp RPC | Skip Ollama, use llama-server master/worker like glm-master | unblock — Q4_K_M (133 GiB) too large even split | ❌ **BLOCKED 2026-05-04** (4 attempts: Ollama direct, Ollama CPU-only, llama-server standalone, RPC split — all OOM); pivot к Q3_K_S requantize (~80 GiB) IN PROGRESS | medium → realized |
 
 ## 6. Cross-link к плоскостям
 - Factory: см. INDEX.md §1.2.
