@@ -5,8 +5,8 @@ Last updated: 2026-05-03 · Source of truth for: hardware tiers, deployed models
 | Node | CPU | RAM | iGPU/dGPU | NPU | Storage | Role |
 |---|---|---|---|---|---|---|
 | Legion (mark-legion, 192.168.0.75 NAT, Tailscale 100.101.218.26) | i9-14900HX (28 vCPU) | 64 GiB DDR5 | RTX 4070 Laptop 8 GiB | — | C:952 GiB + D:3.7 TiB | LiteLLM v2 gateway, factory ops, Claude Code, Aider client |
-| EVO-X2 #1 (evo1, banxe-NucBox-EVO-X2, 192.168.0.72) | Ryzen AI Max+ 395 (32T) | 128 GiB LPDDR5X (BIOS UMA: 96 iGPU / 32 CPU) | Radeon 8060S 40 CU (gfx1151) | XDNA 2 — 126 TOPS | nvme1 931G (/) + nvme0 1.9T (/data) | Prod Ollama, llama.cpp glm-master :8081, banxe-compliance-api :8194, deep-search :8088, banxe-api :8093, prometheus-node-exporter :9100 |
-| EVO-X2 #2 (evo2, banxe-NucBox-EVO-X2-2, 192.168.0.15) | Ryzen AI Max+ 395 (32T) | 128 GiB LPDDR5X (BIOS UMA: 64 iGPU / 64 CPU) | Radeon 8060S 40 CU (gfx1151) | XDNA 2 — 126 TOPS | nvme0 1.9T | Prod Ollama, llama.cpp RPC worker :50052, monitoring stack (prometheus :9090, grafana :3000, blackbox :9115), node_exporter :9100 |
+| EVO-X2 #1 (evo1, banxe-NucBox-EVO-X2, 192.168.0.72) | Ryzen AI Max+ 395 (32T) | 128 GiB LPDDR5X (BIOS UMA: 96 iGPU / 32 CPU) | Radeon 8060S 40 CU (gfx1151) | XDNA 2 NPU — 50 TOPS (system AI total ~126 TOPS incl. iGPU+CPU) | nvme1 931G (/) + nvme0 1.9T (/data) | Prod Ollama, llama.cpp glm-master :8081, banxe-compliance-api :8194, deep-search :8088, banxe-api :8093, prometheus-node-exporter :9100 |
+| EVO-X2 #2 (evo2, banxe-NucBox-EVO-X2-2, 192.168.0.15) | Ryzen AI Max+ 395 (32T) | 128 GiB LPDDR5X (BIOS UMA: 64 iGPU / 64 CPU) | Radeon 8060S 40 CU (gfx1151) | XDNA 2 NPU — 50 TOPS (system AI total ~126 TOPS incl. iGPU+CPU) | nvme0 1.9T | Prod Ollama, llama.cpp RPC worker :50052, monitoring stack (prometheus :9090, grafana :3000, blackbox :9115), node_exporter :9100 |
 
 USB4 RPC link: 10.0.0.1/30 ↔ 10.0.0.2/30, 9.12 Gbit/s, 0.49 ms RTT.
 
@@ -75,7 +75,7 @@ Plus llama.cpp distributed (glm-master on evo1):
 | P4.2 ROCm 6.4 migration | Replace Vulkan path on both evo nodes | +30-50% throughput on gfx1151 | post FCA CASS 15 (≥ 8 May 2026) | medium — может потребоваться kernel/firmware update |
 | P4.3 BIOS UMA evo2 rebalance | 64/64 → 96 iGPU / 32 CPU split (consistent with evo1) | НЕ для qwen3:235b-a22b unblock (тот наоборот хочет CPU‑side, см. note) | manual BIOS step + reboot | low |
 | P4.3-alt BIOS UMA evo2 rebalance (alt) | 64/64 → 32 iGPU / 96 CPU | unlock qwen3:235b-a22b (134 GiB needs CPU side) | manual BIOS step + reboot, ~15 min | low |
-| P4.4 XDNA 2 NPU | Enable 252 TOPS aggregate via AMD Ryzen AI SDK + onnxruntime-directml | sub-10W inference path для small models | research sprint, 4h | high — SDK мало‑известен |
+| P4.4 XDNA 2 NPU | Enable ~100 TOPS aggregate NPU (50 per node × 2) via AMD Ryzen AI SDK + onnxruntime-vitis-ai | sub-10W inference path для small models | research sprint, 4h | high — SDK мало‑известен |
 | USB4 RPC link | Already up (10.0.0.1/30 ↔ 10.0.0.2/30, 9.12 Gbit/s, 0.49 ms RTT) | distributed inference enabled | DONE (Phase 3 S5) | — |
 | qwen3:235b-a22b via llama.cpp RPC | Skip Ollama, use llama-server master/worker like glm-master | unblock БЕЗ BIOS rebalance | required GGUF conversion (~2-3h) | medium — separate model artifact |
 
@@ -99,7 +99,7 @@ Per ADR-018 (banxe-architecture/decisions/ADR-018-hybrid-5-layer-ai-compute.md):
 |---|---|---|---|
 | 1 — Reasoning | 70B–235B via llama.cpp RPC | evo1 master + evo2 worker (USB4) | 5–25 t/s gen |
 | 2 — Mid-size | 10B–70B Ollama LB | evo1 + evo2 iGPU | 15–35 t/s gen |
-| 3 — Small specialized | ≤7B via XDNA 2 NPU | evo1 + evo2 NPU (252 TOPS aggregate) | sub-10ms latency |
+| 3 — Small specialized | ≤7B via XDNA 2 NPU | evo1 + evo2 NPU (~100 TOPS aggregate, 50 per node) | sub-10ms latency |
 | 4 — Cloud meta | PR review, scaffolding | Claude Code (cloud), deny_paths enforced | ~1 s |
 | 5 — Routing | All traffic | LiteLLM v2 :4000 (Legion systemd) | <40 ms overhead |
 
