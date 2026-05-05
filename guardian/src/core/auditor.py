@@ -13,6 +13,7 @@ from typing import Any
 
 from ..memory_loader import MemoryLoader
 from ..rules import AuditContext, RuleResult
+from ..rules.claude_bash_rules import ClaudeBashRules
 from ..rules.factory_rules import FactoryRules
 from ..rules.project_rules import ProjectRules
 
@@ -41,6 +42,7 @@ class GuardianAuditor:
         self.loader = loader or MemoryLoader()
         self.factory = FactoryRules()
         self.project = ProjectRules()
+        self.claude_bash = ClaudeBashRules()
 
     def audit_factory(self, diff: str) -> Verdict:
         memory = self.loader.load_all()
@@ -70,6 +72,8 @@ class GuardianAuditor:
             verdict = self._aggregate("factory", self.factory.evaluate_all(ctx, memory))
         elif scope == "project":
             verdict = self._aggregate("project", self.project.evaluate_all(ctx, memory))
+        elif scope == "claude.bash":
+            verdict = self._aggregate("claude.bash", self.claude_bash.evaluate_all(ctx, memory))
         else:
             return AuditOutcome(
                 result="unknown",
