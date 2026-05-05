@@ -1,7 +1,7 @@
 """Canon Judge — LLM-based evaluation of agent output against ADR-025 canon.
 
 Architecture: Variant A (MCP server) per conversation-guard-design.md.
-Backend: local LiteLLM route (glm-air or qwen3.5:35b) — never cloud per ADR-031.
+Backend: Ollama local (qwen3.5:35b, think=false) — never cloud per ADR-031.
 """
 
 from __future__ import annotations
@@ -15,8 +15,9 @@ import httpx
 
 logger = logging.getLogger(__name__)
 
-LITELLM_BASE_URL = "http://192.168.0.72:4000"
-LITELLM_MODEL = "glm-air"
+# Ollama on evo1 (local to Guardian factory). Accessible from Legion via LAN.
+OLLAMA_BASE_URL = "http://127.0.0.1:11434"
+OLLAMA_MODEL = "qwen3.5:35b"
 
 CANON_SECTIONS = [
     "§1 OCAT (One-Command-At-a-Time)",
@@ -73,13 +74,13 @@ class JudgeVerdict:
 
 
 class CanonJudge:
-    """Evaluates agent output against ADR-025 canon via local LLM."""
+    """Evaluates agent output against ADR-025 canon via local Ollama LLM."""
 
     def __init__(
         self,
-        base_url: str = LITELLM_BASE_URL,
-        model: str = LITELLM_MODEL,
-        timeout: float = 30.0,
+        base_url: str = OLLAMA_BASE_URL,
+        model: str = OLLAMA_MODEL,
+        timeout: float = 60.0,
     ) -> None:
         self.base_url = base_url.rstrip("/")
         self.model = model
@@ -114,23 +115,31 @@ class CanonJudge:
             return JudgeVerdict(verdict="unknown", error=f"parse error: {exc}")
 
     def _call_llm(self, system: str, user: str) -> str:
-        """POST to LiteLLM /chat/completions endpoint."""
+        """POST to Ollama /api/chat endpoint (qwen3.5:35b, think=false)."""
         payload: dict[str, Any] = {
             "model": self.model,
+            "stream": False,
+            "think": False,
+            "format": "json",
             "messages": [
                 {"role": "system", "content": system},
                 {"role": "user", "content": user},
             ],
-            "temperature": 0.0,
-            "max_tokens": 512,
+            "options": {
+                "temperature": 0.0,
+                "num_predict": 512,
+            },
         }
         resp = self._client.post(
-            f"{self.base_url}/chat/completions",
+            f"{self.base_url}/api/chat",
             json=payload,
         )
         resp.raise_for_status()
         data = resp.json()
-        return data["choices"][0]["message"]["content"]
+        content = data.get("message", {}).get("content", "")
+        if not content:
+            raise ValueError(f"Empty content from Ollama: done_reason={data.get('done_reason')}")
+        return content
 
     def _parse_response(self, raw: str) -> JudgeVerdict:
         """Parse LLM JSON response into JudgeVerdict."""

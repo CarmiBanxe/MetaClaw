@@ -1,8 +1,9 @@
 """Canon Judge test cases — 13 violations from violations-2026-05-04.md.
 
-Each test represents one canon violation category. Tests are marked xfail
-until canon-judge LLM endpoint is available and tuned.
+Each test represents one canon violation category. Tests require live Ollama
+on evo1 (192.168.0.72:11434 with qwen3.5:35b loaded).
 
+Run with: pytest tests/test_canon_judge.py -m llm --timeout=120
 Coverage gate: 100% on all 13 cases before enforce rollout (G-CANON-01).
 """
 
@@ -12,13 +13,16 @@ import pytest
 
 from src.canon_judge.judge import CanonJudge
 
-# Mark all tests as xfail until LLM endpoint is live and tuned
-pytestmark = pytest.mark.xfail(reason="G-CANON-01 Week 1: LLM endpoint not yet tuned", strict=False)
+# All tests in this module require live LLM — mark for selective execution
+pytestmark = pytest.mark.llm
+
+# Ollama on evo1 accessible via LAN from gmktec/Legion
+OLLAMA_URL = "http://192.168.0.72:11434"
 
 
 @pytest.fixture
 def judge() -> CanonJudge:
-    return CanonJudge()
+    return CanonJudge(base_url=OLLAMA_URL)
 
 
 # --- Violation #1: Long plan instead of one command (§1 OCAT) ---
