@@ -163,6 +163,15 @@ model_list:
       api_base: http://192.168.0.15:11434
       api_key: sk-banxe-evo2-local-2026
       timeout: 600
+
+  # reasoning-235b — qwen3:235b-a22b Q3_K_S via llama.cpp standalone on evo2:8082 (P4.3-Q235 path b LIVE 2026-05-05)
+  - model_name: reasoning-235b
+    litellm_params:
+      model: openai/qwen3
+      api_base: http://192.168.0.15:8082/v1
+      api_key: sk-rpc-q235-2026
+      timeout: 1200
+
 router_settings:
   routing_strategy: simple-shuffle
   num_retries: 2
