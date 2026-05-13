@@ -17,6 +17,7 @@ HOME = Path.home()
 ARCH = HOME / "banxe-architecture"
 EMI_STACK_ADR = HOME / "banxe-emi-stack" / "docs" / "adr"
 METACLAW_ROADMAP = HOME / "MetaClaw" / "docs" / "roadmap"
+PASSPORTS_DIR = ARCH / "docs" / "canon" / "passports"
 
 CACHE_TTL_SECONDS = 60.0
 
@@ -28,6 +29,7 @@ class MemorySnapshot:
     gap_register: str = ""
     canon: str = ""
     hitl: str = ""
+    passports: dict = field(default_factory=dict)
     constitution: str = ""
     adrs: list[str] = field(default_factory=list)
     roadmap: str = ""
@@ -60,6 +62,7 @@ class MemoryLoader:
             gap_register=self._read(ARCH / "GAP-REGISTER.md"),
             canon=self._read(ARCH / "PROMPT-CANON-PROJECT.md"),
             hitl=self._read(ARCH / "HITL-MATRIX.yaml"),
+            passports=self._load_passports(),
             constitution=self._collect_constitution(),
             adrs=self._collect_adrs(),
             roadmap=self._collect_roadmap(),
@@ -69,6 +72,23 @@ class MemoryLoader:
         return snap.as_dict()
 
     @staticmethod
+
+    def _load_passports(self) -> dict:
+        """Load all YAML passports from docs/canon/passports/."""
+        import yaml
+        result = {}
+        if PASSPORTS_DIR.is_dir():
+            for f in sorted(PASSPORTS_DIR.glob("*.yaml")):
+                if f.name == "schema.yaml":
+                    continue
+                try:
+                    data = yaml.safe_load(f.read_text())
+                    if data and "role_id" in data:
+                        result[data["role_id"]] = data
+                except Exception as e:
+                    logger.warning("Failed to load passport %s: %s", f.name, e)
+        return result
+
     def _read(path: Path) -> str:
         try:
             return path.read_text(encoding="utf-8")
