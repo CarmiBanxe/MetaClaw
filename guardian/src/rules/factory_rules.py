@@ -264,3 +264,49 @@ class FactoryRules:
             self.r7_factory_baseline_locked(ctx, memory),
             self.r8_factory_branch_prefix(ctx, memory),
         ]
+
+    # ── F9: Route alias validation (Sprint 3, Software Factory Canon §5) ──
+    def f9_route_alias_validation(self, ctx: AuditContext) -> RuleResult:
+        """Every LLM call must use a canonical alias from canon Section 5."""
+        CANONICAL_ALIASES = {
+            "banxe-general", "qwen3-banxe", "fast", "coding", "ai", "ai-heavy",
+            "factory-fast", "factory-mid", "factory-heavy", "factory-coder",
+            "project-reason", "project-mid", "reasoning", "reasoning-235b",
+        }
+        prompt = (ctx.prompt or "").lower()
+        # Check if prompt references a model directly instead of alias
+        direct_ollama = re.search(r"ollama[:/]\S+", prompt)
+        if direct_ollama and direct_ollama.group() not in {"ollama:chat:" + a for a in CANONICAL_ALIASES}:
+            return RuleResult(
+                rule_id="F9",
+                verdict="WARN",
+                summary=f"Direct Ollama reference detected: {direct_ollama.group()}. Use canonical LiteLLM alias.",
+                reasons=["INV-02: LiteLLM is gateway-only"],
+            )
+        return RuleResult(rule_id="F9", verdict="PASS", summary="Route alias check passed", reasons=[])
+
+    # ── F10: Role-action validation (Sprint 3, Software Factory Canon §4) ──
+    def f10_role_action_validation(self, ctx: AuditContext) -> RuleResult:
+        """Executor (Aider) cannot perform Reviewer actions and vice versa."""
+        actor = getattr(ctx, "actor", "") or ""
+        scope = (ctx.scope or "").lower()
+        prompt = (ctx.prompt or "").lower()
+
+        # If actor is aider and action looks like review (not code execution)
+        if "aider" in actor.lower() and any(kw in prompt for kw in ["review", "approve", "defer", "reject pr"]):
+            return RuleResult(
+                rule_id="F10",
+                verdict="WARN",
+                summary="Executor (Aider) performing Reviewer action — role boundary violation",
+                reasons=["INV-01: Aider is sole code executor, not reviewer"],
+            )
+        # If actor is claude-code and action is direct code write
+        if "claude" in actor.lower() and any(kw in scope for kw in ["file-edit", "write-file", "shell-exec"]):
+            return RuleResult(
+                rule_id="F10",
+                verdict="WARN",
+                summary="Planner/Reviewer (Claude Code) performing Executor action — delegate to Aider",
+                reasons=["INV-01: Aider is sole code executor"],
+            )
+        return RuleResult(rule_id="F10", verdict="PASS", summary="Role-action check passed", reasons=[])
+
