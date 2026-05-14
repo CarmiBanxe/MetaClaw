@@ -13,6 +13,7 @@ Or via Claude Code MCP config:
 from __future__ import annotations
 
 import json
+import os
 import logging
 from typing import Any
 
@@ -35,8 +36,11 @@ TOOL_DESCRIPTION = (
 def create_server(
     ollama_url: str = "http://127.0.0.1:11434",
     model: str = "qwen3.5:35b",
+    mode: str | None = None,
 ) -> Server:
     """Create MCP server with canon_judge.evaluate tool."""
+    _mode = mode or os.environ.get("CANON_JUDGE_MODE", "enforce")
+    logger.info("Canon Judge mode: %s", _mode)
     server = Server("canon-judge")
     judge = CanonJudge(base_url=ollama_url, model=model)
 
