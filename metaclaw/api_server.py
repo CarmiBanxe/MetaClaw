@@ -31,6 +31,7 @@ from typing import Any, Optional
 import uvicorn
 from fastapi import FastAPI, Header, HTTPException, Request
 from fastapi.responses import JSONResponse, StreamingResponse
+
 from .config import MetaClawConfig
 from .prm_scorer import PRMScorer
 from .sdk_backend import resolve_sdk_backend
@@ -569,12 +570,10 @@ class MetaClawAPIServer:
             body = await request.json()
             incoming_messages = body.get("messages", [])
             if isinstance(incoming_messages, list):
-                rewritten_messages, rewritten = _rewrite_new_session_bootstrap_prompt(
+                rewritten_messages, _rewritten = _rewrite_new_session_bootstrap_prompt(
                     incoming_messages
                 )
                 body["messages"] = rewritten_messages
-            else:
-                rewritten = 0
             _raw_sid = x_session_id or body.get("session_id") or ""
             # OpenClaw sends X-Session-Id/X-Turn-Type on every request.
             # Non-OpenClaw agents (CoPaw, IronClaw, etc.) don't — detect

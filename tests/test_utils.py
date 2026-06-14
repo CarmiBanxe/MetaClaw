@@ -3,6 +3,8 @@ import queue
 import threading
 from types import SimpleNamespace
 
+import pytest
+
 import metaclaw.utils as utils
 from metaclaw.api_server import MetaClawAPIServer
 from metaclaw.config import MetaClawConfig
@@ -47,6 +49,7 @@ def test_run_llm_uses_explicit_config_for_provider_selection(monkeypatch):
 
 
 def test_run_llm_uses_explicit_skills_only_endpoint(monkeypatch):
+    pytest.importorskip("openai")  # optional 'evolve' dep; absent in minimal CI env
     monkeypatch.setattr(
         "metaclaw.config_store.ConfigStore",
         lambda: _FakeStore(
@@ -98,6 +101,7 @@ def test_run_llm_uses_explicit_skills_only_endpoint(monkeypatch):
 
 
 def test_run_llm_uses_explicit_rl_endpoint(monkeypatch):
+    pytest.importorskip("openai")  # optional 'evolve' dep; absent in minimal CI env
     monkeypatch.setattr(
         "metaclaw.config_store.ConfigStore",
         lambda: _FakeStore(

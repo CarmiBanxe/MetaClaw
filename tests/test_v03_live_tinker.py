@@ -18,7 +18,11 @@ import time
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-import tinker
+import pytest
+
+# Live Tinker SDK is an optional (rl) dependency and requires TINKER_API_KEY.
+# Skip the whole module cleanly when the SDK isn't installed (e.g. CI default env).
+tinker = pytest.importorskip("tinker")
 from metaclaw.config import MetaClawConfig
 from metaclaw.data_formatter import (
     ConversationSample,

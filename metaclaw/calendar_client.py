@@ -93,8 +93,8 @@ class GoogleCalendarClient:
             On auth failure after user interaction.
         """
         try:
-            from google.oauth2.credentials import Credentials
             from google.auth.transport.requests import Request
+            from google.oauth2.credentials import Credentials
             from google_auth_oauthlib.flow import InstalledAppFlow
         except ImportError as exc:
             raise ImportError(
@@ -177,8 +177,8 @@ class GoogleCalendarClient:
     ) -> list[tuple[datetime, datetime, str]]:
         """Synchronous implementation (called via asyncio.to_thread)."""
         try:
-            from googleapiclient.discovery import build
             from google.auth.transport.requests import Request
+            from googleapiclient.discovery import build
         except ImportError as exc:
             raise ImportError(
                 "google-api-python-client is required. "
@@ -198,22 +198,7 @@ class GoogleCalendarClient:
 
         now_utc = datetime.now(timezone.utc)
         time_min = now_utc.isoformat()
-        time_max = (
-            now_utc.replace(
-                hour=now_utc.hour,
-                minute=now_utc.minute,
-                second=now_utc.second,
-            ).__class__(
-                year=now_utc.year,
-                month=now_utc.month,
-                day=now_utc.day,
-                hour=now_utc.hour,
-                minute=now_utc.minute,
-                second=now_utc.second,
-                tzinfo=timezone.utc,
-            )
-        )
-        # Simpler: add lookahead_hours as seconds
+        # Window upper bound: now + lookahead_hours
         from datetime import timedelta
         time_max_dt = now_utc + timedelta(hours=lookahead_hours)
         time_max_str = time_max_dt.isoformat()
