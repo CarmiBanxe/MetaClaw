@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from metaclaw.config_store import ConfigStore
-from metaclaw.setup_wizard import SetupWizard, _PROVIDER_PRESETS
+from metaclaw.setup_wizard import _PROVIDER_PRESETS, SetupWizard
 
 
 def test_setup_wizard_preserves_existing_proxy_settings(monkeypatch, tmp_path: Path):
@@ -38,6 +38,8 @@ def test_setup_wizard_preserves_existing_proxy_settings(monkeypatch, tmp_path: P
     monkeypatch.setattr("metaclaw.setup_wizard.ConfigStore", lambda: store)
 
     def fake_prompt_choice(msg, choices, default=""):
+        if "agent" in msg.lower():
+            return "openclaw"
         if msg == "Operating mode":
             return "skills_only"
         if msg == "LLM provider":
