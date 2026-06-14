@@ -22,8 +22,8 @@ except ImportError:
     print("MetaClaw requires 'click'. Install it with: pip install click")
     sys.exit(1)
 
-from .config_store import CONFIG_FILE, ConfigStore
 from . import runtime_state
+from .config_store import CONFIG_FILE, ConfigStore
 
 
 def _default_daemon_log_path() -> Path:
@@ -108,9 +108,11 @@ def _build_session_override_store(
     if not mode and not port:
         return config_store, None
 
-    from .config_store import ConfigStore as _CS
     import tempfile
+
     import yaml
+
+    from .config_store import ConfigStore as _CS
 
     data = config_store.load()
     if mode:
@@ -247,6 +249,7 @@ def setup():
 def start(mode: str | None, port: int | None, daemon: bool, log_file: str | None):
     """Start MetaClaw (proxy + optional RL training)."""
     import asyncio
+
     from .log_color import setup_logging
 
     setup_logging()
@@ -483,7 +486,7 @@ def skills_log(n: int, full: bool, history_file: str):
                         click.echo(f"     {line}")
 
         if full and failure_prompts:
-            click.echo(f"\n  ── Failure context (last 300 chars each):")
+            click.echo("\n  ── Failure context (last 300 chars each):")
             for j, fp in enumerate(failure_prompts, 1):
                 excerpt = fp.replace("\n", " ").strip()
                 click.echo(f"     [{j}] ...{excerpt}")
