@@ -30,7 +30,7 @@ import glob
 import logging
 import os
 import re
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -276,8 +276,6 @@ class SkillManager:
         if self._skill_embeddings_cache is not None:
             return self._skill_embeddings_cache
 
-        import numpy as np
-
         general_items = [
             ("general", None, s) for s in self.skills.get("general_skills", [])
         ]
@@ -307,8 +305,6 @@ class SkillManager:
     def _embedding_retrieve(
         self, task_description: str, top_k_general: int, top_k_task: int
     ) -> tuple[list[dict], list[dict]]:
-        import numpy as np
-
         cache = self._compute_skill_embeddings()
         model = self._get_embedding_model()
         query_emb = model.encode(
