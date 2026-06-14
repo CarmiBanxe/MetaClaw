@@ -1,0 +1,66 @@
+# LiteLLM LAN Gateway — reproducible cold-start (FU-2 Phase 4)
+#
+# Reproduces the gateway currently run by litellm-lan-gateway.service:
+#   litellm --config litellm-config.v2.yaml --port 4000 --host 0.0.0.0
+#
+# Default `docker compose up` starts only the gateway and connects to the
+# existing LAN backends (Ollama / RPC / Redis) referenced in the config.
+# The optional Postgres for spend/key persistence lives behind the `db`
+# profile: `docker compose --profile db up`.
+#
+# Secrets come from `.env` (see .env.example). NEVER commit `.env`.
+name: litellm-gateway
+
+services:
+  litellm:
+    image: ghcr.io/berriai/litellm:main-stable
+    container_name: litellm-gateway
+    restart: unless-stopped
+    # Bridge networking reaches LAN backends (192.168.0.x) via host routing.
+    ports:
+      - "${LITELLM_PORT:-4000}:4000"
+    env_file:
+      - .env
+    volumes:
+      - ./litellm-config.v2.yaml:/app/config.yaml:ro
+    command:
+      - "--config"
+      - "/app/config.yaml"
+      - "--port"
+      - "4000"
+      - "--host"
+      - "0.0.0.0"
+    healthcheck:
+      # /health/liveliness is unauthenticated and returns 200 when the proxy is up.
+      test:
+        - "CMD"
+        - "python"
+        - "-c"
+        - "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:4000/health/liveliness',timeout=5).status==200 else 1)"
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+
+  # Optional persistence backend (enable with: docker compose --profile db up).
+  litellm-db:
+    image: postgres:16-alpine
+    container_name: litellm-db
+    profiles: ["db"]
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-litellm}
+      POSTGRES_USER: ${POSTGRES_USER:-litellm}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    ports:
+      - "${POSTGRES_PORT:-5435}:5432"
+    volumes:
+      - litellm_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-litellm}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  litellm_db_data:
