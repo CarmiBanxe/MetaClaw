@@ -435,3 +435,21 @@ MetaClaw builds on top of the following open-source projects:
 ## 📄 License
 
 This project is licensed under the [MIT License](LICENSE).
+
+
+## EMI Phase 7/8: канонический операторский цикл
+
+Этот цикл нужен, чтобы не мержить Phase 8 (#193) поверх неслитого Phase 7 (#192), а всегда опираться на факты из GitHub.
+
+1. Перед любыми действиями оператор читает чек-лист:
+   - `cat /tmp/emi-phase7-operator-checklist.txt`
+
+2. После того как оператор считает, что:
+   - PR #192 (Phase 7) вмержен в origin/main;
+   - PR #193 переключён на base=main и готов к merge,
+   он запускает каноническую проверку:
+   - `./tmp/emi-phase7-verify-after-checklist.sh`
+
+3. Решения принимаются не по ощущениям, а по отчёту audit-промптов (`operator-done` и loop-check), которые работают строго в read-only режиме и опираются только на состояние PR #192/#193 и истории origin/main.
+
+Этот цикл запрещает считать "merge #193" корректным следующим шагом, пока факт мерджа #192 в main и retarget базы #193 на main не подтверждены по данным GitHub.
