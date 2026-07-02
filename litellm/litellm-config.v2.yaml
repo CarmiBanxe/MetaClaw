@@ -1,197 +1,223 @@
-# BANXE LiteLLM LAN Gateway v2 (S4)
-# Sprint 4 — port 4000, bind 0.0.0.0, LAN-only Ollama backends.
-# Cloud providers (Anthropic/Gemini/Groq) and BANXE/UK-GDPR compliance routes
-# stay on the prod gateway at 127.0.0.1:8080 (DO NOT mirror them here).
-
 model_list:
-  # banxe-general (qwen3:30b-a3b) — load-balanced across evo1 + evo2
-  - model_name: banxe-general
-    litellm_params:
-      model: ollama/qwen3:30b-a3b
-      api_base: http://192.168.0.72:11434
-      api_key: sk-banxe-evo1-local-2026
-      timeout: 120
-  - model_name: banxe-general
-    litellm_params:
-      model: ollama/qwen3:30b-a3b
-      api_base: http://192.168.0.15:11434
-      api_key: sk-banxe-evo2-local-2026
-      timeout: 120
-
-  # qwen3-30b — backwards-compat alias, same LB pair
-  - model_name: qwen3-30b
-    litellm_params:
-      model: ollama/qwen3:30b-a3b
-      api_base: http://192.168.0.72:11434
-      api_key: sk-banxe-evo1-local-2026
-      timeout: 120
-  - model_name: qwen3-30b
-    litellm_params:
-      model: ollama/qwen3:30b-a3b
-      api_base: http://192.168.0.15:11434
-      api_key: sk-banxe-evo2-local-2026
-      timeout: 120
-
-  # qwen3-banxe — evo1 only
-  - model_name: qwen3-banxe
-    litellm_params:
-      model: ollama/qwen3:30b-a3b
-      api_base: http://192.168.0.72:11434
-      api_key: sk-banxe-evo1-local-2026
-      timeout: 120
-
-  # fast (glm-4.7-flash-abliterated) — load-balanced across evo1 + evo2
-  - model_name: fast
-    litellm_params:
-      model: ollama/huihui_ai/glm-4.7-flash-abliterated:latest
-      api_base: http://192.168.0.72:11434
-      api_key: sk-banxe-evo1-local-2026
-      timeout: 120
-  - model_name: fast
-    litellm_params:
-      model: ollama/huihui_ai/glm-4.7-flash-abliterated:latest
-      api_base: http://192.168.0.15:11434
-      api_key: sk-banxe-evo2-local-2026
-      timeout: 120
-
-  # glm-4-flash — backwards-compat alias, evo1 only
-  - model_name: glm-4-flash
-    litellm_params:
-      model: ollama/huihui_ai/glm-4.7-flash-abliterated:latest
-      api_base: http://192.168.0.72:11434
-      api_key: sk-banxe-evo1-local-2026
-      timeout: 120
-
-  # coding — qwen3-coder-next:q4_K_M, evo1 primary (no fallback yet, see router fallbacks below)
-  - model_name: coding
-    litellm_params:
-      model: ollama/qwen3-coder-next:q4_K_M
-      api_base: http://192.168.0.72:11434
-      api_key: sk-banxe-evo1-local-2026
-      timeout: 240
-
-  # gpt-oss-20b — evo1 only
-  - model_name: gpt-oss-20b
-    litellm_params:
-      model: ollama/gurubot/gpt-oss-derestricted:20b
-      api_base: http://192.168.0.72:11434
-      api_key: sk-banxe-evo1-local-2026
-      timeout: 120
-
-
-  - model_name: large
-    litellm_params:
-      model: openai/glm-4.5-air
-      api_base: http://192.168.0.72:8081/v1
-      api_key: sk-rpc-glm47-2026
-      timeout: 300
-
-  # glm-4.5-air-distributed — llama.cpp master on evo1:8081 (RPC worker on evo2:50052)
-  - model_name: glm-4.5-air-distributed
-    litellm_params:
-      model: openai/GLM-4.5-Air-Q4_K_M-00001-of-00002.gguf
-      api_base: http://192.168.0.72:8081/v1
-      api_key: sk-rpc-glm47-2026
-      timeout: 600
-
-  - model_name: glm-air
-    litellm_params:
-      model: openai/GLM-4.5-Air-Q4_K_M-00001-of-00002.gguf
-      api_base: http://192.168.0.72:8081/v1
-      api_key: sk-rpc-glm47-2026
-      timeout: 600
-
-
-  # ai (qwen3.5:35b) — Aider light, LB evo1+evo2
-  - model_name: ai
-    litellm_params:
-      model: ollama/qwen3.5:35b
-      api_base: http://192.168.0.72:11434
-      api_key: sk-banxe-evo1-local-2026
-      timeout: 240
-  - model_name: ai
-    litellm_params:
-      model: ollama/qwen3.5:35b
-      api_base: http://192.168.0.15:11434
-      api_key: sk-banxe-evo2-local-2026
-      timeout: 240
-
-  # ai-heavy (llama3.3:70b) — Aider heavy, LB evo1+evo2
-  - model_name: ai-heavy
-    litellm_params:
-      model: ollama/llama3.3:70b
-      api_base: http://192.168.0.72:11434
-      api_key: sk-banxe-evo1-local-2026
-      timeout: 600
-  - model_name: ai-heavy
-    litellm_params:
-      model: ollama/llama3.3:70b
-      api_base: http://192.168.0.15:11434
-      api_key: sk-banxe-evo2-local-2026
-      timeout: 600
-
-  - model_name: reasoning
-    litellm_params:
-      model: ollama/qwen3:235b-a22b-banxe
-      api_base: http://192.168.0.15:11434
-      api_key: sk-banxe-evo2-local-2026
-      timeout: 1200
-
-  - model_name: reasoning
-    litellm_params:
-      model: ollama/llama3.3:70b
-      api_base: http://192.168.0.72:11434
-      api_key: sk-banxe-evo1-local-2026
-      timeout: 600
-  - model_name: reasoning
-    litellm_params:
-      model: ollama/llama3.3:70b
-      api_base: http://192.168.0.15:11434
-      api_key: sk-banxe-evo2-local-2026
-      timeout: 600
-
-  # reasoning (llama3.3:70b) — LB evo1+evo2 (qwen3:235b-a22b BLOCKED_HARDWARE: 134 GiB > 64 GiB UMA on evo2)
-  - model_name: reasoning
-    litellm_params:
-      model: ollama/llama3.3:70b
-      api_base: http://192.168.0.72:11434
-      api_key: sk-banxe-evo1-local-2026
-      timeout: 600
-  - model_name: reasoning
-    litellm_params:
-      model: ollama/llama3.3:70b
-      api_base: http://192.168.0.15:11434
-      api_key: sk-banxe-evo2-local-2026
-      timeout: 600
-
-  # reasoning-235b — qwen3:235b-a22b Q3_K_S via llama.cpp standalone on evo2:8082 (P4.3-Q235 path b LIVE 2026-05-05)
-  - model_name: reasoning-235b
-    litellm_params:
-      model: openai/qwen3
-      api_base: http://192.168.0.15:8082/v1
-      api_key: sk-rpc-q235-2026
-      timeout: 1200
-
+- model_name: banxe-general
+  litellm_params:
+    model: ollama/qwen3:30b-a3b
+    api_base: http://192.168.0.72:11434
+    api_key: sk-banxe-evo1-local-2026
+    timeout: 120
+- model_name: banxe-general
+  litellm_params:
+    model: ollama/qwen3:30b-a3b
+    api_base: http://192.168.0.15:11434
+    api_key: sk-banxe-evo2-local-2026
+    timeout: 120
+- model_name: qwen3-30b
+  litellm_params:
+    model: ollama/qwen3:30b-a3b
+    api_base: http://192.168.0.72:11434
+    api_key: sk-banxe-evo1-local-2026
+    timeout: 120
+- model_name: qwen3-30b
+  litellm_params:
+    model: ollama/qwen3:30b-a3b
+    api_base: http://192.168.0.15:11434
+    api_key: sk-banxe-evo2-local-2026
+    timeout: 120
+- model_name: qwen3-banxe
+  litellm_params:
+    model: ollama/qwen3:30b-a3b
+    api_base: http://192.168.0.72:11434
+    api_key: sk-banxe-evo1-local-2026
+    timeout: 120
+- model_name: fast
+  litellm_params:
+    model: ollama/qwen3:4b
+    api_base: http://192.168.0.72:11434
+    api_key: sk-banxe-evo1-local-2026
+    timeout: 120
+- model_name: fast
+  litellm_params:
+    model: ollama/qwen3:4b
+    api_base: http://192.168.0.15:11434
+    api_key: sk-banxe-evo2-local-2026
+    timeout: 120
+- model_name: glm-4-flash
+  litellm_params:
+    model: ollama/qwen3:4b
+    api_base: http://192.168.0.72:11434
+    api_key: sk-banxe-evo1-local-2026
+    timeout: 120
+- model_name: coding
+  litellm_params:
+    model: ollama/qwen3-coder-next:q4_K_M
+    api_base: http://192.168.0.72:11434
+    api_key: sk-banxe-evo1-local-2026
+    timeout: 240
+- model_name: coding
+  litellm_params:
+    model: ollama/qwen3-coder-next:q4_K_M
+    api_base: http://192.168.0.15:11434
+    api_key: sk-banxe-evo2-local-2026
+    timeout: 240
+- model_name: gpt-oss-20b
+  litellm_params:
+    model: ollama/qwen3-banxe-v2:latest
+    api_base: http://192.168.0.72:11434
+    api_key: sk-banxe-evo1-local-2026
+    timeout: 120
+- model_name: large
+  litellm_params:
+    model: openai/glm-4.5-air
+    api_base: http://192.168.0.72:8081/v1
+    api_key: sk-rpc-glm47-2026
+    timeout: 300
+- model_name: glm-4.5-air-distributed
+  litellm_params:
+    model: openai/GLM-4.5-Air-Q4_K_M-00001-of-00002.gguf
+    api_base: http://192.168.0.72:8081/v1
+    api_key: sk-rpc-glm47-2026
+    timeout: 600
+- model_name: glm-air
+  litellm_params:
+    model: openai/GLM-4.5-Air-Q4_K_M-00001-of-00002.gguf
+    api_base: http://192.168.0.72:8081/v1
+    api_key: sk-rpc-glm47-2026
+    timeout: 600
+- model_name: ai
+  litellm_params:
+    model: ollama/qwen3.5:35b
+    api_base: http://192.168.0.72:11434
+    api_key: sk-banxe-evo1-local-2026
+    timeout: 240
+- model_name: ai
+  litellm_params:
+    model: ollama/qwen3.5:35b
+    api_base: http://192.168.0.15:11434
+    api_key: sk-banxe-evo2-local-2026
+    timeout: 240
+- model_name: ai-heavy
+  litellm_params:
+    model: ollama/llama3.3:70b
+    api_base: http://192.168.0.72:11434
+    api_key: sk-banxe-evo1-local-2026
+    timeout: 600
+- model_name: ai-heavy
+  litellm_params:
+    model: ollama/llama3.3:70b
+    api_base: http://192.168.0.15:11434
+    api_key: sk-banxe-evo2-local-2026
+    timeout: 600
+- model_name: reasoning
+  litellm_params:
+    model: ollama/qwen3:235b-a22b-banxe
+    api_base: http://192.168.0.15:11434
+    api_key: sk-banxe-evo2-local-2026
+    timeout: 1200
+- model_name: reasoning
+  litellm_params:
+    model: ollama/llama3.3:70b
+    api_base: http://192.168.0.72:11434
+    api_key: sk-banxe-evo1-local-2026
+    timeout: 600
+- model_name: reasoning
+  litellm_params:
+    model: ollama/llama3.3:70b
+    api_base: http://192.168.0.15:11434
+    api_key: sk-banxe-evo2-local-2026
+    timeout: 600
+- model_name: reasoning-235b
+  litellm_params:
+    model: openai/qwen3
+    api_base: http://192.168.0.15:8082/v1
+    api_key: sk-rpc-q235-2026
+    timeout: 1200
+- model_name: factory-fast
+  litellm_params:
+    model: ollama/qwen2.5-coder:7b-instruct-q4_K_M
+    api_base: http://127.0.0.1:11434
+    api_key: sk-banxe-legion-local-2026
+    timeout: 120
+- model_name: factory-mid
+  litellm_params:
+    model: ollama/qwen3:30b-a3b
+    api_base: http://192.168.0.72:11434
+    api_key: sk-banxe-evo1-local-2026
+    timeout: 120
+- model_name: factory-mid
+  litellm_params:
+    model: ollama/qwen3:30b-a3b
+    api_base: http://192.168.0.15:11434
+    api_key: sk-banxe-evo2-local-2026
+    timeout: 120
+- model_name: factory-heavy
+  litellm_params:
+    model: ollama/llama3.3:70b
+    api_base: http://192.168.0.72:11434
+    api_key: sk-banxe-evo1-local-2026
+    timeout: 240
+- model_name: factory-heavy
+  litellm_params:
+    model: ollama/llama3.3:70b
+    api_base: http://192.168.0.15:11434
+    api_key: sk-banxe-evo2-local-2026
+    timeout: 240
+- model_name: factory-coder
+  litellm_params:
+    model: ollama/qwen3-coder-next:q4_K_M
+    api_base: http://192.168.0.72:11434
+    api_key: sk-banxe-evo1-local-2026
+    timeout: 240
+- model_name: factory-coder
+  litellm_params:
+    model: ollama/qwen3-coder-next:q4_K_M
+    api_base: http://192.168.0.15:11434
+    api_key: sk-banxe-evo2-local-2026
+    timeout: 240
+- model_name: project-reason
+  litellm_params:
+    model: openai/qwen3
+    api_base: http://192.168.0.15:8082/v1
+    api_key: sk-rpc-q235-2026
+    timeout: 600
+- model_name: project-mid
+  litellm_params:
+    model: ollama/qwen3.5:35b
+    api_base: http://192.168.0.72:11434
+    api_key: sk-banxe-evo1-local-2026
+    timeout: 240
+- model_name: project-mid
+  litellm_params:
+    model: ollama/qwen3.5:35b
+    api_base: http://192.168.0.15:11434
+    api_key: sk-banxe-evo2-local-2026
+    timeout: 240
+- model_name: project-mid
+  litellm_params:
+    model: ollama/qwen3-coder-next:q4_K_M
+    api_base: http://192.168.0.72:11434
+    api_key: sk-banxe-evo1-local-2026
+    timeout: 240
 router_settings:
   routing_strategy: simple-shuffle
   num_retries: 2
   timeout: 120
   retry_after: 5
   fallbacks:
-    - coding: ["qwen3-30b"]
-    - banxe-general: ["fast"]
-
+  - coding:
+    - qwen3-30b
+  - banxe-general:
+    - fast
 litellm_settings:
-  success_callback: ["prometheus"]
-  failure_callback: ["prometheus"]
+  success_callback:
+  - prometheus
+  failure_callback:
+  - prometheus
   drop_params: true
-
 cache: true
 cache_params:
   type: redis
   host: 192.168.0.72
   port: 6379
   namespace: banxe-litellm
-
 general_settings:
   master_key: sk-banxe-llm-gateway-2026
