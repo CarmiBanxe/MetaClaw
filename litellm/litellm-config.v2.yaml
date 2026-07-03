@@ -175,9 +175,9 @@ model_list:
     timeout: 240
 - model_name: project-reason
   litellm_params:
-    model: openai/qwen3
-    api_base: http://192.168.0.15:8082/v1
-    api_key: sk-rpc-q235-2026
+    model: openai/GLM-4.5-Air-Q4_K_M-00001-of-00002.gguf
+    api_base: http://192.168.0.72:8081/v1
+    api_key: sk-rpc-glm47-2026
     timeout: 600
 - model_name: project-mid
   litellm_params:
@@ -213,7 +213,7 @@ litellm_settings:
   failure_callback:
   - prometheus
   drop_params: true
-cache: true
+cache: false
 cache_params:
   type: redis
   host: 192.168.0.72
