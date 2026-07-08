@@ -135,6 +135,11 @@
     disk-read is byte-exact and verifiable against the R2 sha-anchor.
   - [ВЫВОД] Large-document delivery: BEN chunks oversized bodies into ordered parts to disk, then concatenates
     (Variant A: part files -> `cat part-* > source.md` -> sha verify) before any downstream terminal reads it.
+- [ВЫВОД] **Rule R6 — write-via-shell:** BEN/CENTRAL persist canon/audit/source files via shell heredoc
+  (`cat > file <<'EOF'`), NOT via the agent Write tool. Rationale [ФАКТ]: in this session the Write tool
+  silently failed to hit disk 3× (engine-doc-intel, bdsl-coverage, bdsl-intel) while chat showed success;
+  heredoc write is verifiable immediately with `ls -l` + `wc -l`. After any file write, verify existence
+  and tail before `git add`.
 ---
 
 ## Integration points (recommendations — no edits applied here)
