@@ -125,6 +125,16 @@
   - [ВЫВОД] EMI-scope discipline: novelties gated by B-EMI-CREDIT-GATE-001 (credit / trading / treasury,
     outside the TOMPAY EMI licence) are marked **gated** and NOT recommended for immediate implementation.
 
+- [ВЫВОД] **Rule R5 — single-entry-on-disk:** a source document's body is written to disk once
+  (`docs/sources/` or `~/banxe-dev/`). Thereafter every terminal (BEN / CENTRAL / LEFT) works only via
+  the file path + sha — re-pasting the body by the operator is prohibited. If a consumer needs the body,
+  it reads the file from disk; it does not receive the text again.
+  - [ФАКТ] Extends R3 (audit-before-commit) and R2 (provenance-anchor): the on-disk file + its sha are the
+    single source of truth; chat-paste is a delivery channel, not a store.
+  - [ВЫВОД] Rationale: chat re-paste corrupts large documents (encoding / truncation) and wastes context;
+    disk-read is byte-exact and verifiable against the R2 sha-anchor.
+  - [ВЫВОД] Large-document delivery: BEN chunks oversized bodies into ordered parts to disk, then concatenates
+    (Variant A: part files -> `cat part-* > source.md` -> sha verify) before any downstream terminal reads it.
 ---
 
 ## Integration points (recommendations — no edits applied here)
