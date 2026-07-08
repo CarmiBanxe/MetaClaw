@@ -113,6 +113,17 @@
   is committed together with, or after, its audit anchor — never before.
 - [ВЫВОД] This makes `docs/sources/` a set of **justified** SSOTs (each earns its place via an audit/ADR),
   not a dump of hanging raw material.
+- [ВЫВОД] **Rule R4 — coverage obligation:** for every novelty BEN extracts from a source, the audit entry
+  MUST carry an implementation status — **IMPLEMENTED / PARTIAL / MISSING** — because source documents are
+  declarations/maths/methodology, **not code** (operator canon).
+  - [ВЫВОД] Status is decided by **marker analysis** (exact signatures: class/function/schema/endpoint names)
+    with **context verification**, NOT naive grep. Same-name false positives (e.g. sqlite `PRAGMA journal_mode`,
+    `# pragma: no cover`) MUST be filtered out by inspecting the match context.
+  - [ФАКТ] BEN never writes production code — Aider is the sole code executor (`software-factory-canon-v1.md`
+    INV-01). For PARTIAL/MISSING, BEN emits a **coverage-gap recommendation** to CENTRAL; CENTRAL decides and
+    tasks the factory (Aider). BEN only reports novelties + coverage status (per §4).
+  - [ВЫВОД] EMI-scope discipline: novelties gated by B-EMI-CREDIT-GATE-001 (credit / trading / treasury,
+    outside the TOMPAY EMI licence) are marked **gated** and NOT recommended for immediate implementation.
 
 ---
 
