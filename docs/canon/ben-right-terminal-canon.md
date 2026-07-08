@@ -99,6 +99,21 @@
 - [ФАКТ] Amendments to this canon follow `software-factory-canon-v1.md` §11 (Operator approval;
   CTIO for structural changes).
 
+## 7. Source-Retention Policy (provenance-anchored)
+- [ФАКТ] `software-factory-canon-v1.md` §9 Mandatory Artefact Set (row "Instruction record → docs/audit/,
+  Permanent (git)") establishes that audit artefacts live permanently in git.
+- [ВЫВОД] **Rule R1 — no orphan sources:** a `docs/sources/<doc>.md` is committed to git **only if** at
+  least one referencing artefact exists — an audit entry in `docs/audit/` or an ADR in `docs/adr/` that
+  cites it by path + sha. A source with **zero** references is an "orphan" and stays raw in `~/banxe-dev/`
+  (not committed).
+- [ВЫВОД] **Rule R2 — provenance anchor:** every committed source MUST have its **sha256** recorded in the
+  referencing artefact (a `Provenance:` line), so the on-disk file is verifiable against the intel that
+  justified keeping it.
+- [ВЫВОД] **Rule R3 — audit before commit:** BEN produces the audit entry (novelty scout) first; the source
+  is committed together with, or after, its audit anchor — never before.
+- [ВЫВОД] This makes `docs/sources/` a set of **justified** SSOTs (each earns its place via an audit/ADR),
+  not a dump of hanging raw material.
+
 ---
 
 ## Integration points (recommendations — no edits applied here)
