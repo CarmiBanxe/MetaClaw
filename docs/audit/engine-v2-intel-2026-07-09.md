@@ -2,7 +2,7 @@
 
 Date: 2026-07-09
 By: BEN (right terminal / document-intelligence)
-Provenance: docs/sources/emi-banxe-engine-v2-2026-07-09.md (sha256 3fb98168), 1253 lines, 47 References.
+Provenance: docs/sources/emi-banxe-engine-v2-2026-07-09.md (sha256 7c5a1f81d5dec85352f5e4cc420d7d334b14ffa5199127d1eda5844e2a672281), 1253 lines, 47 References.
 Note: body == engine-doc v1 (sha 9ef1b03); core novelties see docs/audit/engine-doc-intel-2026-07-06.md.
       This file = DELTA (novelties NOT in v1-intel) + References 1-47.
 Policy: docs/canon/ben-right-terminal-canon.md §7 R1-R4 (no orphan / provenance / audit-before-commit / coverage).

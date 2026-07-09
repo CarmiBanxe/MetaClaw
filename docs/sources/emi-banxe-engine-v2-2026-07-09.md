@@ -1204,50 +1204,50 @@ github.com/langfuse/langfuse (MIT, 8k★) — LLM observability
 
 ## References
 
-1. Can OpenManus Beat Manus AI? Benchmark Stats, Real Code and Business Use Cases — towardsai.net
-2. Manus AI vs OpenManus: A Benchmark Showdown (86.5 vs 74.3) — medium.com
-3. Manus vs OpenManus: Commercial vs Open-Source — stable-learn.com
-4. Manus vs OpenManus: Meta-Orchestrator vs Fixed Agent — linkedin.com
-5. DeerFlow — ByteDance Open-Source SuperAgent Framework — youtube.com
-6. DeerFlow 2.0 GitHub feedback — x.com/ByteDanceOSS
-7. DeerFlow — ByteDance Open-Source SuperAgent Harness — linkstartai.com
-8. DeerFlow: Multi-Agent Deep Research — deerflow.tech
-9. Revolut Trained an AI on 40 Billion Banking Events — dev.to
-10. PRAGMA: Revolut Foundation Model — arXiv 2604.08649
-11. Revolut Launches PRAGMA, 24 Billion Banking Events — kucoin.com
-12. Modeling Financial Habits with Transformers — arXiv 2507.23267
-13. How Nubank Uses Transformers to Model Financial Habits — app.daily.dev
-14. TransactionGPT — arXiv 2511.08939
-15. Transformer-Based Encoding of Transactional Behavior — arXiv 2312.14406
-16. Graph Neural Networks for Financial Fraud Detection: A Review — arXiv 2411.05815
-17. Detecting Credit Card Fraud via Heterogeneous GNN — arXiv 2504.08183
-18. FraudGNN-RL — computer.org
-19. Transaction Fraud Detection via Adaptive GNN — arXiv 2307.05633
-20. Federated learning with knowledge transfer for credit scoring — sciencedirect.com
-21. Privacy-preserving federated credit risk models — nature.com s41598-025-34536-9
-22. Toss Bank AI environment — mk.co.kr
-23. FATE: Industrial Grade Federated Learning — github.com/federatedai/fate
-24. Google Releases VaultGemma LLM With Differential Privacy — opensourceforu.com
-25. FinRL: Financial Reinforcement Learning — github.com/AI4Finance-Foundation/FinRL
-26. 15 GitHub Repos Every AI Agent in Finance — linkedin.com
-27. AI4Finance Foundation — github.com/ai4finance-foundation
-28. Building AI agents for 131 million customers — building.nubank.com
-29. Revolut PRAGMA paper — x.com/maxkarpis
-30. Payments Modernization with MongoDB and Temporal — ctfassets.net
-31. How banks cut development time with Temporal — temporal.io
-32. How Will Bank leverages Temporal (2M customers) — youtube.com
-33. Architecting a Modern Financial Institution (Nubank) — infoq.com
-34. AWS Strands Agents: Model-Driven — engineering.01cloud.com
-35. Introducing Strands Agents 1.0 — aws.amazon.com
-36. TypeScript support in Strands Agents (preview) — aws.amazon.com
-37. SOFAStack — github.com/orgs/sofastack
-38. FISCO-BCOS README_EN — github.com/FISCO-BCOS
-39. FinGPT: Open-Source Financial LLM — github.com/ai4finance-foundation/fingpt
-40. AI4Finance Foundation — ai4finance.org
-41. State of AI Agent Security 2026 Report — gravitee.io
-42. How Financial Services Teams Should Secure AI Agents 2026 — armosec.io
-43. GitHub Put an AI Agent Inside Your CI/CD Pipeline — youtube.com
-44. Agent-Operated CI/CD Architecture — alexlavaee.me
-45. Financial Fraud Detection using Quantum GNN — arXiv 2309.01127
-46. bytedance/deer-flow — github.com/bytedance/deer-flow
-47. FinRobot: Open-Source AI Agent Platform — github.com/ai4finance-foundation/finrobot
+1. Can OpenManus Beat Manus AI? Benchmark Stats, Real Code and Business Use Cases — https://pub.towardsai.net/can-openmanus-beat-manus-ai-benchmark-stats-real-code-and-business-use-cases-ac6047d876d6
+2. Manus AI vs. OpenManus: A Benchmark Showdown (86.5 vs 74.3) — https://medium.com/@rogt.x1997/manus-ai-vs-openmanus-a-benchmark-showdown-86-5-vs-74-3-open-source-revolution-e96a62aed63f
+3. Manus vs OpenManus: The Battle Between Commercial and Open-source — https://stable-learn.com/en/manus-openmanus-compare/
+4. Manus vs OpenManus: Meta-Orchestrator vs Fixed Agent — https://www.linkedin.com/posts/jedikim_manus-looks-less-like-a-single-agent-system-activity-7422660051837882368-ypei
+5. DeerFlow — ByteDance's Open-Source SuperAgent Framework — https://www.youtube.com/watch?v=lgthpUGQdmo
+6. DeerFlow 2.0 GitHub feedback — https://x.com/ByteDanceOSS/status/2026859269594009674
+7. DeerFlow — ByteDance Open-Source SuperAgent Harness — https://www.linkstartai.com/en/github-picks/deer-flow
+8. DeerFlow: Multi-Agent Deep Research — https://deerflow.tech/mock/api/threads/fe3f7974-1bcb-4a01-a950-79673baafefd/artifacts/mnt/user-data/outputs/index.html?download=true
+9. Revolut Trained an AI on 40 Billion Banking Events — https://dev.to/ji_ai/revolut-trained-an-ai-on-40-billion-banking-events-the-results-are-wild-4d1e
+10. PRAGMA: Revolut Foundation Model — https://arxiv.org/abs/2604.08649
+11. Revolut Launches PRAGMA, AI Model Trained on 24 Billion Banking Events — https://www.kucoin.com/news/flash/revolut-launches-pragma-ai-model-trained-on-24-billion-banking-events
+12. Modeling Financial Habits with Transformers — https://arxiv.org/html/2507.23267v1
+13. How Nubank Uses Transformers to Model Financial Habits at Scale — https://app.daily.dev/posts/how-nubank-uses-transformers-to-model-financial-habits-at-scale-ze8hr0dtm
+14. TransactionGPT — https://arxiv.org/abs/2511.08939
+15. Transformer-Based Encoding of Transactional Behavior — https://arxiv.org/abs/2312.14406
+16. Graph Neural Networks for Financial Fraud Detection: A Review — https://arxiv.org/abs/2411.05815
+17. Detecting Credit Card Fraud via Heterogeneous Graph Neural Network — https://arxiv.org/abs/2504.08183
+18. FraudGNN-RL: A Graph Neural Network With Reinforcement Learning — https://www.computer.org/csdl/journal/oj/2025/01/10892045/24rmDEnklJS
+19. Transaction Fraud Detection via an Adaptive Graph Neural Network — https://arxiv.org/abs/2307.05633
+20. A novel federated learning approach with knowledge transfer for credit scoring — https://www.sciencedirect.com/science/article/abs/pii/S0167923623001598
+21. Privacy-preserving federated credit risk models — https://www.nature.com/articles/s41598-025-34536-9
+22. Toss Bank aims to create an environment where all organizations can utilize AI — https://www.mk.co.kr/en/special-edition/11418955
+23. FATE: An Industrial Grade Federated Learning Framework — https://github.com/federatedai/fate
+24. Google Releases VaultGemma LLM With Differential Privacy — https://www.opensourceforu.com/2025/09/google-releases-vaultgemma-llm-with-differential-privacy-under-open-source-license/
+25. FinRL: Financial Reinforcement Learning — https://github.com/AI4Finance-Foundation/FinRL
+26. 15 GitHub Repos Every AI Agent in Finance — https://www.linkedin.com/posts/hanane-d-algo-trader_15-github-repos-every-ai-agent-in-finance-activity-7430961798532558848-R7DR
+27. AI4Finance Foundation — https://github.com/ai4finance-foundation
+28. Building AI agents for 131 million customers — https://building.nubank.com/building-ai-agents-for-131-million-customers/
+29. Revolut just dropped PRAGMA paper — https://x.com/maxkarpis/status/2043714024609546449
+30. Payments Modernization at Scale with MongoDB and Temporal — https://assets.ctfassets.net/0uuz8ydxyd9p/4zPWC5hWlFE62dSWsyvbfc/6e83586bab4696f212d97afd9cafb3d2/White_Paper_MDB_and_Temporal.pdf
+31. How banks are cutting development time in half while avoiding outages — https://temporal.io/blog/how-banks-are-cutting-dev-time-in-half-with-temporal-cloud
+32. How Will Bank leverages Temporal to handle 2 million customers | Replay 2023 — https://www.youtube.com/watch?v=CH8s0lGPR8U
+33. Architecting a Modern Financial Institution — https://www.infoq.com/presentations/nubank-architecture/
+34. AWS Introduces Strands Agents: A Model-Driven Revolution — https://engineering.01cloud.com/2026/01/16/aws-introduces-strands-agents-a-model-driven-revolution-in-building-robust-ai-agents/
+35. Introducing Strands Agents 1.0: Production-Ready Multi-Agent Orchestration — https://aws.amazon.com/blogs/opensource/introducing-strands-agents-1-0-production-ready-multi-agent-orchestration-made-simple/
+36. Announcing TypeScript support in Strands Agents (preview) — https://aws.amazon.com/about-aws/whats-new/2025/12/typescript-strands-agents-preview/
+37. SOFAStack — https://github.com/orgs/sofastack/repositories
+38. FISCO-BCOS README_EN — https://github.com/FISCO-BCOS/FISCO-BCOS/blob/master/docs/README_EN.md
+39. FinGPT: Open-Source Financial Large Language Models — https://github.com/ai4finance-foundation/fingpt
+40. AI4Finance Foundation | Open Source Financial AI — https://ai4finance.org
+41. State of AI Agent Security 2026 Report — https://www.gravitee.io/blog/state-of-ai-agent-security-2026-report-when-adoption-outpaces-control
+42. How Financial Services Teams Should Secure AI Agents in 2026 — https://www.armosec.io/blog/financial-services-ai-agent-security/
+43. GitHub Just Put an AI Agent Inside Your CI CD Pipeline — https://www.youtube.com/watch?v=BcKhhCB26k0
+44. Agent-Operated CI/CD: The Architecture Making AI Coding Agents — https://alexlavaee.me/blog/agent-operated-cicd-pipelines/
+45. Financial Fraud Detection using Quantum Graph Neural Networks — https://arxiv.org/abs/2309.01127
+46. bytedance/deer-flow — https://github.com/bytedance/deer-flow
+47. FinRobot: An Open-Source AI Agent Platform for Financial Analysis — https://github.com/ai4finance-foundation/finrobot
