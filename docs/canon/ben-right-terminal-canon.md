@@ -164,6 +164,14 @@
     Chat-reassembly is a fallback and MUST carry an explicit integrity-check block in its audit entry.
   - [ФАКТ] Any file already stored with mutated/abbreviated content is a DEFECT and must be corrected
     (re-write verbatim) before the document is considered done.
+- [ФАКТ] **Integrity truth (proven by sha-test 2026-07-09, sha 1babbde7):** the reliable channel is
+  COPYING an existing on-disk file (`cp` + sha match = byte-identical, even with unicode/URLs/formulas).
+  Round-trip `cat` file->file is also byte-safe. The UNRELIABLE channel is RE-TYPING content (heredoc
+  or chat-paste), because content is re-entered and any "simplification" (unicode->ASCII, shortened URL)
+  breaks the sha. Prior wording "file is unreliable" was imprecise: it meant the agent Write-tool (R6)
+  and re-typing — NOT `cp` of an existing file.
+  - [ВЫВОД] Preference order for zero-loss (R8): (1) BEST — document already a file on disk -> cp + sha;
+    (2) WORSE — only text -> heredoc/chat WITH mandatory integrity-check; (3) WORST — agent Write-tool (avoid).
 ---
 
 ## Integration points (recommendations — no edits applied here)
