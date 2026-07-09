@@ -140,6 +140,14 @@
   silently failed to hit disk 3× (engine-doc-intel, bdsl-coverage, bdsl-intel) while chat showed success;
   heredoc write is verifiable immediately with `ls -l` + `wc -l`. After any file write, verify existence
   and tail before `git add`.
+- [ВЫВОД] **Rule R7 — large-doc ingest:** oversized documents are ingested via BEN-chunking to disk:
+  operator sends parts to BEN; BEN emits one short heredoc per part into /tmp/<doc>-ingest/part-NN.md,
+  then concatenates (`cat part-* > docs/sources/<doc>.md`) and verifies sha + anchor-list.
+  - [ФАКТ] Chunk heredocs MUST avoid triple-backticks and heavy unicode in delimiters — in this session
+    long heredocs with code-fences repeatedly broke the shell heredoc. Use plain delimiters (WDEOF) and
+    render code as plain text; ASCII tags [FACT]/[INFER] are safer than unicode tags inside heredoc.
+  - [ФАКТ] After assembly, verify: first line, last line, section count, and a fixed anchor-list
+    (every part contributes >=1 anchor) before writing intel/coverage.
 ---
 
 ## Integration points (recommendations — no edits applied here)
