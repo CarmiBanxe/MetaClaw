@@ -148,6 +148,22 @@
     render code as plain text; ASCII tags [FACT]/[INFER] are safer than unicode tags inside heredoc.
   - [ФАКТ] After assembly, verify: first line, last line, section count, and a fixed anchor-list
     (every part contributes >=1 anchor) before writing intel/coverage.
+- [ВЫВОД] **Rule R8 — zero-loss integrity (STRICT):** every document body/section MUST be persisted
+  byte-for-byte as received — NO substitution, NO shortening, NO omission of any character, digit,
+  URL, formula, symbol or footnote. Prohibited "conveniences" that previously caused loss:
+  replacing unicode with ASCII, stripping triple-backticks, abbreviating URLs, summarising references.
+  - [ФАКТ] Loss root-cause (this session): References were saved abbreviated (title+domain) instead of
+    full URLs to avoid heredoc breakage — a content mutation that violated zero-loss.
+  - [ВЫВОД] MANDATORY integrity proof before any commit that stores a document:
+    1. record source sha256 (R2);
+    2. verify assembled file starts/ends correctly + anchor-list (R7);
+    3. for reference/URL lists: assert count matches source and spot-check exact strings;
+    4. if a chunk risks breakage (long URLs, backticks), split SMALLER — never mutate content.
+  - [ВЫВОД] If byte-for-byte cannot be guaranteed via chat pipeline, the ONLY acceptable path is:
+    operator saves the original file to disk once (R5), then cp + sha match = mathematical proof.
+    Chat-reassembly is a fallback and MUST carry an explicit integrity-check block in its audit entry.
+  - [ФАКТ] Any file already stored with mutated/abbreviated content is a DEFECT and must be corrected
+    (re-write verbatim) before the document is considered done.
 ---
 
 ## Integration points (recommendations — no edits applied here)
