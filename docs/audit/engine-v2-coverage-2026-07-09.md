@@ -4,7 +4,7 @@ Date: 2026-07-09
 By: BEN (right terminal / document-intelligence)
 Intel source: docs/audit/engine-v2-intel-2026-07-09.md
 Doc source: docs/sources/emi-banxe-engine-v2-2026-07-09.md
-Provenance: v2 sha256 3fb98168 (53181B, 1253 lines). Base reference: docs/audit/engine-doc-coverage-2026-07-08.md
+Provenance: v2 sha256 7c5a1f81d5dec85352f5e4cc420d7d334b14ffa5199127d1eda5844e2a672281 (53181B, 1253 lines). Base reference: docs/audit/engine-doc-coverage-2026-07-08.md
             (engine-doc v1 sha 9ef1b03, base 6 IMPLEMENTED / 1 PARTIAL / 7 MISSING).
 Policy: docs/canon/ben-right-terminal-canon.md §7 R4 (coverage obligation).
 Tags: [ФАКТ] verified by marker+context; [ВЫВОД] BEN recommendation; [НЕИЗВЕСТНО] not determinable.
@@ -60,3 +60,6 @@ Tags: [ФАКТ] verified by marker+context; [ВЫВОД] BEN recommendation; [�
 - [ФАКТ] BEN wrote no production code (INV-01, Aider = sole executor). Report + recommendations only.
 - [ФАКТ] Base NOT rescanned (reuse engine-doc-coverage-2026-07-08.md); only 12 delta markers scanned.
 - [ФАКТ] GATED novelties NOT recommended for immediate build (B-EMI-CREDIT-GATE-001).
+
+## R8 zero-loss note
+- References corrected to VERBATIM full URLs (47/47), integrity-verified (no concatenation, count match). Prior abbreviated form was a defect per R8, now fixed.
