@@ -10,9 +10,10 @@ import logging
 import os
 import subprocess
 import sys
-import tomllib
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+import tomllib
 
 
 class MIMOCodeEngine:
