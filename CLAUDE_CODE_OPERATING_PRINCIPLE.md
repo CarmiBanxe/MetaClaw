@@ -212,6 +212,12 @@ Claude Code must explicitly report in factual form:
 - Factory forms code and leads continuous work;
 - **All available Factory agents and workers must be included in the contour and execute their roles** unless explicitly restricted by task canon.
 
+**Executor clarity:**
+- **Aider** (via MCP/Qoder) — **primary executor** for all production code
+- **Codex** (plugin/CLI) — **secondary executor** when enabled
+- Factory agents — via controlled task queue
+- Claude Code NEVER writes production code directly
+
 ### 13.2 Bulk work = cheap models
 
 For token economy, all mass/auxiliary/preparatory/survey/diagnostic/draft work **must** use by default:
@@ -240,6 +246,16 @@ Expensive base model (primary Claude Code / Opus-class verifier) **does not** pr
 | Bulk/diagnostic/auxiliary | Lower-tier / free | When complexity requires upgrade |
 | Final review/decision | Expensive / Opus-class | Never downgrade for material decisions |
 | Fork consultation | As per §7 chain | Operator override |
+
+### 13.4a Cloud-first FCC routing policy
+
+| Data Class | Routing | Examples |
+|------------|---------|----------|
+| **Non-protected** | Cloud-first FCC | Synthetic fixtures, architecture/design, ADRs, scaffolding, tests, docs |
+| **Protected** | Local-only (Ollama) | Secrets, KYC/AML, payment/ledger, production logs, regulated evidence |
+| **Mixed** | Decomposed — cloud for logic, local for data | Feature with both scaffolding and PII |
+
+Controls: provider/model allowlist, loopback-bound gateway, audit records, spend limits, credential isolation, tested rollback.
 
 ### 13.5 Continuous execution until fork
 
@@ -281,6 +297,22 @@ This §13 **overrides** any local instruction implying:
 - No audit before next step;
 - Casual question instead of fork brief.
 
+### 13.10 Consult policy matrix (environment × reversibility)
+
+| Environment | Reversible | Material | Irreversible |
+|-------------|------------|----------|--------------|
+| **Sandbox** | Advisory — single opinion | Codex primary + Fable second | Codex + Fable parallel + operator |
+| **Preprod** | Codex single | Codex + Fable | Full chain + operator sanction |
+| **Prod** | Codex single | Full consult chain | Full chain + MLRO/CTIO + operator |
+
+**Irreversible =** secret exposure, production data leak, financial transaction, architectural lock-in.
+
+### 13.11 Auto-commit scope
+
+**Factory contour only:** In controlled environment, safe valuable untracked files (docs, canons, policies) are auto-committed after triage.
+
+**Central exception:** Central terminal plans/reviews; does NOT auto-commit. Auto-commit applies **only** to Factory (Left) contour operations.
+
 ---
 
 ## Appendix: Root-Level Instruction Bearing Files (MetaClaw)
@@ -296,6 +328,7 @@ This §13 **overrides** any local instruction implying:
 
 ---
 
-*Enacted: 2026-08-25*  
+*Enacted: 2026-08-26*  
+*Version: 1.1 (normalized)*  
 *Authority: Operator directive — root-level universal*  
 *Supersedes: All subordinate atomic/stop-and-wait instructions unless canon-boundary sanctioned*
