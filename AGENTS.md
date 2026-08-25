@@ -7,18 +7,14 @@
 
 ---
 
-## ⚠️ FACTORY OPERATING SYSTEM (Root-Level Universal)
+## ⚠️ ROOT CANON — единый SSOT (2026-08-26)
 
-All agent execution follows `FACTORY_OPERATING_SYSTEM.md`:
-- **FACTORY-ONLY CODING:** No terminal codes directly; Factory (Aider/Codex) executes all production code.
-- **ALL FACTORY STAFF ENABLED:** All available Factory agents and workers must execute their roles unless restricted by task canon.
-- **TIERED MODEL ECONOMY:** Cheap/free/lower-tier for bulk; expensive for **concise final verification only**.
-- **NON-ATOMIC:** Continuous execution across non-branching work.
-- **AUDIT-FIRST:** Fresh shell audit before each material step.
-- **CONSULT CHAIN:** Codex → Fable → Mistral → Kimi on forks.
-- **CLOUD-FIRST FCC:** Non-protected data → cloud via FCC; protected data → local Ollama.
-
-Main Claude resource verifies outputs/findings/summaries from cheap contour, not re-processes bulk work from scratch.
+Терминальный workflow всех контуров определяет **один файл**:
+`banxe-ai-rnd/research` → `docs/canon/CANON-FACTORY-SSOT.md`, норма **CORE-10-29**
+(исполнитель кода Aider/Codex, Claude Code оркеструет; cloud-vs-local по классу данных;
+непрерывный фронт + STOP-гейты; consult-цепь Codex → Fable → Mistral → Kimi; auto-commit только
+Фабрикой; имена CENTRAL / LEFT / RIGHT). `FACTORY_OPERATING_SYSTEM.md` и
+`CLAUDE_CODE_OPERATING_PRINCIPLE.md` в этом репозитории — указатели туда, не копии (ADR-102).
 
 ---
 
@@ -42,9 +38,8 @@ This repository is the **MetaClaw meta-learning framework** — agents learn and
 ## Instruction hierarchy
 
 1. **Explicit user instruction** (highest authority)
-2. **Root-level canons**:
-   - `FACTORY_OPERATING_SYSTEM.md` (universal)
-   - `CLAUDE_CODE_OPERATING_PRINCIPLE.md` (execution law)
+2. **Root-level canon**: `research/docs/canon/CANON-FACTORY-SSOT.md` (CORE-10-29);
+   `FACTORY_OPERATING_SYSTEM.md` / `CLAUDE_CODE_OPERATING_PRINCIPLE.md` здесь — указатели
 3. **Session canon**:
    - `.claude/CLAUDE_CODE_CANON.md` (Rules 1–9 + terminal extensions)
 4. **Project context**:
@@ -81,47 +76,9 @@ This repository is the **MetaClaw meta-learning framework** — agents learn and
 
 ## Terminal Roles Detail
 
-### CENTRAL (Brain)
-
-**Allowed:**
-- Plan, review, orchestrate, decide, delegate
-- Concise final verification of factory outputs
-- Read root-level system before work starts
-- Assign tasks to Factory
-
-**Prohibited:**
-- Direct file edits
-- Direct code writing
-- Direct `Edit`, `Write` for production code
-
-### LEFT (Factory Interface)
-
-**Allowed:**
-- Assign tasks to all factory agents
-- Review output, route evidence
-- Shell CI/CD / infra / audits
-
-**Prohibited:**
-- Direct code generation outside Factory
-- Originate logic that bypasses factory
-
-### RIGHT (Assistant)
-
-**Allowed:**
-- Research, audit, summarize, prepare briefs
-- Read-only document scouting
-- Tag findings [FACT]/[INFERENCE]/[UNKNOWN]
-
-**Prohibited:**
-- Any code execution
-- File edits
-
-### Factory (Aider + Codex + agents)
-
-**Execution only:**
-- Aider (via MCP) — primary executor
-- Codex (plugin/CLI) — secondary executor
-- Factory agents — via controlled task queue
+Роли CENTRAL (Brain) / LEFT (Factory Interface) / RIGHT (Assistant) и исполнители Фабрики
+(Aider primary, Codex secondary, агенты очереди) — нормативно в SSOT `CANON-FACTORY-SSOT.md`
+CORE-10-29 п.1 и п.6; здесь не дублируются.
 
 ---
 
@@ -159,8 +116,7 @@ This repository is **MetaClaw only**. Do not mix files, code, or context with:
 
 ## Before making changes
 
-1. Read `FACTORY_OPERATING_SYSTEM.md` §1 (Factory-Only Coding).
-2. Read `CLAUDE_CODE_OPERATING_PRINCIPLE.md` §4 (Non-Atomic).
+1. Read `CANON-FACTORY-SSOT.md` CORE-10-29 п.1 (Factory-only coding) и п.3 (non-atomic).
 3. Preserve existing API contracts (other projects may depend on the package).
 4. Run tests after changes: `pytest tests/ -v`
 5. Keep `requirements.txt` and `pyproject.toml` in sync.
@@ -180,8 +136,8 @@ This repository is **MetaClaw only**. Do not mix files, code, or context with:
 
 | File | Purpose | Authority |
 |------|---------|-----------|
-| `FACTORY_OPERATING_SYSTEM.md` | Universal root canon — all contours | **ROOT** |
-| `CLAUDE_CODE_OPERATING_PRINCIPLE.md` | Execution law (audit-first, non-atomic) | **ROOT** |
+| `FACTORY_OPERATING_SYSTEM.md` | Pointer → SSOT CORE-10-29 | pointer |
+| `CLAUDE_CODE_OPERATING_PRINCIPLE.md` | Pointer → SSOT CORE-10-29 | pointer |
 | `.claude/CLAUDE_CODE_CANON.md` | Session canon (Rules 1–9) | Session |
 | `AGENTS.md` | This file — terminal architecture | Project |
 | `COLLAB.md` | Collaboration patterns | Project |
@@ -203,4 +159,4 @@ A task is complete when:
 ---
 
 *Updated: 2026-08-26 (normalized v1.1)*  
-*Alignment: FACTORY_OPERATING_SYSTEM.md v1.1, CLAUDE_CODE_OPERATING_PRINCIPLE.md v1.1*
+*Alignment: research/docs/canon/CANON-FACTORY-SSOT.md v7 / CORE-10-29 (2026-08-26)*
