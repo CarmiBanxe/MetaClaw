@@ -203,14 +203,14 @@ Claude Code must explicitly report in factual form:
 
 ## 13. TOKEN ECONOMY / MODEL TIER PRINCIPLE
 
-### 13.1 Factory-only coding
+### 13.1 Factory-only coding with all staff enabled
 
 **Code generation and production work goes ONLY through the Factory.**
 
 - No terminal codes directly;
 - Any terminal assigns tasks to Factory;
 - Factory forms code and leads continuous work;
-- All Factory workers and agents must be included in the contour.
+- **All available Factory agents and workers must be included in the contour and execute their roles** unless explicitly restricted by task canon.
 
 ### 13.2 Bulk work = cheap models
 
@@ -220,15 +220,18 @@ For token economy, all mass/auxiliary/preparatory/survey/diagnostic/draft work *
 - Open Claude Code / factory fleet models;
 - Any approved lower-cost routing.
 
-### 13.3 Expensive base model = final check only
+### 13.3 Expensive base model = concise final verification only
 
 Expensive base model (primary Claude Code / Opus-class verifier) **does not** process the full routine stream.
 
-**Reserved for:**
-- Final verification;
+**Reserved for concise verification of:**
+- Outputs, findings, summaries produced by cheap contour;
+- Diffs and conclusions from Factory agents;
 - Final decision;
 - Critical validation;
 - Final quality gate.
+
+**NOT for:** re-processing full bulk work from scratch.
 
 ### 13.4 Routing hierarchy
 

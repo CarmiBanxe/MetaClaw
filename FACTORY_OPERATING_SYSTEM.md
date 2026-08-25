@@ -22,13 +22,16 @@ TERMINAL (any) → TASK ASSIGNMENT → FACTORY → CODE GENERATION
    PLAN/REVIEW ←←←←←←←←←←←←←←←←← EVIDENCE
 ```
 
-### 1.3 Terminal Roles (Execution-Prohibited)
+### 1.3 Terminal Roles (Execution-Prohibited; All Factory Staff Enabled)
 | Terminal | Allowed | Prohibited |
 |----------|---------|------------|
-| **Central (Brain)** | Plan, review, orchestrate, decide, delegate | Direct file edits, direct code writing |
-| **Left (Factory Interface)** | Assign tasks, review output, route evidence | Direct code generation outside Factory |
+| **Central (Brain)** | Plan, review, orchestrate, decide, delegate; concise final verification of factory outputs | Direct file edits, direct code writing |
+| **Left (Factory Interface)** | Assign tasks to all factory agents, review output, route evidence | Direct code generation outside Factory |
 | **Right (Assistant)** | Research, audit, summarize, prepare briefs | Any code execution |
-| **Any CC instance** | Analysis, planning, prompt engineering | Direct `Edit`, `Write` for production code |
+| **Any CC instance** | Analysis, planning, prompt engineering; concise verification of findings | Direct `Edit`, `Write` for production code |
+
+**All Available Factory Agents Rule:**
+Every task must utilize all available Factory agents and workers in their respective roles unless task canon explicitly restricts. No agent sits idle while work is assigned to expensive resource.
 
 ### 1.4 Factory Execution Only
 Production code is written **exclusively** by:
@@ -49,15 +52,17 @@ Production code is written **exclusively** by:
 | **Draft/Scaffold** | Factory | Economical capable | Code skeletons, test stubs, migrations |
 | **Primary Coding** | Aider/Codex | Strong cloud coding | Implementation, refactors, tests |
 | **Review/Verify** | Factory review layer | Stronger cloud review | Final validation, architecture check |
-| **Final Decision** | Central Terminal | Expensive base model | Critical validation, quality gate, merge approval |
+| **Final Decision** | Central Terminal | Expensive base model | Concise verification of factory outputs; quality gate; merge approval |
 
 ### 2.2 Expensive Model Conservation
-**Base model (Opus-class, primary Claude Code) is reserved for:**
-- Final quality gate decisions
-- Critical architecture validation
-- Material fork resolution (after consult chain)
-- Operator-facing final review
-- Compliance-sensitive sign-offs
+**Base model (Opus-class, primary Claude Code) is reserved for concise final verification:**
+- Reviews outputs/findings/summaries produced by cheap-tier agents;
+- Validates diffs and conclusions from Factory agents;
+- Final quality gate decisions;
+- Critical architecture validation;
+- Material fork resolution (after consult chain);
+- Operator-facing final review;
+- Compliance-sensitive sign-offs.
 
 **NOT for:**
 - Routine grep/audit
@@ -65,6 +70,7 @@ Production code is written **exclusively** by:
 - Draft scaffolding
 - Syntax fixes
 - Log analysis
+- Re-processing full bulk work from scratch
 
 ### 2.3 Open Claude Code / Factory Fleet
 For token economy, Factory uses:

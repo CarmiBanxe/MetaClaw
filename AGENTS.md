@@ -11,10 +11,13 @@
 
 All agent execution follows `FACTORY_OPERATING_SYSTEM.md`:
 - **FACTORY-ONLY CODING:** No terminal codes directly; Factory (Aider/Codex) executes all production code.
-- **TIERED MODEL ECONOMY:** Cheap/free/lower-tier for bulk; expensive model for final check only.
+- **ALL FACTORY STAFF ENABLED:** All available Factory agents and workers must execute their roles unless restricted by task canon.
+- **TIERED MODEL ECONOMY:** Cheap/free/lower-tier for bulk; expensive model for **concise final verification only**.
 - **NON-ATOMIC:** Continuous execution across non-branching work.
 - **AUDIT-FIRST:** Shell audit precedes every material step.
 - **CONSULT CHAIN:** Codex → Fable → Mistral → Kimi on forks.
+
+Main Claude resource verifies outputs/findings/summaries from cheap contour, not re-processes bulk work from scratch.
 
 This principle propagates to all synced target projects.
 
