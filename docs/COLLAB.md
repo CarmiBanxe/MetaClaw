@@ -6,6 +6,17 @@
 
 ---
 
+## Universal Operating Principle (Root-Level)
+
+All execution follows **CLAUDE_CODE_OPERATING_PRINCIPLE.md**:
+- **Factory-only coding:** Code generation goes ONLY through Factory;
+- **Token economy:** Bulk work uses cheap/free/lower-tier models; expensive base model for final check only;
+- **Audit-first:** Shell audit embedded before every material step;
+- **Non-atomic:** Continuous execution until real fork, sanction gate, or missing authority;
+- **Fork protocol:** Textual brief → operator consultation → continue.
+
+---
+
 ## User Principle (The Only Rule You Need)
 
 ```bash
