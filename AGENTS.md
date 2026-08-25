@@ -7,6 +7,19 @@
 
 ---
 
+## ⚠️ FACTORY OPERATING SYSTEM (Root-Level Universal)
+
+All agent execution follows `FACTORY_OPERATING_SYSTEM.md`:
+- **FACTORY-ONLY CODING:** No terminal codes directly; Factory (Aider/Codex) executes all production code.
+- **TIERED MODEL ECONOMY:** Cheap/free/lower-tier for bulk; expensive model for final check only.
+- **NON-ATOMIC:** Continuous execution across non-branching work.
+- **AUDIT-FIRST:** Shell audit precedes every material step.
+- **CONSULT CHAIN:** Codex → Fable → Mistral → Kimi on forks.
+
+This principle propagates to all synced target projects.
+
+---
+
 ## Core mission
 
 This repository is the **central source of truth** for:

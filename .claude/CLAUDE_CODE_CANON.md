@@ -1,5 +1,9 @@
 # Claude Code Session Canon (ABSOLUTE)
 
+**Root-Level Override:** `FACTORY_OPERATING_SYSTEM.md` takes precedence for FACTORY-ONLY CODING / TIERED MODEL ECONOMY / NON-ATOMIC / AUDIT-FIRST execution. This canon remains binding where not in conflict.
+
+**CRITICAL:** Claude Code NEVER writes production code directly. All code generation goes through Factory (Aider/Codex). See `FACTORY_OPERATING_SYSTEM.md` §1.
+
 Every Claude Code sprint prompt MUST include this block verbatim at the top.
 
 ## Rules
@@ -12,7 +16,8 @@ Every Claude Code sprint prompt MUST include this block verbatim at the top.
 6. ON ERROR: diagnose and fix yourself if safe. Only stop if fix is unsafe.
 7. SPLIT large ops into sub-commands. Execute sequentially without asking.
 8. APPROVAL MENUS: NEVER SHOW. Auto-approve safe patterns internally.
-9. REPORT: single summary after sprint. No JSON unless asked.
+9. REPORT: continuous progress, explicit audit basis per step. No JSON unless asked.
+   > **OVERRIDE NOTE:** Rule "single summary after sprint" is CANCELLED by `CLAUDE_CODE_OPERATING_PRINCIPLE.md` §4 (NON-ATOMIC). Report explicitly: audit basis, decision, execution, next audit required, fork status.
 
 ## Canonical prompt block (copy-paste into every sprint)
 
@@ -60,7 +65,7 @@ Every Claude Code sprint prompt MUST include this block verbatim at the top.
    operator instruction, handled sequentially (INV-08; `COLLAB.md` §Cross-project work). [ФАКТ]
 4. **Route unsafe/state-changing work to the operator gate.** Emit exactly one `OPERATOR_RUN` line, then
    STOP and wait for "go" (Rule 3) — this is how tasks reach LEFT for execution. [ФАКТ]
-5. **No cloud LLM.** All inference local (INV-03 / ADR-031). [ФАКТ]
+5. **Cloud-first development is permitted through FCC.** Claude Code routes through a local FCC gateway to approved allowlisted cloud models; LiteLLM/local inference remains the fallback. Sensitive banking data must remain local.
 6. **One best step out.** Per Rules 1, 8 — CENTRAL emits a single best next action (a prompt to the
    factory or an `OPERATOR_RUN`), never a menu. [ФАКТ]
 
@@ -73,3 +78,24 @@ Every Claude Code sprint prompt MUST include this block verbatim at the top.
   with INV-01/INV-08 or `COLLAB.md` single-terminal canon, the invariant/COLLAB wins and this section is
   read as role-separation-within-one-terminal only.
 - [ФАКТ] Amendments follow `software-factory-canon-v1.md` §11 (Operator approval; CTIO for structural).
+
+
+## Cloud-first development routing amendment
+
+**Status:** EFFECTIVE by Operator directive; implementation remains staged and auditable.
+
+1. **Primary development route:** Claude Code-compatible requests may be routed through a local Free Claude Code (FCC) gateway to an explicit allowlist of cloud providers/models.
+2. **Compatibility boundary:** FCC preserves the Claude Code interface; direct provider calls by agents remain disallowed unless separately approved.
+3. **Local continuity:** LiteLLM and local Ollama remain approved fallback routes for offline operation, continuity, and protected workloads.
+4. **Data boundary:** Cloud routes MUST NOT receive secrets, credentials, real customer data, KYC/KYB/AML cases, payment or ledger payloads, production logs, regulated evidence, or other sensitive banking data.
+5. **Permitted cloud work:** Synthetic fixtures, non-sensitive architecture/design, ADRs, code scaffolding, tests, migrations, documentation, and sanitized debugging.
+6. **Controls:** Provider/model allowlist, loopback-bound gateway, task/route/model audit records, spend/quota limits, credential isolation, and tested rollback are mandatory before provider activation.
+7. **Architecture boundary:** FCC accelerates development only. Banking architecture remains based on domain patterns: double-entry ledger, CQRS/event sourcing, KYC/AML orchestration, and ISO 20022/payment adapters.
+
+> **Smart Model Routing:** `docs/canon/smart-model-routing-protocol-v1.md` is the governing role, trust-tier, preflight, and independent-review protocol for this document.
+
+## Smart Routing Precedence
+
+For model selection, execution-role assignment, gateway routing, trust-tier handling, preflight, and independent-review requirements, `docs/canon/smart-model-routing-protocol-v1.md` takes precedence over earlier conflicting wording in this document.
+
+Earlier references to a sole executor, local-only inference, gateway-only routing, or legacy routing behavior remain historical/contextual unless they are explicitly restated in the Smart Model Routing Protocol.
