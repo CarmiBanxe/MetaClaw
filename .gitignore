@@ -8,28 +8,9 @@ memory_data/skills.venv/
 litellm/.env
 litellm/*.bak*
 litellm/litellm-config.v2.yaml.*
-.claude/settings.local.json
-CLAUDE.local.md
-.env
-.env.*
-secrets/
-.fcc/
 
-# Nested git repositories (subprojects)
-LibreChat/
-free-claude-code/
+# banxe-uxui-architecture source contains Perplexity presigned S3 URLs (AWS STS tokens) — never commit; kept raw on disk, referenced by audit via path+sha (R1 orphan-exception)
+docs/sources/banxe-uxui-architecture-2026-07-10.md
 
-# Backup files
-*.bak*
-*.bak-*
-
-# Binary packages
-*.deb
-
-# Local settings (may contain sensitive data)
-.claude/settings.json
-.claude/settings.local.json.example
-
-# secrets — never commit
-litellm/ops/litellm-director.env
-docs/sources/
+# banxe-agent-engine-conclusion source quotes a hardcoded api_key example (sk_live_...) from an audit finding — gitleaks-blocked; kept raw on disk, referenced by audit via path+sha (R1 orphan-exception, sha 54a4439e)
+docs/sources/banxe-agent-engine-conclusion-2026-07-10.md
