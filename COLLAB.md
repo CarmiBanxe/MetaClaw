@@ -4,10 +4,13 @@
 
 All work follows `CLAUDE_CODE_OPERATING_PRINCIPLE.md`:
 - **FACTORY-ONLY CODING:** No terminal codes directly; Factory (Aider/Codex) executes.
-- **TIERED MODEL ECONOMY:** Cheap/free/lower-tier for bulk; expensive for final check only.
+- **ALL FACTORY STAFF ENABLED:** All available Factory agents execute their roles unless restricted.
+- **TIERED MODEL ECONOMY:** Cheap/free/lower-tier for bulk; expensive for **concise final verification only**.
 - **NON-ATOMIC:** Continuous execution across non-branching work.
 - **AUDIT-FIRST:** Fresh shell audit before each material step.
 - **CONSULT CHAIN:** Codex → Fable → Mistral → Kimi on forks.
+
+Main Claude resource verifies factory outputs/findings/summaries, not re-processes bulk work.
 
 ## Project
 
