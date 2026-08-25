@@ -1,0 +1,38 @@
+bundle=/home/mmber/MetaClaw/tact-logs/smart-routing-second-opinion-20260823-023723.md
+codex=/home/mmber/.nvm/versions/node/v22.22.0/bin/codex
+exit_code=0
+
+VERDICT: APPROVE_WITH_GUARDRAILS
+ROUTING_ORDER: Claude Code plans/routes → FCC-allowlisted cloud model for non-sensitive preparation → approved executor → strong reviewer → independent Codex opinion; LiteLLM/Ollama for protected workloads and emergency continuity.
+PRIMARY_CODING_RULE: Codex may be preferred only after canon resolves INV-01’s LEFT/Aider execution mandate; Claude Code must not self-execute.
+ARCHITECTURE_RULE: Use an approved Opus-class model for material architecture and final review, while retaining Claude Code as accountable planner/reviewer/orchestrator.
+SECOND_OPINION_RULE: Require a separate Codex opinion plus human approval and designated MLRO sign-off where compliance, payments, or banking controls are affected.
+DATA_BOUNDARY: Never send secrets, customer/KYC/KYB/AML data, payment or ledger payloads, production logs, or regulated evidence to cloud routes; route them through LiteLLM to approved local aliases.
+CANON_GAPS: Reconcile FCC versus LiteLLM gateway-only wording, INV-01 versus Codex execution, automatic fallback versus trust-tier isolation, draft ADR status, MLRO ownership, and the unevidenced mandatory README/skill audit.
+TOP_RISKS: Silent cross-tier fallback, sensitive-data leakage, ambiguous authority between Claude/Codex/reviewer roles, quota-driven control bypass, and enabling FCC before staged security and rollback evidence exists.
+NEXT_SAFE_ACTION: Approve and promote ADR-032 with explicit precedence, role mappings, classification gates, default-deny routing, audit records, spend limits, kill switch, synthetic end-to-end test, rollback test, and named human/MLRO approvals before activation.
+
+stderr_summary=OpenAI Codex v0.146.0
+--------
+workdir: /home/mmber/MetaClaw
+model: gpt-5.6-sol
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: none
+reasoning summaries: none
+session id: 01a02c0d-b052-7653-b48d-27b975f58e68
+--------
+user
+You are an independent architecture reviewer.
+You receive the evidence below directly in this prompt. Do NOT use shell commands,
+tools, filesystem access, network access, or make any changes.
+
+Evaluate this operating model for a software factory building a demo fintech platform:
+
+- Always audit canon, README, policy, and relevant skills before planning or execution.
+- Use cheap/long-context cloud routes through FCC (for example Kimi, Gemini Flash,
+  OpenRouter-class) for non-sensitive reading, summarisation, research synthesis,
+  preparation, test-fixture design, and other token-heavy preparatory work.
+- Use Codex as primary coding executor when available and not quota-blocked.
+- Use Opus-class reasoning for material architecture, difficult desig

@@ -1,0 +1,43 @@
+bundle=/home/mmber/MetaClaw/tact-logs/value-preservation-codex-bundle-20260823-024539.md
+codex=/home/mmber/.nvm/versions/node/v22.22.0/bin/codex
+exit_code=0
+
+VERDICT: APPROVE_WITH_CHANGES
+PRESERVE_UNCHANGED: Preflight evidence; guardian/canon-judge enforcement; staged activation, kill-switch and rollback; pinned builds, provenance/SBOM; synthetic testing; protected-data local routing; BANXE invariants.
+ADAPT_GUARDIAN_RULES: Rewrite F9 to validate explicit allowlisted route, role, data class, trust tier and recorded reroutes; rewrite F10 around separation of planner, executor, independent reviewer and approvers—not tool brands.
+REMOVE_OR_DEPRECATE: “LiteLLM is gateway-only,” canonical-alias exclusivity outside protected routes, “Aider is sole code executor,” and forced Claude-to-Aider delegation.
+MISSING_VALUE: Add tamper-evident evidence retention, reviewer independence checks, fail-closed handling for unknown data class/routes, approval identity, and tested quota/egress ceilings.
+TEST_STRATEGY: Add table-driven tests for every approved provider/model × role × data class, protected-data leakage and cross-tier fallback denials, material-decision approvals, evidence integrity, pinned activation, kill-switch and rollback.
+FABLE5_CODEX_PARITY: Require verbatim primary analysis, a separate independent Codex opinion for every material decision when Codex is available, and an explicit agreement/disagreement/decision reconciliation; record any unavailable fallback.
+BANK_DOMAIN_GUARDS: Preserve double-entry, CQRS/event sourcing, ISO 20022, KYC/AML orchestration and independent MLRO approval; test balancing, idempotency, immutable audit history and reconciliation with synthetic data.
+MINIMAL_AMENDMENT: Replace brand-bound F9/F10 predicates and reasons with role/data/trust-tier controls; clarify that approved direct cloud routes are permitted and FCC/LiteLLM are preferred routes, not universal gateway restrictions.
+NEXT_SAFE_ACTION: Amend policy text first, add missing regression tests from the empty legacy-test area, run synthetic dry-run and rollback evidence review, then seek Operator and canon-judge approval before activation.
+
+stderr_summary=OpenAI Codex v0.146.0
+--------
+workdir: /home/mmber/MetaClaw
+model: gpt-5.6-sol
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: none
+reasoning summaries: none
+session id: 01a02c15-2d07-7982-ac38-865ff31af0c0
+--------
+user
+You are an independent, read-only reviewer of a proposed canon amendment.
+
+You receive all allowed context inside this prompt. Do not use shell commands, tools,
+filesystem access, network access, or make edits. Do not request more files.
+
+Goal: preserve valuable legacy engineering controls without restoring old restrictions
+that conflict with cloud-first, role-based Smart Model Routing.
+
+The proposed policy must:
+- keep every approved provider/model available by role and data class;
+- preserve cloud-first FCC for non-sensitive work and LiteLLM/Ollama for protected data;
+- keep Codex as primary coding executor when available, Opus-class for material architecture,
+  and independent Codex review/second opinion for material decisions;
+- retain guardian/canon-judge enforcement, evidence, rollback, pinned builds, provenance,
+  synthetic testing, and BANXE domain invariants;
+- avoid restoring local-only, Aider-only, sole-executor, gateway-only, or s

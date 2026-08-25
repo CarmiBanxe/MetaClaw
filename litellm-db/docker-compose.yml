@@ -1,0 +1,16 @@
+version: "3.9"
+services:
+  litellm-db:
+    image: postgres:16-alpine
+    container_name: litellm-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: litellm
+      POSTGRES_USER: litellm
+      POSTGRES_PASSWORD: litellm_password_2026
+    ports:
+      - "5435:5432"
+    volumes:
+      - litellm_db_data:/var/lib/postgresql/data
+volumes:
+  litellm_db_data:

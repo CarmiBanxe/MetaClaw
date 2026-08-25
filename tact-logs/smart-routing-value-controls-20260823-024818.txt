@@ -1,0 +1,18 @@
+=== SMART ROUTING VALUE-CONTROLS AMENDMENT ===
+protocol=/home/mmber/MetaClaw/docs/canon/smart-model-routing-protocol-v1.md
+backup=/home/mmber/MetaClaw/tact-logs/smart-routing-value-controls-backup-20260823-024818
+bundle=/home/mmber/MetaClaw/tact-logs/smart-routing-guardian-amendment-review-20260823-024818.md
+changed=YES
+protocol_sha256=d7cb42bb217425c77bd0c396153315f85e696c4a0cb06c4ae42ce816d74d71e3
+backup_created=PASS
+controls_present=PASS
+fail_closed_present=PASS
+tamper_evident_present=PASS
+reviewer_independence_present=PASS
+quota_egress_present=PASS
+review_bundle_created=PASS
+guardian=UNCHANGED
+runtime=UNCHANGED
+fcc_server=NOT_STARTED
+providers=NOT_CONFIGURED
+credentials=NOT_READ_OR_WRITTEN

@@ -1,0 +1,13 @@
+=== DEVELOPER TOOLS & CONSULTATION PLANE V6 — DRAFT ===
+policy_md=/home/mmber/MetaClaw/tact-logs/developer-tools-and-consultation-plane-v6-draft-20260823-032218.md
+policy_json=/home/mmber/MetaClaw/tact-logs/developer-tools-and-consultation-plane-v6-draft-20260823-032218.json
+sha256=6f5012a708790b9e0441c843560ccdd3548f78fca4f697a4c7c67f04f98b4ac5
+codex_plugin_cli=PERMANENT_CONTROLLED_TOOL
+mistral_api_litellm=PERMANENT_AFTER_GATES
+mistral_vibe_cli=OPTIONAL_AFTER_SEPARATE_REVIEW
+consultation_ladder=PRIMARY+CODEX+MISTRAL+OPTIONAL_FABLE5
+execution_authority=CODEX_AFTER_NAMED_APPROVAL_ONLY
+provider_calls=NOT_PERFORMED
+runtime_changes=NONE
+credentials_read_or_written=NO
+next_action=INDEPENDENT_REVIEW_OF_V6_POLICY

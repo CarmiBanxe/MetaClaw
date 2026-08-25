@@ -1,0 +1,68 @@
+{
+  "generated_at": "2026-08-23T02:52:48.202733+02:00",
+  "protocol_present": true,
+  "codex_cli": "/home/mmber/.nvm/versions/node/v22.22.0/bin/codex",
+  "fcc_source": {
+    "present": true,
+    "origin": "https://github.com/Alishahryar1/free-claude-code.git",
+    "commit": "f8a3b119972532c3204b7f0aae2ab1076bc1cf02",
+    "server_running_checked": false
+  },
+  "litellm": {
+    "config_present": true,
+    "declared_aliases": [
+      "claude-primary",
+      "gpt-fallback",
+      "smart",
+      "fast",
+      "fast",
+      "coding",
+      "coding",
+      "coding-heavy",
+      "coding-heavy",
+      "factory-fast",
+      "factory-coder",
+      "factory-coder",
+      "banxe-general",
+      "banxe-general",
+      "qwen3-banxe",
+      "qwen3-30b",
+      "qwen3-30b",
+      "gpt-oss-20b",
+      "glm-4-flash",
+      "ai",
+      "ai",
+      "project-mid",
+      "project-mid",
+      "factory-mid",
+      "factory-mid",
+      "ai-heavy",
+      "ai-heavy",
+      "factory-heavy",
+      "factory-heavy",
+      "project-reason",
+      "reasoning",
+      "reasoning-heavy",
+      "reasoning-235b",
+      "large",
+      "glm-4.5-air-distributed",
+      "glm-air",
+      "grok",
+      "senior-claude",
+      "senior-claude"
+    ],
+    "endpoint_reachable": false,
+    "live_models": []
+  },
+  "ollama": {
+    "endpoint_reachable": true,
+    "installed_models": [
+      "nomic-embed-text:latest",
+      "qwen2.5:7b-instruct",
+      "qwen2.5-coder:7b-instruct-q4_K_M"
+    ]
+  },
+  "cloud_provider_calls": "NOT_PERFORMED",
+  "credentials": "NOT_READ",
+  "runtime_changes": "NONE"
+}

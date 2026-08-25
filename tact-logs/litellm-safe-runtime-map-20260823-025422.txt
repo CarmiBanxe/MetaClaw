@@ -1,0 +1,15 @@
+=== LITELLM SAFE RUNTIME MAP ===
+/health/liveliness: status=200 ok=True
+/health/liveness: status=200 ok=True
+/health/readiness: status=200 ok=True
+/: status=200 ok=True
+/v1/models: status=401 ok=False
+container_count=2
+config_candidates=1
+service_started=false
+service_restarted=false
+config_changed=false
+credentials_read=false
+cloud_prompt_sent=false
+model_inference_requested=false
+inventory=/home/mmber/MetaClaw/tact-logs/litellm-safe-runtime-map-20260823-025422.json

@@ -1,0 +1,9 @@
+=== MODEL OPERATIONAL READINESS INVENTORY ===
+inventory=/home/mmber/MetaClaw/tact-logs/model-operational-readiness-20260823-025248.json
+codex_cli=/home/mmber/.nvm/versions/node/v22.22.0/bin/codex
+fcc_commit=f8a3b119972532c3204b7f0aae2ab1076bc1cf02
+litellm_reachable=False
+ollama_reachable=True
+cloud_provider_calls=NOT_PERFORMED
+credentials=NOT_READ
+runtime_changes=NONE

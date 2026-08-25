@@ -1,0 +1,1890 @@
+=== FCC ISOLATED INSTALL PLAN / READ-ONLY ===
+timestamp=2026-08-23T02:21:20.614812+02:00
+repo=/home/mmber/MetaClaw/free-claude-code
+
+=== INSTALLER CONSTANTS / ARCHIVE ORIGIN ===
+install.sh:4: REPO_ARCHIVE_URL="https://github.com/Alishahryar1/free-claude-code/archive/refs/heads/main.zip"
+install.sh:22: RTK_RELEASE_BASE_URL="https://github.com/rtk-ai/rtk/releases/download/v$RTK_VERSION"
+install.sh:29: dry_run=0
+install.sh:229:     if [ "$dry_run" -eq 1 ]; then
+install.sh:280:     [ "$dry_run" -eq 0 ] || return 0
+install.sh:340:     if [ "$dry_run" -eq 0 ] && ! command -v "$1" >/dev/null 2>&1; then
+install.sh:356:     if [ "$dry_run" -eq 1 ]; then
+install.sh:420:     if [ "$dry_run" -eq 1 ]; then
+install.sh:443:     if [ "$dry_run" -eq 1 ]; then
+install.sh:455:     if [ "$dry_run" -eq 1 ]; then
+install.sh:473: select_rtk_release() {
+install.sh:494:             fail "RTK $RTK_VERSION does not provide a release for $rtk_platform $rtk_architecture."
+install.sh:500:     select_rtk_release
+install.sh:501:     rtk_archive_url="$RTK_RELEASE_BASE_URL/$rtk_asset_name"
+install.sh:502:     if [ "$dry_run" -eq 1 ]; then
+install.sh:503:         print_command curl -fsSL "$rtk_archive_url" -o "<temporary-archive>"
+install.sh:510:     temporary_file=$(mktemp "${TMPDIR:-/tmp}/fcc-rtk.XXXXXX") || fail "Unable to create a temporary RTK archive."
+install.sh:511:     print_command curl -fsSL "$rtk_archive_url" -o "$temporary_file"
+install.sh:512:     if curl -fsSL "$rtk_archive_url" -o "$temporary_file"; then
+install.sh:518:     [ -s "$temporary_file" ] || fail "The downloaded RTK archive was empty."
+install.sh:522:         rtk_actual_sha256=$(sha256sum "$temporary_file") || fail "Could not hash the downloaded RTK archive."
+install.sh:525:         rtk_actual_sha256=$(shasum -a 256 "$temporary_file") || fail "Could not hash the downloaded RTK archive."
+install.sh:532:     if rtk_archive_entries=$(tar -tzf "$temporary_file"); then
+install.sh:535:         fail "The verified RTK archive could not be inspected."
+install.sh:537:     [ "$rtk_archive_entries" = "rtk" ] || fail "The verified RTK archive did not contain exactly one root rtk executable."
+install.sh:546:         fail "The verified RTK archive could not be extracted."
+install.sh:569:     if [ "$dry_run" -eq 1 ]; then
+install.sh:643:     if [ "$dry_run" -eq 1 ] && command -v pi >/dev/null 2>&1; then
+install.sh:654:         if [ "$dry_run" -eq 0 ]; then
+install.sh:689:     if [ "$dry_run" -eq 1 ]; then
+install.sh:703:     if [ "$dry_run" -eq 1 ]; then
+install.sh:750:     if [ "$dry_run" -eq 1 ]; then
+install.sh:766:     if [ "$dry_run" -eq 1 ]; then
+install.sh:814:     if [ "$dry_run" -eq 1 ]; then
+install.sh:844:     fail "Hermes Agent does not provide a supported release for $hermes_platform $hermes_architecture."
+install.sh:854:     if [ "$dry_run" -eq 1 ]; then
+install.sh:943:     if [ "$dry_run" -eq 1 ]; then
+install.sh:963:     if [ "$dry_run" -eq 1 ]; then
+install.sh:1009:     if [ "$dry_run" -eq 1 ]; then
+install.sh:1028:     if [ "$dry_run" -eq 1 ]; then
+install.sh:1071:     if [ "$dry_run" -eq 1 ]; then
+install.sh:1094:     if [ "$dry_run" -eq 1 ]; then
+install.sh:1220:     if [ "$dry_run" -eq 1 ]; then
+install.sh:1235:     if [ "$dry_run" -eq 1 ]; then
+install.sh:1289:                 dry_run=1
+install.sh:1325:         printf 'free-claude-code[voice,voice_local] @ %s' "$REPO_ARCHIVE_URL"
+install.sh:1327:         printf 'free-claude-code[voice] @ %s' "$REPO_ARCHIVE_URL"
+install.sh:1329:         printf 'free-claude-code[voice_local] @ %s' "$REPO_ARCHIVE_URL"
+install.sh:1331:         printf 'free-claude-code @ %s' "$REPO_ARCHIVE_URL"
+install.sh:1340:         run uv tool install --force --refresh-package free-claude-code --python "$PYTHON_VERSION" --torch-backend "$torch_backend" "$spec"
+install.sh:1342:         run uv tool install --force --refresh-package free-claude-code --python "$PYTHON_VERSION" "$spec"
+install.sh:1347:     run uv tool update-shell
+install.sh:1349:     if [ "$dry_run" -eq 1 ]; then
+install.sh:1350:         print_command uv tool dir --bin
+install.sh:1351:         printf '+ verify fcc-desktop, fcc-server, fcc-claude, fcc-codex, fcc-pi, fcc-opencode, fcc-cline, fcc-hermes, fcc-dsh, fcc-grok, and fcc-muse in the uv tool bin directory\n'
+install.sh:1356:     print_command uv tool dir --bin
+install.sh:1357:     if tool_bin=$(uv tool dir --bin); then
+install.sh:1361:         fail "Could not determine the uv tool bin directory (exit code $status)."
+install.sh:1408:     if [ "$dry_run" -eq 1 ]; then
+install.sh:1478:     if [ "$dry_run" -eq 1 ] && command -v node >/dev/null 2>&1 && command -v npm >/dev/null 2>&1; then
+install.sh:1499:     if [ "$dry_run" -eq 0 ] &&
+install.sh:1523: if [ "$dry_run" -eq 1 ]; then
+
+=== INSTALLER DRY-RUN ===
+rc=0
+
+==> Checking for running Free Claude Code processes
+
+==> Checking installation prerequisites
+
+==> Ensuring Claude Code is installed
+Claude Code already found on PATH; verifying it.
++ claude --version
+
+==> Ensuring Codex is installed
+Codex already found on PATH; verifying it.
++ codex --version
+
+==> Checking or installing Pi
++ curl -fsSL https://pi.dev/install.sh -o "<temporary-script>"
++ sh "<temporary-script>"
++ pi --help (verify --extension and --models support)
++ pi --version
+
+==> Ensuring OpenCode is installed
++ curl -fsSL https://opencode.ai/install -o "<temporary-script>"
++ bash "<temporary-script>"
++ opencode --version
+
+==> Ensuring Cline CLI is installed
++ npm install -g cline
++ cline --version
+
+==> Ensuring Hermes Agent is installed
++ curl -fsSL https://hermes-agent.nousresearch.com/install.sh -o "<temporary-script>"
++ bash "<temporary-script>" --non-interactive --skip-setup
++ hermes --version
+
+==> Ensuring DeepSeek Harness is installed
++ npm install -g @deepseek-ai/dsh@0.1.0-rc.8
++ dsh --version
+
+==> Ensuring Grok Build is installed
++ grok --version
+A compatible Grok Build will be preserved; an older version will be upgraded with the official installer.
++ grok --version
+
+==> Ensuring Muse Code is installed
++ curl -fsSL https://dev.meta.ai/install.sh -o "<temporary-script>"
++ bash "<temporary-script>"
++ muse --version
+
+==> Ensuring uv 0.11.16 or newer is installed
++ uv --version
+A compatible existing uv will be left unchanged; an obsolete one will be replaced by the standalone installer.
+
+==> Installing or updating Free Claude Code
++ uv tool install --force --refresh-package free-claude-code --python 3.14.0 "free-claude-code @ https://github.com/Alishahryar1/free-claude-code/archive/refs/heads/main.zip"
+
+==> Configuring PATH and verifying Free Claude Code
++ uv tool update-shell
++ uv tool dir --bin
++ verify fcc-desktop, fcc-server, fcc-claude, fcc-codex, fcc-pi, fcc-opencode, fcc-cline, fcc-hermes, fcc-dsh, fcc-grok, and fcc-muse in the uv tool bin directory
++ fcc-server --version
+
+Dry run complete. No changes were made.
+
+
+
+=== NETWORK DESTINATIONS IN FCC SOURCE ===
+0x.org: public-apis/README.md
+0x0.st: public-apis/README.md
+10.0.0.1: tests/api/test_web_server_tools.py
+127.0.0.1: tests/api/test_web_server_tools.py
+127.0.0.1:1234: tests/config/test_admin_status.py, tests/contracts/test_local_provider_smoke.py, tests/contracts/test_smoke_child_process.py
+127.0.0.1:8080: tests/contracts/test_local_provider_smoke.py
+127.0.0.1:8082: README.md, smoke/product/test_cli_package_product_live.py, tests/api/test_admin.py, tests/cli/test_cli_ownership.py, tests/cli/test_codex_model_catalog.py, tests/cli/test_local_http.py, tests/cli/test_managed_session_shutdown.py, tests/runtime/test_application_runtime.py
+127.0.0.1:9090: tests/api/test_admin.py, tests/cli/test_entrypoints.py, tests/runtime/test_application_runtime.py
+127.0.0.1:9099: tests/api/test_app_lifespan_and_errors.py
+127.0.0.1:9191: tests/cli/test_cline_launcher.py, tests/cli/test_dsh_config.py, tests/cli/test_dsh_launcher.py, tests/cli/test_entrypoints.py, tests/cli/test_grok_launcher.py, tests/cli/test_hermes_config.py, tests/cli/test_hermes_launcher.py, tests/cli/test_model_catalog.py ...
+127.0.0.1:9393: tests/cli/test_entrypoints.py
+127.0.0.1:9999: tests/contracts/test_nvidia_nim_cli_matrix.py
+127.0.0.1:{port}: e2e/conftest.py, smoke/lib/server.py, smoke/product/test_client_product_live.py, smoke/product/test_runtime_ownership_product_live.py, tests/contracts/test_local_provider_smoke.py
+127.0.0.1:{server.server_port}: tests/cli/test_local_http.py
+127.0.0.1:{web_port}: smoke/product/test_client_product_live.py
+169.254.169.254: tests/api/test_web_server_tools.py
+18f.github.io: public-apis/README.md
+192.168.1.1: tests/api/test_web_server_tools.py
+1forge.com: public-apis/README.md
+1inch.io: public-apis/README.md
+24pullrequests.com: public-apis/README.md
+8.8.8.8: tests/api/test_web_server_tools.py
+YOUR-RESOURCE-NAME.openai.azure.com: README.md, src/free_claude_code/config/admin/provider_manifest.py
+[::1]: tests/api/test_web_server_tools.py
+a.com: tests/providers/test_converter.py
+acnhapi.com: public-apis/README.md
+acp-x402-scriptmasterlabs.onrender.com: public-apis/README.md
+actinia.mundialis.de: public-apis/README.md
+addressmock.com: public-apis/README.md
+adresse.data.gouv.fr: public-apis/README.md
+affiliate.itunes.apple.com: public-apis/README.md
+africaopendata.org: public-apis/README.md
+agify.io: public-apis/README.md
+agnes-ai.com: README.md, src/free_claude_code/config/provider_catalog.py
+ai-gateway.vercel.sh: src/free_claude_code/config/provider_catalog.py, tests/providers/test_vercel.py
+ai-law-tracker.com: public-apis/README.md
+ai.azure.com: src/free_claude_code/config/provider_catalog.py
+ai.google.dev: .env.example, public-apis/README.md, src/free_claude_code/config/admin/provider_manifest.py
+aidevboard.com: public-apis/README.md
+aiforthai.in.th: public-apis/README.md
+aimastering.com: public-apis/README.md
+aiplatform.googleapis.com: src/free_claude_code/config/provider_catalog.py, tests/providers/test_vertex.py
+airport-web.appspot.com: public-apis/README.md
+airtable.com: public-apis/README.md
+aistudio.google.com: README.md, src/free_claude_code/config/provider_catalog.py
+aletheiaapi.com: public-apis/README.md
+alexwohlbruck.github.io: public-apis/README.md
+alpaca.markets: public-apis/README.md
+alpha.moss.land: public-apis/README.md
+alquran.cloud: public-apis/README.md
+amazonscraperapi.com: public-apis/README.md
+amiiboapi.com: public-apis/README.md
+anapioficeandfire.com: public-apis/README.md
+aniapi.com: public-apis/README.md
+any-api.com: public-apis/README.md
+anycrap.shop: public-apis/README.md
+api-docs.bitrise.io: public-apis/README.md
+api-docs.fullhunt.io: public-apis/README.md
+api-docs.igdb.com: public-apis/README.md
+api-docs.izi.travel: public-apis/README.md
+api-docs.luchtmeetnet.nl: public-apis/README.md
+api-docs.pgamerx.com: public-apis/README.md
+api-portal.systembolaget.se: public-apis/README.md
+api-reference.shutterstock.com: public-apis/README.md
+api-thirukkural.web.app: public-apis/README.md
+api.aakhilv.me: public-apis/README.md
+api.adviceslip.com: public-apis/README.md
+api.amethyste.moe: public-apis/README.md
+api.anthropic.com: tests/cli/test_entrypoints.py, tests/cli/test_managed_claude.py
+api.arcsecond.io: public-apis/README.md
+api.artic.edu: public-apis/README.md
+api.astroway.info: public-apis/README.md
+api.astroworldmc.com: public-apis/README.md
+api.attestwire.com: public-apis/README.md
+api.bart.gov: public-apis/README.md
+api.catalogopolis.xyz: public-apis/README.md
+api.cdnjs.com: public-apis/README.md
+api.cerebras.ai: src/free_claude_code/config/provider_catalog.py, tests/providers/test_cerebras.py
+api.cfl.ca: public-apis/README.md
+api.chucknorris.io: public-apis/README.md
+api.citybik.es: public-apis/README.md
+api.cline.bot: src/free_claude_code/config/provider_catalog.py, tests/providers/test_cline_pass.py
+api.cloudflare.com: src/free_claude_code/config/provider_catalog.py, tests/providers/test_provider_runtime.py
+api.cohere.ai: src/free_claude_code/config/provider_catalog.py, tests/providers/test_cohere.py
+api.coinpaprika.com: public-apis/README.md
+api.collinsdictionary.com: public-apis/README.md
+api.count.ly: public-apis/README.md
+api.covid19tracker.ca: public-apis/README.md
+api.creativecommons.engineering: public-apis/README.md
+api.cts-strasbourg.eu: public-apis/README.md
+api.data.gov: public-apis/README.md
+api.dead-drop.xyz: public-apis/README.md
+api.deepinfra.com: src/free_claude_code/config/provider_catalog.py, src/free_claude_code/providers/openai_chat/profiles.py, tests/providers/test_deepinfra.py
+api.deepseek.com: src/free_claude_code/config/provider_catalog.py, tests/providers/test_deepseek.py
+api.deepseek.com``: src/free_claude_code/providers/deepseek/client.py
+api.developer.monday.com: public-apis/README.md
+api.docs.import.io: public-apis/README.md
+api.doge-meme.lol: public-apis/README.md
+api.domainsdb.info: public-apis/README.md
+api.exchange.cryptomkt.com: public-apis/README.md
+api.featherless.ai: src/free_claude_code/config/provider_catalog.py, tests/providers/test_featherless.py
+api.fireworks.ai: src/free_claude_code/config/provider_catalog.py, tests/providers/test_fireworks.py
+api.funtranslations.com: public-apis/README.md
+api.ganjoor.net: public-apis/README.md
+api.generadordni.es: public-apis/README.md
+api.gitguardian.com: public-apis/README.md
+api.gouv.fr: public-apis/README.md
+api.groq.com: src/free_claude_code/config/provider_catalog.py, tests/providers/test_groq.py, tests/providers/test_groq_reasoning.py
+api.hackerone.com: public-apis/README.md
+api.halalterminal.com: public-apis/README.md
+api.hypixel.net: public-apis/README.md
+api.ibanforge.com: public-apis/README.md
+api.imgbb.com: public-apis/README.md
+api.inference.wandb.ai: src/free_claude_code/config/provider_catalog.py, tests/providers/test_wandb.py
+api.ipma.pt: public-apis/README.md
+api.jobs2careers.com: public-apis/README.md
+api.joshuaproject.net: public-apis/README.md
+api.kilo.ai: src/free_claude_code/config/provider_catalog.py, tests/providers/test_kilo.py
+api.kimi.com: src/free_claude_code/config/provider_catalog.py, tests/providers/test_kimi_code.py
+api.mangadex.org: public-apis/README.md
+api.mapserv.utah.gov: public-apis/README.md
+api.mattermost.com: public-apis/README.md
+api.mcsrvstat.us: public-apis/README.md
+api.met.no: public-apis/README.md
+api.minimax.io: src/free_claude_code/config/provider_catalog.py, tests/providers/test_minimax.py
+api.mistral.ai: src/free_claude_code/config/provider_catalog.py, src/free_claude_code/providers/mistral/client.py, tests/providers/test_mistral.py
+api.moonshot.ai: src/free_claude_code/config/provider_catalog.py, tests/providers/test_kimi.py
+api.nasa.gov: public-apis/CONTRIBUTING.md, public-apis/README.md
+api.nbp.pl: public-apis/README.md
+api.noctuasky.com: public-apis/README.md
+api.novita.ai: src/free_claude_code/config/provider_catalog.py, tests/providers/test_novita.py
+api.nsw.gov.au: public-apis/README.md
+api.oceandrivers.com: public-apis/README.md
+api.open.fec.gov: public-apis/README.md
+api.openai.com: src/free_claude_code/providers/openai_codex/auth.py, tests/cli/test_entrypoints.py, tests/providers/test_openai_codex_auth.py
+api.opencorporates.com: public-apis/README.md
+api.opensensemap.org: public-apis/README.md
+api.orb-intelligence.com: public-apis/README.md
+api.postcodedata.nl: public-apis/README.md
+api.producthunt.com: public-apis/README.md
+api.radio-browser.info: public-apis/README.md
+api.registrum.co.uk: public-apis/README.md
+api.sambanova.ai: src/free_claude_code/config/provider_catalog.py, tests/providers/test_sambanova.py
+api.siliconflow.com: src/free_claude_code/config/provider_catalog.py, tests/providers/test_siliconflow.py
+api.slack.com: public-apis/README.md
+api.spacex.land: public-apis/README.md
+api.squiggle.com.au: public-apis/README.md
+api.stackexchange.com: public-apis/README.md
+api.stockfit.io: public-apis/README.md
+api.stream.cz: public-apis/README.md
+api.techniknews.net: public-apis/README.md
+api.telegram.org: smoke/prereq/test_messaging_prereq_live.py, smoke/product/test_live_platform_product_live.py, tests/config/test_logging_config.py
+api.temsor.com: public-apis/README.md
+api.tfl.gov.uk: public-apis/README.md
+api.thenounproject.com: public-apis/README.md
+api.together.ai: README.md, src/free_claude_code/config/provider_catalog.py, tests/providers/test_together.py
+api.tokenfactory.nebius.com: src/free_claude_code/config/provider_catalog.py, tests/providers/test_nebius.py
+api.tokenrouter.com: .env.example, src/free_claude_code/config/admin/provider_manifest.py, src/free_claude_code/config/provider_catalog.py
+api.tollmint.com: public-apis/README.md
+api.uchecker.net: public-apis/README.md
+api.usaspending.gov: public-apis/README.md
+api.vagalume.com.br: public-apis/README.md
+api.virushee.com: public-apis/README.md
+api.watchmode.com: public-apis/README.md
+api.websitecarbon.com: public-apis/README.md
+api.wfstats.cf: public-apis/README.md
+api.whenisthenextboardexam.com: public-apis/README.md
+api.x.ai: src/free_claude_code/config/provider_catalog.py, tests/cli/test_grok_launcher.py, tests/providers/test_xai.py
+api.youneedabudget.com: public-apis/README.md
+api.z.ai: src/free_claude_code/config/provider_catalog.py
+apidocs.geekflare.com: public-apis/README.md
+apidocs.imgur.com: public-apis/README.md
+apidocs.sirv.com: public-apis/README.md
+apiflash.com: public-apis/README.md
+apigratis.com.br: public-apis/README.md
+apihub.agnes-ai.com: src/free_claude_code/config/provider_catalog.py, tests/providers/test_agnes.py
+apiip.net: public-apis/README.md
+apikijangportal.bnm.gov.my: public-apis/README.md
+apilayer.com: public-apis/README.md
+apimedic.com: public-apis/README.md
+apimetro.dev: public-apis/README.md
+apis.guru: public-apis/README.md
+apis.map.kakao.com: public-apis/README.md
+apitemplate.io: public-apis/README.md
+apiv2.bitcoinaverage.com: public-apis/README.md
+apiv3.iucnredlist.org: public-apis/README.md
+apogeoapi.com: public-apis/README.md
+app.apilayer.com?utm_source=Github&utm_medium=Referral&utm_campaign=Public-apis-repo: public-apis/README.md
+app.cline.bot: src/free_claude_code/config/provider_catalog.py, tests/providers/test_provider_runtime.py
+app.kilo.ai: src/free_claude_code/config/provider_catalog.py
+app.metrolisboa.pt: public-apis/README.md
+app.swaggerhub.com: public-apis/README.md
+app.traitify.com: public-apis/README.md
+appac.github.io: public-apis/README.md
+aqicn.org: public-apis/README.md
+archive.readme.io: public-apis/README.md
+artificialintelligencejobs.co: public-apis/README.md
+arxiv.org: public-apis/README.md
+asli-fun-fact-api.herokuapp.com: public-apis/README.md
+astral.sh: AGENTS.md, CLAUDE.md, scripts/install.ps1, scripts/install.sh
+atomic-mail.github.io: public-apis/README.md
+audexum.com: public-apis/README.md
+auth.openai.com: src/free_claude_code/providers/openai_codex/login.py, tests/api/test_admin.py, tests/providers/test_openai_codex_auth.py, tests/providers/test_openai_codex_provider.py
+auth0.com: public-apis/README.md
+autobodyshopnear.com: public-apis/README.md
+avaandmed.eesti.ee: public-apis/README.md
+avatars.dicebear.com: public-apis/README.md
+aviationstack.com: public-apis/README.md
+aztro.sameerkumar.website: public-apis/README.md
+baconipsum.com: public-apis/README.md
+baconmockup.com: public-apis/README.md
+bandcamp.com: public-apis/README.md
+battuta.medunes.net: public-apis/README.md
+bazaar.abuse.ch: public-apis/README.md
+bdapis.com: public-apis/README.md
+bedrock-mantle.eu-west-1.api.aws: tests/providers/test_provider_runtime.py
+bedrock-mantle.us-east-1.api.aws: .env.example, src/free_claude_code/config/provider_catalog.py, tests/contracts/test_smoke_config.py
+bedrock-mantle.us-west-2.api.aws: tests/api/test_admin.py, tests/providers/test_bedrock.py
+beeceptor.com: public-apis/README.md
+bestbuyapis.github.io: public-apis/README.md
+beta.developer.spotify.com: public-apis/README.md
+betbetter.world: public-apis/README.md
+bhagavadgita.io: public-apis/README.md
+bible-api.com: public-apis/README.md
+binaryjazz.us: public-apis/README.md
+binlist.net: public-apis/README.md
+biriyani.anoram.com: public-apis/README.md
+bitcoincharts.com: public-apis/README.md
+bittrex.github.io: public-apis/README.md
+bitwarden.com: public-apis/README.md
+bkkfutar.docs.apiary.io: public-apis/README.md
+blague.xyz: public-apis/README.md
+blazephoenix.xyz: public-apis/README.md
+blitapp.com: public-apis/README.md
+block.io: public-apis/README.md
+blockfrost.io: public-apis/README.md
+blocklottos.com: public-apis/README.md
+blynkapi.docs.apiary.io: public-apis/README.md
+bnb.data.bl.uk: public-apis/README.md
+boardgamegeek.com: public-apis/README.md
+bobs-burgers-api-ui.herokuapp.com: public-apis/README.md
+boleto.cloud: public-apis/README.md
+bored-api.appbrewery.com: public-apis/README.md
+botsarchive.com: public-apis/README.md
+brainshop.ai: public-apis/README.md
+brasilapi.com.br: public-apis/README.md
+bravenewcoin.com: public-apis/README.md
+breakingbadapi.com: public-apis/README.md
+brewpage.app: public-apis/README.md
+brieftape.com: public-apis/README.md
+browshot.com: public-apis/README.md
+btcnode.uk: public-apis/README.md
+buddy.works: public-apis/README.md
+build.nvidia.com: README.md, src/free_claude_code/config/provider_catalog.py
+buildpdf.co: public-apis/README.md
+bungie-net.github.io: public-apis/README.md
+buywhere.ai: public-apis/README.md
+bybit-exchange.github.io: public-apis/README.md
+calapi.inadiutorium.cz: public-apis/README.md
+caldays.com: public-apis/README.md
+calendarific.com: public-apis/README.md
+callofdutymobile.vercel.app: public-apis/README.md
+callook.info: public-apis/README.md
+canienter.com: public-apis/README.md
+capev2.readthedocs.io: public-apis/README.md
+carbon-intensity.github.io: public-apis/README.md
+carto.com: public-apis/README.md
+carvector.io: public-apis/README.md
+cataas.com: public-apis/README.md
+catboys.com: public-apis/README.md
+catchtheshow.herokuapp.com: public-apis/README.md
+catfact.ninja: public-apis/README.md
+ccdb.hemiola.com: public-apis/README.md
+ce.judge0.com: public-apis/README.md
+cep.la: public-apis/README.md
+chain.link: public-apis/README.md
+chandan-02.github.io: public-apis/README.md
+changelogs.md: public-apis/README.md
+charityapi.orghunter.com: public-apis/README.md
+chatgpt.com: scripts/install.ps1, scripts/install.sh, src/free_claude_code/config/provider_catalog.py, tests/api/test_openai_codex_compatibility.py, tests/config/test_provider_catalog.py, tests/providers/test_openai_codex_provider.py
+cheetaho.com: public-apis/README.md
+chompthis.com: public-apis/README.md
+chroniclingamerica.loc.gov: public-apis/README.md
+chutes.ai: README.md, src/free_claude_code/config/provider_catalog.py, tests/providers/test_provider_runtime.py
+circleci.com: public-apis/README.md
+ckan.multimediagdansk.pl: public-apis/README.md
+classify-web.herokuapp.com: public-apis/README.md
+claude.ai: scripts/install.ps1, scripts/install.sh
+cleanuri.com: public-apis/README.md
+clearbit.com: public-apis/README.md
+cleartracedata.com: public-apis/README.md
+cli.com: public-apis/README.md
+clickup.com: public-apis/README.md
+clockify.me: public-apis/README.md
+cloud.cerebras.ai: README.md, src/free_claude_code/config/admin/provider_manifest.py, src/free_claude_code/config/provider_catalog.py
+cloud.google.com: README.md, public-apis/README.md, src/free_claude_code/config/provider_catalog.py
+cloud.ibm.com: public-apis/README.md
+cloud.sambanova.ai: README.md, src/free_claude_code/config/admin/provider_manifest.py, src/free_claude_code/config/provider_catalog.py
+cloud.siliconflow.com: README.md, src/free_claude_code/config/provider_catalog.py
+cloudconvert.com: public-apis/README.md
+cloudflare-quic.com: public-apis/README.md
+cloudmersive.com: public-apis/README.md
+co2offset.io: public-apis/README.md
+code.claude.com: README.md
+code.gov: public-apis/README.md
+code.visualstudio.com: README.md
+codedetectionapi.runtime.dev: public-apis/README.md
+codeforces.com: public-apis/README.md
+codestats.net: public-apis/README.md
+codestral.mistral.ai: src/free_claude_code/config/provider_catalog.py, tests/providers/test_codestral.py
+coding-intl.dashscope.aliyuncs.com: src/free_claude_code/config/provider_catalog.py, tests/providers/test_qwencloud_coding.py
+coffee.alexflipnote.dev: public-apis/README.md
+coinigy.docs.apiary.io: public-apis/README.md
+coinlayer.com?utm_source=Github&utm_medium=Referral&utm_campaign=Public-apis-repo-Best-sellers: public-apis/README.md
+coinlib.io: public-apis/README.md
+coinlobster.com: public-apis/README.md
+coinmarketcap.com: public-apis/README.md
+coinremitter.com: public-apis/README.md
+collection.cooperhewitt.org: public-apis/README.md
+collegefootballdata.com: public-apis/README.md
+collegescorecard.ed.gov: public-apis/README.md
+color.serialif.com: public-apis/README.md
+colormind.io: public-apis/README.md
+comicvine.gamespot.com: public-apis/README.md
+completecriminalchecks.com: public-apis/README.md
+congressinvests.com: public-apis/README.md
+console.aws.amazon.com: README.md, src/free_claude_code/config/provider_catalog.py
+console.groq.com: .env.example, README.md, public-apis/README.md, src/free_claude_code/config/admin/provider_manifest.py, src/free_claude_code/config/provider_catalog.py
+console.mistral.ai: README.md, src/free_claude_code/config/provider_catalog.py
+console.x.ai: README.md, src/free_claude_code/config/provider_catalog.py
+core.ac.uk: public-apis/README.md
+core.telegram.org: public-apis/README.md
+corona.dnsforfamily.com: public-apis/README.md
+coronavirus.data.gov.uk: public-apis/README.md
+cosmyday.com: public-apis/README.md
+countapi.xyz: public-apis/README.md
+country.is: public-apis/README.md
+countrystatecity.in: public-apis/README.md
+cov-spectrum.ethz.ch: public-apis/README.md
+covid-19.dataflowkit.com: public-apis/README.md
+covid19api.com: public-apis/README.md
+covidtracker.bsg.ox.ac.uk: public-apis/README.md
+covidtracking.com: public-apis/README.md
+cpfhub.io: public-apis/README.md
+crafatar.com: public-apis/README.md
+craftmypdf.com: public-apis/README.md
+creativecommons.tankerkoenig.de: public-apis/README.md
+crossuniverse.psychpsyo.com: public-apis/README.md
+cruisefeed.io: public-apis/README.md
+crxcavator.io: public-apis/README.md
+csr.plus: public-apis/README.md
+ctext.org: public-apis/README.md
+currencyfreaks.com: public-apis/README.md
+currencylayer.com?utm_source=Github&utm_medium=Referral&utm_campaign=Public-apis-repo-Best-sellers: public-apis/README.md
+currencyscoop.com: public-apis/README.md
+currentsapi.services: public-apis/README.md
+custom.zai.invalid: tests/api/test_admin.py, tests/providers/test_provider_runtime.py
+cutt.ly: public-apis/README.md
+cuttingtoolsai.eu: public-apis/README.md
+cws.correios.com.br: public-apis/README.md
+dados.gov.pt: public-apis/README.md
+dadosabertos.bcb.gov.br: public-apis/README.md
+dadosabertos.camara.leg.br: public-apis/README.md
+dagpi.xyz: public-apis/README.md
+danbooru.donmai.us: public-apis/README.md
+dane.gov.pl: public-apis/README.md
+dash.cloudflare.com: src/free_claude_code/config/provider_catalog.py
+dashboard.cohere.com: README.md, src/free_claude_code/config/provider_catalog.py
+dashboard.nbshare.io: public-apis/README.md
+data.cms.gov: public-apis/README.md
+data.colorado.gov: public-apis/README.md
+data.covid19.go.id: public-apis/README.md
+data.covid19india.org: public-apis/README.md
+data.deutschebahn.com: public-apis/README.md
+data.go.id: public-apis/README.md
+data.go.th: public-apis/README.md
+data.gov.be: public-apis/README.md
+data.gov.cy: public-apis/README.md
+data.gov.cz: public-apis/README.md
+data.gov.gr: public-apis/README.md
+data.gov.ie: public-apis/README.md
+data.gov.in: public-apis/README.md
+data.gov.lt: public-apis/README.md
+data.gov.ro: public-apis/README.md
+data.gov.sa: public-apis/README.md
+data.gov.sg: public-apis/README.md
+data.gov.sk: public-apis/README.md
+data.gov.tw: public-apis/README.md
+data.gov.uk: public-apis/README.md
+data.humdata.org: public-apis/README.md
+data.ibb.gov.tr: public-apis/README.md
+data.nantesmetropole.fr: public-apis/README.md
+data.nationalgrideso.com: public-apis/README.md
+data.norge.no: public-apis/README.md
+data.oddsmagnet.com: public-apis/README.md
+data.overheid.nl: public-apis/README.md
+data.police.uk: public-apis/README.md
+data.public.lu: public-apis/README.md
+data.ratp.fr: public-apis/README.md
+data.renfe.com: public-apis/README.md
+data.rijksmuseum.nl: public-apis/README.md
+data.sa.gov.au: public-apis/README.md
+data.uio.no: public-apis/README.md
+data.wa.gov.au: public-apis/README.md
+datahelpdesk.worldbank.org: public-apis/README.md
+datamall.lta.gov.sg: public-apis/README.md
+datausa.io: public-apis/README.md
+date.nager.at: public-apis/README.md
+daten.berlin.de: public-apis/README.md
+datos.gob.ar: public-apis/README.md
+datos.gob.es: public-apis/README.md
+datos.gob.mx: public-apis/README.md
+db.ygoprodeck.com: public-apis/README.md
+ddownload.com: public-apis/README.md
+deckofcardsapi.com: public-apis/README.md
+deepai.org: public-apis/README.md
+deepinfra.com: README.md, src/free_claude_code/config/provider_catalog.py
+deividfortuna.github.io: public-apis/README.md
+demo.totalshiftleft.ai: public-apis/README.md
+designer.mocky.io: public-apis/README.md
+detectlanguage.com: public-apis/README.md
+dev-portal.at.govt.nz: public-apis/README.md
+dev-portal.rappi.com: public-apis/README.md
+dev.bitly.com: public-apis/README.md
+dev.blablacar.com: public-apis/README.md
+dev.blockscout.com: public-apis/README.md
+dev.fingerprintjs.com: public-apis/README.md
+dev.fitbit.com: public-apis/README.md
+dev.meta.ai: scripts/install.sh, src/free_claude_code/cli/launchers/muse.py, tests/scripts/test_installers.py
+dev.npr.org: public-apis/README.md
+dev.qweather.com: public-apis/README.md
+dev.socrata.com: public-apis/README.md
+dev.tamtam.chat: public-apis/README.md
+dev.twitch.tv: public-apis/README.md
+devcenter.heroku.com: public-apis/README.md
+develop.battle.net: public-apis/README.md
+developer-tripadvisor.com: public-apis/README.md
+developer.accuweather.com: public-apis/README.md
+developer.adzuna.com: public-apis/README.md
+developer.ap.org: public-apis/README.md
+developer.atlassian.com: public-apis/README.md
+developer.box.com: public-apis/README.md
+developer.brawlstars.com: public-apis/README.md
+developer.ciscospark.com: public-apis/README.md
+developer.clashofclans.com: public-apis/README.md
+developer.clashroyale.com: public-apis/README.md
+developer.company-information.service.gov.uk: public-apis/README.md
+developer.dailymotion.com: public-apis/README.md
+developer.dribbble.com: public-apis/README.md
+developer.ebay.com: public-apis/README.md
+developer.edamam.com: public-apis/README.md
+developer.entur.org: public-apis/README.md
+developer.foreca.com: public-apis/README.md
+developer.foursquare.com: public-apis/README.md
+developer.gitter.im: public-apis/README.md
+developer.grab.com: public-apis/README.md
+developer.haloapi.com: public-apis/README.md
+developer.here.com: public-apis/README.md
+developer.iconfinder.com: public-apis/README.md
+developer.ilovepdf.com: public-apis/README.md
+developer.infermedica.com: public-apis/README.md
+developer.jamendo.com: public-apis/README.md
+developer.jcdecaux.com: public-apis/README.md
+developer.kbb.com: public-apis/README.md
+developer.kkbox.com: public-apis/README.md
+developer.kroger.com: public-apis/README.md
+developer.mapquest.com: public-apis/README.md
+developer.marvel.com: public-apis/README.md
+developer.mercedes-benz.com: public-apis/README.md
+developer.metro.net: public-apis/README.md
+developer.microsoft.com: public-apis/README.md
+developer.mozilla.org: public-apis/CONTRIBUTING.md
+developer.musixmatch.com: public-apis/README.md
+developer.napster.com: public-apis/README.md
+developer.nrel.gov: public-apis/README.md
+developer.nutritionix.com: public-apis/README.md
+developer.nytimes.com: public-apis/README.md
+developer.olx.pl: public-apis/README.md
+developer.orionhealth.io: public-apis/README.md
+developer.osf.io: public-apis/README.md
+developer.oxforddictionaries.com: public-apis/README.md
+developer.postnord.com: public-apis/README.md
+developer.pubg.com: public-apis/README.md
+developer.rainbow.ai: public-apis/README.md
+developer.riotgames.com: public-apis/README.md
+developer.sabre.com: public-apis/README.md
+developer.schiphol.nl: public-apis/README.md
+developer.shodan.io: public-apis/README.md
+developer.squareup.com: public-apis/README.md
+developer.tfgm.com: public-apis/README.md
+developer.ticketmaster.com: public-apis/README.md
+developer.todoist.com: public-apis/README.md
+developer.tokopedia.com: public-apis/README.md
+developer.tomtom.com: public-apis/README.md
+developer.tradier.com: public-apis/README.md
+developer.translink.ca: public-apis/README.md
+developer.transportapi.com: public-apis/README.md
+developer.twitter.com: public-apis/README.md
+developer.uber.com: public-apis/README.md
+developer.usajobs.gov: public-apis/README.md
+developer.vimeo.com: public-apis/README.md
+developer.whatpulse.org: public-apis/README.md
+developer.wmata.com: public-apis/README.md
+developer.wordnik.com: public-apis/README.md
+developers.aftership.com: public-apis/README.md
+developers.amadeus.com: public-apis/README.md
+developers.asana.com: public-apis/README.md
+developers.bb.com.br: public-apis/README.md
+developers.bitpanda.com: public-apis/README.md
+developers.cloudflare.com: README.md, public-apis/README.md
+developers.coinbase.com: public-apis/README.md
+developers.coinranking.com: public-apis/README.md
+developers.decathlon.com: public-apis/README.md
+developers.deezer.com: public-apis/README.md
+developers.enigma.com: public-apis/README.md
+developers.epo.org: public-apis/README.md
+developers.facebook.com: public-apis/README.md
+developers.forem.com: public-apis/README.md
+developers.freelancer.com: public-apis/README.md
+developers.gettyimages.com: public-apis/README.md
+developers.gfycat.com: public-apis/README.md
+developers.giphy.com: public-apis/README.md
+developers.glitterly.app: public-apis/README.md
+developers.google.com: public-apis/README.md
+developers.icy.tools: public-apis/README.md
+developers.kakao.com: public-apis/README.md
+developers.line.biz: public-apis/README.md
+developers.mercadolibre.cl: public-apis/README.md
+developers.naver.com: public-apis/README.md
+developers.notion.com: public-apis/README.md
+developers.pandadoc.com: public-apis/README.md
+developers.pandascore.co: public-apis/README.md
+developers.pinterest.com: public-apis/README.md
+developers.podio.com: public-apis/README.md
+developers.rebrandly.com: public-apis/README.md
+developers.revolt.chat: public-apis/README.md
+developers.sendinblue.com: public-apis/README.md
+developers.soundcloud.com: public-apis/README.md
+developers.steem.io: public-apis/README.md
+developers.supportivekoala.com: public-apis/README.md
+developers.teleport.org: public-apis/README.md
+developers.tiktok.com: public-apis/README.md
+developers.trello.com: public-apis/README.md
+developers.upwork.com: public-apis/README.md
+developers.wargaming.net: public-apis/README.md
+devitjobs.uk: public-apis/README.md
+diagrams.so: public-apis/README.md
+dictionaryapi.com: public-apis/README.md
+dictionaryapi.dev: public-apis/README.md
+digimon-api.vercel.app: public-apis/README.md
+digitransit.fi: public-apis/README.md
+digmyname.com: public-apis/README.md
+dino.markets: public-apis/README.md
+dip.bundestag.de: public-apis/README.md
+discgolfapi.com: public-apis/README.md
+discord.com: README.md, public-apis/README.md, smoke/prereq/test_messaging_prereq_live.py, smoke/product/test_live_platform_product_live.py
+discord.riverside.rocks: public-apis/README.md
+disease.sh: public-apis/README.md
+disneyapi.dev: public-apis/README.md
+disqus.com: public-apis/README.md
+districtapi.dev: public-apis/README.md
+doc.navitia.io: public-apis/README.md
+doc.novadax.com: public-apis/README.md
+docs.7digital.com: public-apis/README.md
+docs.abuseipdb.com: public-apis/README.md
+docs.alchemy.com: public-apis/README.md
+docs.api.bible: public-apis/README.md
+docs.apilayer.com: public-apis/README.md
+docs.apis.is: public-apis/README.md
+docs.astral.sh: CONTRIBUTING.md
+docs.aviationapi.com: public-apis/README.md
+docs.awesomeapi.com.br: public-apis/README.md
+docs.aylien.com: public-apis/README.md
+docs.bhagavadgitaapi.in: public-apis/README.md
+docs.bic-boxtech.org: public-apis/README.md
+docs.binaryedge.io: public-apis/README.md
+docs.bitfinex.com: public-apis/README.md
+docs.breezometer.com: public-apis/README.md
+docs.bruzu.com: public-apis/README.md
+docs.bsky.app: public-apis/README.md
+docs.btcturk.com: public-apis/README.md
+docs.bugcrowd.com: public-apis/README.md
+docs.carboninterface.com: public-apis/README.md
+docs.clarifai.com: public-apis/README.md
+docs.climatiq.io: public-apis/README.md
+docs.cline.bot: README.md, src/free_claude_code/cli/launchers/cline.py
+docs.cloudbees.com: public-apis/README.md
+docs.coinapi.io: public-apis/README.md
+docs.coincap.io: public-apis/README.md
+docs.coindcx.com: public-apis/README.md
+docs.cryptapi.io: public-apis/README.md
+docs.data.nasdaq.com: public-apis/README.md
+docs.databricks.com: public-apis/README.md
+docs.descripio.com: public-apis/README.md
+docs.docker.com: public-apis/README.md
+docs.dydx.exchange: public-apis/README.md
+docs.emailrep.io: public-apis/README.md
+docs.example.com: tests/api/test_web_server_tools.py
+docs.flowdash.com: public-apis/README.md
+docs.forza-api.tk: public-apis/README.md
+docs.fullcontact.com: public-apis/README.md
+docs.gemini.com: public-apis/README.md
+docs.genius.com: public-apis/README.md
+docs.getfestivo.com: public-apis/README.md
+docs.github.com: public-apis/README.md
+docs.gitlab.com: public-apis/README.md
+docs.graphhopper.com: public-apis/README.md
+docs.greynoise.io: public-apis/README.md
+docs.helium.com: public-apis/README.md
+docs.identity.ps: public-apis/README.md
+docs.impala.travel: public-apis/README.md
+docs.irail.be: public-apis/README.md
+docs.klarna.com: public-apis/README.md
+docs.kraken.com: public-apis/README.md
+docs.ksoft.si: public-apis/README.md
+docs.kucoin.com: public-apis/README.md
+docs.kutt.it: public-apis/README.md
+docs.lexigram.io: public-apis/README.md
+docs.mail.gw: public-apis/README.md
+docs.mail.tm: public-apis/README.md
+docs.mapbox.com: public-apis/README.md
+docs.mhw-db.com: public-apis/README.md
+docs.microsoft.com: public-apis/README.md
+docs.mintlify.com: public-apis/README.md
+docs.mod.io: public-apis/README.md
+docs.moov.io: public-apis/README.md
+docs.nekos.best: public-apis/README.md
+docs.netlify.com: public-apis/README.md
+docs.nvidia.com: README.md
+docs.odds-api.io: public-apis/README.md
+docs.oikolab.com: public-apis/README.md
+docs.openalex.org: public-apis/README.md
+docs.openaq.org: public-apis/README.md
+docs.opencollective.com: public-apis/README.md
+docs.opendota.com: public-apis/README.md
+docs.pexafy.com: public-apis/README.md
+docs.pinata.cloud: public-apis/README.md
+docs.poloniex.com: public-apis/README.md
+docs.potterdb.com: public-apis/README.md
+docs.pro.coinbase.com: public-apis/README.md
+docs.publora.com: public-apis/README.md
+docs.scanii.com: public-apis/README.md
+docs.sendgrid.com: public-apis/README.md
+docs.solana.com: public-apis/README.md
+docs.sportmonks.com: public-apis/README.md
+docs.storj.io: public-apis/README.md
+docs.sunor.cc: public-apis/README.md
+docs.talordata.com: public-apis/README.md
+docs.tebex.io: public-apis/README.md
+docs.thecatapi.com: public-apis/README.md
+docs.tomorrow.io: public-apis/README.md
+docs.travis-ci.com: public-apis/README.md
+docs.valr.com: public-apis/README.md
+docs.village.ai: public-apis/README.md
+docs.virustotal.com: public-apis/README.md
+docs.watchdata.io: public-apis/README.md
+docs.wecantrack.com: public-apis/README.md
+docstruct.pages.dev: public-apis/README.md
+documentation.image-charts.com: public-apis/README.md
+documentation.onesignal.com: public-apis/README.md
+documenter.getpostman.com: public-apis/README.md
+dog.ceo: public-apis/README.md
+domainsdb.info: public-apis/README.md
+dotsweep.com: public-apis/README.md
+download-r2.pytorch.org: uv.lock
+download.pytorch.org: pyproject.toml, uv.lock
+dropmail.me: public-apis/README.md
+dukengn.github.io: public-apis/README.md
+dummyimage.com: public-apis/README.md
+dummyjson.com: public-apis/README.md
+dummyproducts-api.herokuapp.com: public-apis/README.md
+duply.co: public-apis/README.md
+dynapictures.com: public-apis/README.md
+earthquake.usgs.gov: public-apis/README.md
+econpulse.io: public-apis/README.md
+ecourtsindia.com: public-apis/README.md
+edgrapi.com: public-apis/README.md
+editor.codecogs.com: public-apis/README.md
+emel.city-platform.com: public-apis/README.md
+en.fofa.info: public-apis/README.md
+en.wikipedia.org: public-apis/CONTRIBUTING.md
+en.wiktionary.org: public-apis/README.md
+eosl.ai: public-apis/README.md
+ergast.com: public-apis/README.md
+erstat.ca: public-apis/README.md
+esi.evetech.net: public-apis/README.md
+etherscan.io: public-apis/README.md
+eva.pingutil.com: public-apis/README.md
+evilinsult.com: public-apis/README.md
+example-resource.openai.azure.com: tests/providers/test_azure_openai.py
+example.com: public-apis/scripts/tests/test_validate_links.py, tests/api/test_web_server_tools.py, tests/core/anthropic/test_models.py, tests/messaging/test_discord_markdown.py, tests/messaging/test_handler_markdown_and_status_edges.py, tests/providers/test_converter.py, tests/providers/test_parsers.py, tests/providers/test_streaming_errors.py
+example.com?param1=1&param2=2#anchor: public-apis/scripts/tests/test_validate_links.py
+example.invalid: tests/providers/test_opencode.py
+example.test: tests/cli/test_grok_launcher.py, tests/cli/test_muse_launcher.py, tests/providers/test_stream_recovery.py, tests/scripts/test_installers.py
+exchangerate.dev: public-apis/README.md
+exchangerate.host: public-apis/README.md
+exchangerate.host?utm_source=Github&utm_medium=Referral&utm_campaign=Public-apis-repo-Best-sellers: public-apis/README.md
+exchangeratesapi.io?utm_source=Github&utm_medium=Referral&utm_campaign=Public-apis-repo-Best-sellers: public-apis/README.md
+excuser.herokuapp.com: public-apis/README.md
+explore.data.parliament.uk: public-apis/README.md
+extendsclass.com: public-apis/README.md
+faceapi.hirak.site: public-apis/README.md
+fakejson.com: public-apis/README.md
+fakerapi.it: public-apis/README.md
+fakestoreapi.com: public-apis/README.md
+favqs.com: public-apis/README.md
+fcc.internal:8082: tests/cli/test_local_http.py
+fdc.nal.usda.gov: public-apis/README.md
+featherless.ai: README.md, src/free_claude_code/config/provider_catalog.py, tests/providers/test_provider_runtime.py
+ffxivcollect.com: public-apis/README.md
+files.pythonhosted.org: uv.lock
+filterlists.com: public-apis/README.md
+finage.co.uk: public-apis/README.md
+finalspaceapi.com: public-apis/README.md
+findwork.dev: public-apis/README.md
+finnhub.io: public-apis/README.md
+firebase.google.com: public-apis/README.md
+fireworks.ai: README.md, src/free_claude_code/config/provider_catalog.py
+fiscaldata.treasury.gov: public-apis/README.md
+fixer.io: public-apis/README.md
+fixer.io?utm_source=Github&utm_medium=Referral&utm_campaign=Public-apis-repo-Best-sellers: public-apis/README.md
+food-info.org: public-apis/README.md
+forismatic.com: public-apis/README.md
+fortnitetracker.com: public-apis/README.md
+fourtonfish.com: public-apis/README.md
+fred.stlouisfed.org: public-apis/README.md
+freeforexapi.com: public-apis/README.md
+freehire.dev: public-apis/README.md
+freesound.org: public-apis/README.md
+frontaccounting.com: public-apis/README.md
+fundingsignals.net: public-apis/README.md
+gameofthronesquotes.xyz: public-apis/README.md
+gdbrowser.com: public-apis/README.md
+genderize.io: public-apis/README.md
+generativelanguage.googleapis.com: src/free_claude_code/config/provider_catalog.py, src/free_claude_code/providers/gemini/client.py, tests/providers/test_gemini.py
+genshin.dev: public-apis/README.md
+geo.api.gouv.fr: public-apis/README.md
+geocode.xyz: public-apis/README.md
+geocodify.com: public-apis/README.md
+geodata.gov.gr: public-apis/README.md
+geodata.gov.hk: public-apis/README.md
+geodb-cities-api.wirefreethought.com: public-apis/README.md
+geographql.netlify.app: public-apis/README.md
+geokeo.com: public-apis/README.md
+geoscoreapi.com: public-apis/README.md
+getpantry.cloud: public-apis/README.md
+getpocket.com: public-apis/README.md
+ghibliapi.vercel.app: public-apis/README.md
+ghost.org: public-apis/README.md
+gis.ducks.org: public-apis/README.md
+gita-api.vercel.app: public-apis/README.md
+github-contributions.vercel.app: public-apis/README.md
+github.blog: public-apis/README.md
+github.com: .github/ISSUE_TEMPLATE/config.yml, CONTRIBUTING.md, README.md, public-apis/.github/PULL_REQUEST_TEMPLATE.md, public-apis/CONTRIBUTING.md, public-apis/README.md, public-apis/scripts/validate/links.py, scripts/install.ps1 ...
+gitlab.com: public-apis/README.md
+gnews.io: public-apis/README.md
+god.gw.postman.com: public-apis/README.md
+gofile.io: public-apis/README.md
+goldbean-api.xyz: public-apis/README.md
+goldprice.dev: public-apis/README.md
+goqr.me: public-apis/README.md
+gorest.co.in: public-apis/README.md
+government-data-api.onrender.com: public-apis/README.md
+graphql.bitquery.io: public-apis/README.md
+graphql.jobs: public-apis/README.md
+graphql.org: public-apis/README.md
+gruenstromindex.de: public-apis/README.md
+guides.github.com: public-apis/CONTRIBUTING.md
+guild.tradeuniquecapital.com: public-apis/README.md
+gutendex.com: public-apis/README.md
+gyazo.com: public-apis/README.md
+hackmyip.com: public-apis/README.md
+hail-history-noaa.netlify.app: public-apis/README.md
+handbook.opendata.swiss: public-apis/README.md
+hashable.space: public-apis/README.md
+hashnode.com: public-apis/README.md
+hasura.io: public-apis/README.md
+haveibeenpwned.com: public-apis/README.md
+hea.thebus.org: public-apis/README.md
+hearthstoneapi.com: public-apis/README.md
+helipaddy.com: public-apis/README.md
+heliumtrades.com: public-apis/README.md
+help.github.com: public-apis/CONTRIBUTING.md
+hermes-agent.nousresearch.com: scripts/install.ps1, scripts/install.sh, src/free_claude_code/cli/launchers/hermes.py, tests/cli/test_hermes_launcher.py, tests/scripts/test_installers.py
+hgbrasil.com: public-apis/README.md
+hipsum.co: public-apis/README.md
+holidayapi.com: public-apis/README.md
+home.qwencloud.com: README.md, src/free_claude_code/config/provider_catalog.py
+hormuz.data-tracking.net: public-apis/README.md
+host-t.com: public-apis/README.md
+host.io: public-apis/README.md
+hotstoks.com?utm_source=public-apis: public-apis/README.md
+hp-api.herokuapp.com: public-apis/README.md
+hri.fi: public-apis/README.md
+html2pdf.app: public-apis/README.md
+http.cat: public-apis/README.md
+http.dog: public-apis/README.md
+http2.pro: public-apis/README.md
+httpbin.org: public-apis/README.md
+hub.openapihub.com: public-apis/README.md
+huggingface.co: README.md, public-apis/README.md, src/free_claude_code/config/provider_catalog.py
+humorapi.com: public-apis/README.md
+hunter.io: public-apis/README.md
+huobiapi.github.io: public-apis/README.md
+hyperserve.io: public-apis/README.md
+hytale-api.com: public-apis/README.md
+i6eal.de: public-apis/README.md
+icanhazdadjoke.com: public-apis/README.md
+icanhazepoch.com: public-apis/README.md
+icon.horse: public-apis/README.md
+iconify.design: public-apis/README.md
+iexcloud.io: public-apis/README.md
+iinei.inei.gob.pe: public-apis/README.md
+imagga.com: public-apis/README.md
+imdb-api.com: public-apis/README.md
+img.icons8.com: public-apis/README.md
+img.png: tests/messaging/test_discord_markdown.py
+img.shields.io: README.md
+imgflip.com: public-apis/README.md
+improvmx.com: public-apis/README.md
+imsea.herokuapp.com: public-apis/README.md
+indianpincode.com: public-apis/README.md
+inference-docs.cerebras.ai: .env.example, src/free_claude_code/config/admin/provider_manifest.py
+infranode.dev: public-apis/README.md
+infura.io: public-apis/README.md
+inspiration.goprogram.ai: public-apis/README.md
+instatus.com: public-apis/README.md
+integrate.api.nvidia.com: src/free_claude_code/config/provider_catalog.py, tests/providers/test_nvidia_nim_degraded_retry.py
+intel.twzrd.xyz: public-apis/README.md
+interpol.api.bund.dev: public-apis/README.md
+intrinio.com: public-apis/README.md
+invovate.com: public-apis/README.md
+ip-api.com: public-apis/README.md
+ip-api.io: public-apis/README.md
+ip-fast.com: public-apis/README.md
+ip2country.info: public-apis/README.md
+ip2geo.dev: public-apis/README.md
+ipapi.co: public-apis/README.md
+ipapi.com: public-apis/README.md
+ipfind.io: public-apis/README.md
+ipgeolocation.io: public-apis/README.md
+ipinfo.io: public-apis/README.md
+iplocation.hirak.site: public-apis/README.md
+iplogs.com: public-apis/README.md
+ipstack.com: public-apis/README.md
+ipwhois.io: public-apis/README.md
+ipwhois.net: public-apis/README.md
+irisnet.de: public-apis/README.md
+isdayoff.ru: public-apis/README.md
+isevenapi.xyz: public-apis/README.md
+isitdownstatus.com: public-apis/README.md
+isro.vercel.app: public-apis/README.md
+itsthisforthat.com: public-apis/README.md
+jikan.moe: public-apis/README.md
+jina.ai: public-apis/README.md
+jobsuche.api.bund.dev: public-apis/README.md
+jokes.one: public-apis/README.md
+jooble.org: public-apis/README.md
+jservice.io: public-apis/README.md
+json2jsonp.com: public-apis/README.md
+json2video.com: public-apis/README.md
+jsonbin.io: public-apis/README.md
+jsonplaceholder.typicode.com: public-apis/README.md
+justmeme.wtf: public-apis/README.md
+kanari.io: public-apis/README.md
+kanye.rest: public-apis/README.md
+kdata-gate.vercel.app: public-apis/README.md
+kdp-intelligence-api.vercel.app: public-apis/README.md
+keen.io: public-apis/README.md
+keyvalue.immanuel.co: public-apis/README.md
+kilo.ai: README.md
+kimiquotes.herokuapp.com: public-apis/README.md
+kinduff.github.io: public-apis/README.md
+kiprio.com: public-apis/README.md
+kitsu.docs.apiary.io: public-apis/README.md
+kontests.net: public-apis/README.md
+krakenkeys.com: public-apis/README.md
+kroki.io: public-apis/README.md
+labs.ig.com: public-apis/README.md
+langbly.com: public-apis/README.md
+languagelayer.com: public-apis/README.md
+lcboapi.com: public-apis/README.md
+learn.chatgpt.com: README.md
+learn.microsoft.com: README.md
+learning.postman.com: public-apis/CONTRIBUTING.md
+legal.ge: public-apis/README.md
+libretranslate.com: public-apis/README.md
+lichess.org: public-apis/README.md
+lite.duckduckgo.com: src/free_claude_code/api/web_tools/outbound.py
+llm.chutes.ai: src/free_claude_code/config/provider_catalog.py, tests/providers/test_chutes.py
+lmstudio.ai: README.md
+lob.com: public-apis/README.md
+localbitcoins.com: public-apis/README.md
+localgov.jp: public-apis/README.md
+localhost: tests/api/test_web_server_tools.py
+localhost:1: tests/providers/test_provider_transport_logging.py
+localhost:11434: .env.example, smoke/README.md, src/free_claude_code/config/provider_catalog.py, src/free_claude_code/config/settings.py, tests/contracts/test_smoke_config.py, tests/providers/test_model_discovery.py, tests/providers/test_ollama.py, tests/providers/test_provider_runtime.py
+localhost:11434`;: README.md
+localhost:1234: .env.example, README.md, src/free_claude_code/config/provider_catalog.py, src/free_claude_code/config/settings.py, tests/conftest.py, tests/providers/test_lmstudio.py, tests/providers/test_provider_runtime.py
+localhost:8080: .env.example, README.md, src/free_claude_code/config/provider_catalog.py, src/free_claude_code/config/settings.py, tests/conftest.py, tests/providers/test_llamacpp.py, tests/providers/test_model_discovery.py, tests/providers/test_provider_runtime.py
+localhost:8082: README.md, tests/cli/test_cli.py, tests/cli/test_managed_claude.py
+locationiq.org: public-apis/README.md
+logs.to: public-apis/README.md
+longevityworldcup.com: public-apis/README.md
+lordicon.com: public-apis/README.md
+loripsum.net: public-apis/README.md
+lua-decompiler.ferib.dev: public-apis/README.md
+lumify.ai: public-apis/README.md
+lyricsovh.docs.apiary.io: public-apis/README.md
+m3o.com: public-apis/README.md
+macaddress.io: public-apis/README.md
+magicthegathering.io: public-apis/README.md
+mailboxlayer.com: public-apis/README.md
+mailboxlayer.com?utm_source=Github&utm_medium=Referral&utm_campaign=Public-apis-repo-Best-sellers: public-apis/README.md
+mailchimp.com: public-apis/README.md
+mailsac.com: public-apis/README.md
+mailtrap.io: public-apis/README.md
+major.io: public-apis/README.md
+makeup-api.herokuapp.com: public-apis/README.md
+maldatabase.com: public-apis/README.md
+malshare.com: public-apis/README.md
+mandi-api.vercel.app: public-apis/README.md
+map.longdo.com: public-apis/README.md
+mario-kart-tour-api.herokuapp.com: public-apis/README.md
+markerapi.com: public-apis/README.md
+marketplace.visualstudio.com: README.md
+marketstack.com: public-apis/README.md
+math.tools: public-apis/README.md
+mcp-x402.onrender.com: public-apis/README.md
+mediacraft-x402-api.onrender.com: public-apis/README.md
+mediastack.com?utm_source=Github&utm_medium=Referral&utm_campaign=Public-apis-repo-Best-sellers: public-apis/README.md
+medlineplus.gov: public-apis/README.md
+meirra.com: public-apis/README.md
+meltema.com: public-apis/README.md
+mememaker.github.io: public-apis/README.md
+memesio.com: public-apis/README.md
+mempool.space: public-apis/README.md
+mercury.postlight.com: public-apis/README.md
+messari.io: public-apis/README.md
+messengerx.rtfd.io: public-apis/README.md
+metacert.com: public-apis/README.md
+metaphorpsum.com: public-apis/README.md
+metmuseum.github.io: public-apis/README.md
+mgnet.me: public-apis/README.md
+microenv.com: public-apis/README.md
+microlink.io: public-apis/README.md
+microsaas-agent-api.vercel.app: public-apis/README.md
+modelpartfinder.com: public-apis/README.md
+models.github.ai: src/free_claude_code/config/provider_catalog.py, src/free_claude_code/providers/github_models/client.py, tests/providers/test_github_models.py
+mojoauth.com: public-apis/README.md
+monerometrics.net: public-apis/README.md
+mono.co: public-apis/README.md
+mostexpensivewatches.net: public-apis/README.md
+mpds.io: public-apis/README.md
+msikma.github.io: public-apis/README.md
+msrc.microsoft.com: public-apis/README.md
+musicbrainz.org: public-apis/README.md
+myanimelist.net: public-apis/README.md
+mybox.local: tests/api/test_web_server_tools.py
+mydreamthreads.xyz: public-apis/README.md
+myiprightnow.com: public-apis/README.md
+myttc.ca: public-apis/README.md
+n-number.starfile.org: public-apis/README.md
+nameday.abalin.net: public-apis/README.md
+nationalize.io: public-apis/README.md
+native.example: tests/cli/test_grok_launcher.py
+neotimo.com: public-apis/README.md
+networkcalc.com: public-apis/README.md
+new-kbbi-api.herokuapp.com: public-apis/README.md
+new-only.example.com: tests/api/test_web_server_tools.py
+newsapi.org: public-apis/README.md
+newsdata.io: public-apis/README.md
+newsflash.sh: public-apis/README.md
+newton.vercel.app: public-apis/README.md
+nexchange2.docs.apiary.io: public-apis/README.md
+nlp.insightera.co.th: public-apis/README.md
+nlpcloud.io: public-apis/README.md
+nodejs-quoteapp.herokuapp.com: public-apis/README.md
+nodejs.org: scripts/install.ps1, scripts/install.sh
+nomics.com: public-apis/README.md
+nominatim.org: public-apis/README.md
+noozra.com: public-apis/README.md
+nordigen.com: public-apis/README.md
+north7.ai: public-apis/README.md
+nothumansearch.ai: public-apis/README.md
+nova.bitcambio.com.br: public-apis/README.md
+novita.ai: README.md, src/free_claude_code/config/admin/provider_manifest.py, src/free_claude_code/config/provider_catalog.py
+nownodes.io: public-apis/README.md
+npgeo-corona-npgeo-de.hub.arcgis.com: public-apis/README.md
+npiregistry.cms.hhs.gov: public-apis/README.md
+ns.adobe.com: public-apis/.github/assets/apilayer-banner.png
+numbersapi.com: public-apis/README.md
+numlookupapi.com: public-apis/README.md
+numverify.com: public-apis/README.md
+numverify.com?utm_source=Github&utm_medium=Referral&utm_campaign=Public-apis-repo-Best-sellers: public-apis/README.md
+nuttaphat.com: public-apis/README.md
+nvd.nist.gov: public-apis/README.md
+nypl.github.io: public-apis/README.md
+objectcut.com: public-apis/README.md
+oceanfacts.herokuapp.com: public-apis/README.md
+ocr.hirak.site: public-apis/README.md
+ocr.space: public-apis/README.md
+octopart.com: public-apis/README.md
+old.coindesk.com: public-apis/README.md
+ollama.com: README.md, src/free_claude_code/config/provider_catalog.py
+onwater.io: public-apis/README.md
+onyx-actions.onrender.com: public-apis/README.md
+open-meteo.com: public-apis/README.md
+open-notify.org: public-apis/README.md
+open-platform.theguardian.com: public-apis/README.md
+open.caiyunapp.com: public-apis/README.md
+open.canada.ca: public-apis/README.md
+open.fda.gov: public-apis/README.md
+open.kickbox.com: public-apis/README.md
+open.lazada.com: public-apis/README.md
+open.shopee.com: public-apis/README.md
+open.toronto.ca: public-apis/README.md
+open5e.com: public-apis/README.md
+opencagedata.com: public-apis/README.md
+openchargemap.org: public-apis/README.md
+opencode.ai: README.md, scripts/install.sh, src/free_claude_code/cli/launchers/opencode.py, src/free_claude_code/config/provider_catalog.py, tests/providers/test_provider_runtime.py
+opendata.aemet.es: public-apis/README.md
+opendata.bordeaux-metropole.fr: public-apis/README.md
+opendata.city-adm.lviv.ua: public-apis/README.md
+opendata.cityofnewyork.us: public-apis/README.md
+opendata.dc.gov: public-apis/README.md
+opendata.euskadi.eus: public-apis/README.md
+opendata.minneapolismn.gov: public-apis/README.md
+opendata.praha.eu: public-apis/README.md
+opendata.rmv.de: public-apis/README.md
+opendata.umea.se: public-apis/README.md
+openf1.org: public-apis/README.md
+opengraphr.com: public-apis/README.md
+openlibrary.org: public-apis/README.md
+openmercantil.es: public-apis/README.md
+openqr.uk: public-apis/README.md
+openregistry.sophymarine.com: public-apis/README.md
+openrouter.ai: README.md, src/free_claude_code/config/provider_catalog.py, tests/api/test_dependencies.py, tests/api/test_ordinary_error_phases.py, tests/providers/test_nvidia_nim_degraded_retry.py, tests/providers/test_open_router.py
+openrouteservice.org: public-apis/README.md
+opensky-network.org: public-apis/README.md
+opensource.org: README.md
+opentdb.com: public-apis/README.md
+opentransportdata.swiss: public-apis/README.md
+openvan.camp: public-apis/README.md
+openvisionapi.com: public-apis/README.md
+openweathermap.org: public-apis/README.md
+openwhyd.github.io: public-apis/README.md
+orbitalwiki.com: public-apis/README.md
+orcascan.com: public-apis/README.md
+oti-labs.com: public-apis/README.md
+otp.dev: public-apis/README.md
+otwartedane.gdynia.pl: public-apis/README.md
+otx.alienvault.com: public-apis/README.md
+outagedeck.com: public-apis/README.md
+owen-wilson-wow-api.herokuapp.com: public-apis/README.md
+owlbot.info: public-apis/README.md
+owo.vc: public-apis/README.md
+oyyi.xyz: public-apis/README.md
+padelsnipe.com: public-apis/README.md
+pagecdn.com: public-apis/README.md
+palabras-aleatorias-public-api.herokuapp.com: public-apis/README.md
+panafricadata.com: public-apis/README.md
+paralelo.bo: public-apis/README.md
+pass.wafer.ai: src/free_claude_code/config/provider_catalog.py, tests/providers/test_wafer.py
+pastebin.com: public-apis/README.md
+patentsview.org: public-apis/README.md
+pdffleet.com: public-apis/README.md
+pdflayer.com: public-apis/README.md
+personality.fyi: public-apis/README.md
+perspectiveapi.com: public-apis/README.md
+phish.in: public-apis/README.md
+phisherman.gg: public-apis/README.md
+phishstats.info: public-apis/README.md
+phone-specs-api-production.up.railway.app: public-apis/README.md
+php-noise.com: public-apis/README.md
+pi.dev: scripts/install.ps1, scripts/install.sh, src/free_claude_code/cli/launchers/pi.py, tests/cli/test_entrypoints.py, tests/scripts/test_installers.py
+picsum.photos: public-apis/README.md
+pinballmap.com: public-apis/README.md
+pipedream.com: public-apis/README.md
+pirateweather.net: public-apis/README.md
+piszczek.pl: public-apis/README.md
+pixabay.com: public-apis/README.md
+pixe.la: public-apis/README.md
+pixelencounter.com: public-apis/README.md
+place.dog: public-apis/README.md
+placebear.com: public-apis/README.md
+placekeanu.com: public-apis/README.md
+platform.deepseek.com: README.md, src/free_claude_code/config/provider_catalog.py
+platform.ifttt.com: public-apis/README.md
+platform.minimax.io: README.md, src/free_claude_code/config/provider_catalog.py
+platform.moonshot.ai: README.md
+platform.moonshot.cn: src/free_claude_code/config/provider_catalog.py
+platform.seatgeek.com: public-apis/README.md
+playerdb.co: public-apis/README.md
+playerelo.football: public-apis/README.md
+pm25.lass-net.org: public-apis/README.md
+podatki.gov.si: public-apis/README.md
+pokeapi.co: public-apis/README.md
+pokemontcg.io: public-apis/README.md
+polydoc.tech: public-apis/README.md
+polygon.io: public-apis/README.md
+portfoliooptimizer.io: public-apis/README.md
+positionstack.com: public-apis/README.md
+postalcodes.info: public-apis/README.md
+postali.app: public-apis/README.md
+postcodes.io: public-apis/README.md
+postlake.dev: public-apis/README.md
+postmon.com.br: public-apis/README.md
+poststack.dev: public-apis/README.md
+pprathameshmore.github.io: public-apis/README.md
+prexview.com: public-apis/README.md
+privacy.com: public-apis/README.md
+pro.europeana.eu: public-apis/README.md
+problemsbyvin.com: public-apis/README.md
+products.wolframalpha.com: public-apis/README.md
+prop-line.com: public-apis/README.md
+provider.example: tests/providers/test_openai_chat_usage.py
+provider.invalid: e2e/conftest.py, tests/providers/support.py, tests/runtime/test_application_runtime.py
+provider.test: tests/core/test_diagnostics.py, tests/providers/test_failure_policy.py, tests/providers/test_provider_admission.py, tests/providers/test_stream_recovery.py
+proxy: tests/config/test_config.py
+proxy.example: tests/cli/test_cline_launcher.py, tests/cli/test_opencode_launcher.py
+proxy.example:3128: tests/cli/test_local_http.py
+proxy.test:8080: tests/cli/test_muse_launcher.py, tests/providers/test_provider_runtime.py
+proxycrawl.com: public-apis/README.md
+proxyforge.dev: public-apis/README.md
+proxykingdom.com: public-apis/README.md
+psychonauts-api.netlify.app: public-apis/README.md
+pulsedive.com: public-apis/README.md
+pumpfundata.com: public-apis/README.md
+punkapi.com: public-apis/README.md
+pusher.com: public-apis/README.md
+pypi.org: README.md, public-apis/scripts/README.md, uv.lock
+qrcodecrafter.com: public-apis/README.md
+quarantine.country: public-apis/README.md
+queimadas.dgi.inpe.br: public-apis/README.md
+quickchart.io: public-apis/README.md
+quickmocker.com: public-apis/README.md
+quip.com: public-apis/README.md
+quizapi.io: public-apis/README.md
+quoteclear.web.app: public-apis/README.md
+quotesondesign.com: public-apis/README.md
+quran.api-docs.io: public-apis/README.md
+racinghub.net: public-apis/README.md
+raider.io: public-apis/README.md
+random-d.uk: public-apis/README.md
+random-data-api.com: public-apis/README.md
+random-names-api.herokuapp.com: public-apis/README.md
+random-words-api.vercel.app: public-apis/README.md
+random.dog: public-apis/README.md
+randomfox.ca: public-apis/README.md
+randommer.io: public-apis/README.md
+randomuser.me: public-apis/README.md
+rapidapi.com: public-apis/README.md
+rates.hirak.site: public-apis/README.md
+ratings.food.gov.uk: public-apis/README.md
+raw.githubusercontent.com: README.md, public-apis/README.md
+rawg.io: public-apis/README.md
+razorpay.com: public-apis/README.md
+rblxdb.com: public-apis/README.md
+recipeapi.io: public-apis/README.md
+redash.io: public-apis/README.md
+redirhub.com: public-apis/README.md
+rejax.io: public-apis/README.md
+remo65588-boop.github.io: public-apis/README.md
+renderlyapi.com: public-apis/README.md
+rendex.dev: public-apis/README.md
+rendobar.com: public-apis/README.md
+represent.opennorth.ca: public-apis/README.md
+reqres.in: public-apis/README.md
+research.meta.ai: README.md
+resmush.it: public-apis/README.md
+resource.openai.azure.com: tests/contracts/test_admin_provider_manifest.py, tests/contracts/test_smoke_config.py, tests/providers/test_provider_runtime.py
+restcountries.com: public-apis/README.md
+restful-api.dev: public-apis/README.md
+restpack.io: public-apis/README.md
+retro.umoiq.com: public-apis/README.md
+revcardata.com: public-apis/README.md
+rickandmortyapi.com: public-apis/README.md
+ridb.recreation.gov: public-apis/README.md
+road511.com: public-apis/README.md
+robohash.org: public-apis/README.md
+router.bynara.id: .env.example, README.md, src/free_claude_code/config/admin/provider_manifest.py, src/free_claude_code/config/provider_catalog.py
+router.huggingface.co: src/free_claude_code/config/provider_catalog.py, tests/providers/test_huggingface.py
+rps101.pythonanywhere.com: public-apis/README.md
+rss-to-json-serverless-api.vercel.app: public-apis/README.md
+run.pstmn.io: public-apis/README.md
+runescape.wiki: public-apis/README.md
+runyankole-bible-api.vercel.app: public-apis/README.md
+rustybeer.herokuapp.com: public-apis/README.md
+sandbox.developerhub.citi.com: public-apis/README.md
+sawolabs.com: public-apis/README.md
+scholarships.grudged.io: public-apis/README.md
+scrapeninja.net: public-apis/README.md
+scraperbox.com: public-apis/README.md
+scrapestack.com: public-apis/README.md
+scrapingant.com: public-apis/README.md
+screenshotapi.net: public-apis/README.md
+screenshotlayer.com: public-apis/README.md
+screenshotlayer.com?utm_source=Github&utm_medium=Referral&utm_campaign=Public-apis-repo-Best-sellers: public-apis/README.md
+scryfall.com: public-apis/README.md
+scubamike124.github.io: public-apis/README.md
+search.censys.io: public-apis/README.md
+secret.invalid\n: tests/api/test_admin.py
+securitytrails.com: public-apis/README.md
+seller.flipkart.com: public-apis/README.md
+semantria.readme.io: public-apis/README.md
+serpstack.com: public-apis/README.md
+servicodados.ibge.gov.br: public-apis/README.md
+share.osf.io: public-apis/README.md
+sheetsu.com: public-apis/README.md
+shibe.online: public-apis/README.md
+shields.io: public-apis/README.md
+shikimori.one: public-apis/README.md
+shotstack.io: public-apis/README.md
+shoutcloud.io: public-apis/README.md
+shrtco.de: public-apis/README.md
+shrtlnk.dev: public-apis/README.md
+signaliz.docs.buildwithfern.com: public-apis/README.md
+simkl.docs.apiary.io: public-apis/README.md
+site.financialmodelingprep.com: public-apis/README.md
+siteintel.duckdns.org: public-apis/README.md
+skybiometry.com: public-apis/README.md
+smartapi.angelbroking.com: public-apis/README.md
+smartcar.com: public-apis/README.md
+smartsheet.redoc.ly: public-apis/README.md
+social-swarm-main-aa77a19.zuplo.site: public-apis/README.md
+solsigs.com: public-apis/README.md
+sonarcloud.io: public-apis/README.md
+soruly.github.io: public-apis/README.md
+spaceflightnewsapi.net: public-apis/README.md
+spacetraders.io?rel=pub-apis: public-apis/README.md
+sparepilot.com: public-apis/README.md
+spoonacular.com: public-apis/README.md
+sportdataapi.com: public-apis/README.md
+sportscore.com: public-apis/README.md
+spotsense.io: public-apis/README.md
+spyse-dev.readme.io: public-apis/README.md
+srpenergy-api-client-python.readthedocs.io: public-apis/README.md
+staffsign.de: public-apis/README.md
+stale.com: tests/api/test_web_server_tools.py
+stale.invalid: tests/cli/test_entrypoints.py
+stapi.co: public-apis/README.md
+statically.io: public-apis/README.md
+statisticsoftheworld.com: public-apis/README.md
+statlyte.com: public-apis/README.md
+status.digitalocean.com: public-apis/README.md
+steamapi.xpaw.me: public-apis/README.md
+steamgpt.net: public-apis/README.md
+stormglass.io: public-apis/README.md
+strava.github.io: public-apis/README.md
+stytch.com: public-apis/README.md
+sugra.ai: public-apis/README.md
+sunnah.amanahagent.cloud: public-apis/README.md
+sunrise-sunset.org: public-apis/README.md
+superheroapi.com: public-apis/README.md
+superset.apache.org: public-apis/README.md
+superuser.com: public-apis/scripts/validate/links.py
+support.clickmeter.com: public-apis/README.md
+support.cloudflare.com: public-apis/scripts/validate/links.py
+support.mywot.com: public-apis/README.md
+suprsonic.ai: public-apis/README.md
+suredbits.com: public-apis/README.md
+sv443.net: public-apis/README.md
+svatky.adresa.info: public-apis/README.md
+swapi.dev: public-apis/README.md
+sys.airtel.lv: public-apis/README.md
+t.me: README.md
+tallytopia.com: public-apis/README.md
+tastedive.com: public-apis/README.md
+technical-analysis-api.com: public-apis/README.md
+techrole.ru: public-apis/README.md
+techy-api.vercel.app: public-apis/README.md
+telegra.ph: public-apis/README.md
+telegram.org: README.md
+tenders.guru: public-apis/README.md
+tensorfeed.ai: public-apis/README.md
+test: tests/providers/test_nvidia_nim.py
+test-resource.openai.azure.com: tests/providers/test_provider_runtime.py
+test.api.nvidia.com: tests/conftest.py, tests/providers/test_execution_failure_boundary.py, tests/providers/test_nvidia_nim.py, tests/providers/test_openai_compat_5xx_retry.py, tests/providers/test_streaming_errors.py
+test.invalid: tests/providers/test_model_discovery.py, tests/providers/test_preflight_contract.py
+testimonialapi.toolcarton.com: public-apis/README.md
+tetr.io: public-apis/README.md
+text-till-klad-design.gracestack.se: public-apis/README.md
+the-calendar.net: public-apis/README.md
+the-one-api.dev: public-apis/README.md
+theaxolotlapi.netlify.app: public-apis/README.md
+thedogapi.com: public-apis/README.md
+thegraph.com: public-apis/README.md
+therundown.io: public-apis/README.md
+thespacedevs.com: public-apis/README.md
+thetvdb.com: public-apis/README.md
+theysaidso.com: public-apis/README.md
+thispersondoesnotexist.com: public-apis/README.md
+threatjammer.com: public-apis/README.md
+thronesapi.com: public-apis/README.md
+thunderbit.com: public-apis/README.md
+tierion.com: public-apis/README.md
+timedoor.io: public-apis/README.md
+tinify.dev: public-apis/README.md
+tinymind.eu: public-apis/README.md
+tinyurl.com: public-apis/README.md
+tiponet.tipo.gov.tw: public-apis/README.md
+tisane.ai: public-apis/README.md
+tle.ivanstanojevic.me: public-apis/README.md
+token-plan.ap-southeast-1.maas.aliyuncs.com: src/free_claude_code/config/provider_catalog.py, tests/providers/test_qwencloud.py
+tokenfactory.nebius.com: README.md, src/free_claude_code/config/provider_catalog.py, tests/providers/test_provider_runtime.py
+tomba.io: public-apis/README.md
+tools.keycdn.com: public-apis/README.md
+top5stocks.netlify.app: public-apis/README.md
+tourneyradar-api.vercel.app: public-apis/README.md
+trakt.docs.apiary.io: public-apis/README.md
+translate.hirak.site: public-apis/README.md
+transport.opendata.ch: public-apis/README.md
+transport.rest: public-apis/README.md
+trashnothing.com: public-apis/README.md
+trials.starfile.org: public-apis/README.md
+trove.nla.gov.au: public-apis/README.md
+tweetapi.com: public-apis/README.md
+twelvedata.com: public-apis/README.md
+tyk.io: public-apis/README.md
+uebermaps.com: public-apis/README.md
+ui.adsabs.harvard.edu: public-apis/README.md
+ulvis.net: public-apis/README.md
+universalis.app: public-apis/README.md
+universe.roboflow.com: public-apis/README.md
+unplu.gg: public-apis/README.md
+unrelated.test: tests/api/test_web_server_tools.py
+unsplash.com: public-apis/README.md
+untappd.com: public-apis/README.md
+upcdatabase.org: public-apis/README.md
+upres.ai: public-apis/README.md
+urantia.dev: public-apis/README.md
+urbanobservatory.ac.uk: public-apis/README.md
+urlbae.com: public-apis/README.md
+urlhaus-api.abuse.ch: public-apis/README.md
+urlhaus.abuse.ch: public-apis/README.md
+urlscan.io: public-apis/README.md
+us-central1-aiplatform.googleapis.com: tests/providers/test_vertex.py
+uselection.togatech.org: public-apis/README.md
+uselessfacts.jsph.pl: public-apis/README.md
+user:password@host:port: .env.example
+user:password@proxy.example:8443: tests/api/test_admin.py
+userguide.rescuegroups.org: public-apis/README.md
+username:password@host:port: .env.example
+userstack.com: public-apis/README.md
+utilorax.com: public-apis/README.md
+uttesh.com: public-apis/README.md
+v2.jokeapi.dev: public-apis/README.md
+vadivelu.anoram.com: public-apis/README.md
+valorant-api.com: public-apis/README.md
+vampire-diaries-api.netlify.app: public-apis/README.md
+vatlayer.com: public-apis/README.md
+vector.express: public-apis/README.md
+vedintelastroapi.com: public-apis/README.md
+vercel.com: README.md, src/free_claude_code/config/provider_catalog.py
+verifier.meetchopra.com: public-apis/README.md
+veriphone.io: public-apis/README.md
+verirouteintel.com: public-apis/README.md
+viacep.com.br: public-apis/README.md
+vidwords.com: public-apis/README.md
+visa.orizn.app: public-apis/README.md
+vk.com: public-apis/README.md
+voidly.ai: public-apis/README.md
+vpic.nhtsa.dot.gov: public-apis/README.md
+vuldb.com: public-apis/README.md
+wafer.ai: README.md
+waifu.im: public-apis/README.md
+waifu.pics: public-apis/README.md
+wakatime.com: public-apis/README.md
+wallhaven.cc: public-apis/README.md
+walltime.info: public-apis/README.md
+wandb.ai: README.md, src/free_claude_code/config/admin/provider_manifest.py, src/free_claude_code/config/provider_catalog.py, tests/providers/test_provider_runtime.py
+warnely.com: public-apis/README.md
+warrant.dev: public-apis/README.md
+waterservices.usgs.gov: public-apis/README.md
+weatherstack.com: public-apis/README.md
+web3.storage: public-apis/README.md
+webclaw.io: public-apis/README.md
+webscraping.ai: public-apis/README.md
+wger.de: public-apis/README.md
+what3words.com: public-apis/README.md
+whatthecommit.com: public-apis/README.md
+whereparcel.com: public-apis/README.md
+whiskyhunter.net: public-apis/README.md
+why21million.com: public-apis/README.md
+wiki.anidb.net: public-apis/README.md
+wiki.drivet.xyz: public-apis/README.md
+wiki.guildwars2.com: public-apis/README.md
+wiki.openstreetmap.org: public-apis/README.md
+wiki.vg: public-apis/README.md
+wimberly.solutions: public-apis/README.md
+wizard-world-api.herokuapp.com: public-apis/README.md
+wolnelektury.pl: public-apis/README.md
+woocommerce.github.io: public-apis/README.md
+wordcloudapi.com: public-apis/README.md
+world.openfoodfacts.org: public-apis/README.md
+worldtimeweather.com: public-apis/README.md
+wttr.in: public-apis/README.md
+www.7timer.info: public-apis/README.md
+www.StockData.org: public-apis/README.md
+www.Styvio.com: public-apis/README.md
+www.abibliadigital.com.br: public-apis/README.md
+www.abstractapi.com: public-apis/README.md
+www.acrelens.com: public-apis/README.md
+www.adoptapet.com: public-apis/README.md
+www.adsbexchange.com: public-apis/README.md
+www.aishub.net: public-apis/README.md
+www.alibabacloud.com: README.md
+www.alphavantage.co: public-apis/README.md
+www.amdoren.com: public-apis/README.md
+www.animenewsnetwork.com: public-apis/README.md
+www.anotherexample.com: public-apis/scripts/tests/test_validate_links.py
+www.anthropic.com: README.md
+www.api-football.com: public-apis/README.md
+www.api2convert.com: public-apis/README.md
+www.apicagent.com: public-apis/README.md
+www.apisetu.gov.in: public-apis/README.md
+www.apixu.com: public-apis/README.md
+www.apple.com: scripts/install.sh
+www.asterank.com: public-apis/README.md
+www.audiomack.com: public-apis/README.md
+www.aviationweather.gov: public-apis/README.md
+www.avoindata.fi: public-apis/README.md
+www.ayrshare.com: public-apis/README.md
+www.az511.com: public-apis/README.md
+www.balldontlie.io: public-apis/README.md
+www.base-api.io: public-apis/README.md
+www.bcferriesapi.ca: public-apis/README.md
+www.bclaws.gov.bc.ca: public-apis/README.md
+www.bigdatacloud.com: public-apis/README.md
+www.billplz.com: public-apis/README.md
+www.bitmex.com: public-apis/README.md
+www.blackhistoryapi.io: public-apis/README.md
+www.blockchain.com: public-apis/README.md
+www.bugsnaxapi.com: public-apis/README.md
+www.careerjet.com: public-apis/README.md
+www.cbr.ru: public-apis/README.md
+www.census.gov: public-apis/README.md
+www.ceskatelevize.cz: public-apis/README.md
+www.chaps.cz: public-apis/README.md
+www.cheapshark.com: public-apis/README.md
+www.chess.com: public-apis/README.md
+www.citysdk.eu: public-apis/README.md
+www.cloudbet.com: public-apis/README.md
+www.cloudflare.com: public-apis/scripts/validate/links.py
+www.cloudmersive.com: public-apis/README.md
+www.cloverly.com: public-apis/README.md
+www.cnb.cz: public-apis/README.md
+www.coingecko.com: public-apis/README.md
+www.coinlore.com: public-apis/README.md
+www.colourlovers.com: public-apis/README.md
+www.contentful.com: public-apis/README.md
+www.conversoriaecnae.es: public-apis/README.md
+www.covalenthq.com: public-apis/README.md
+www.cryptingup.com: public-apis/README.md
+www.cryptocompare.com: public-apis/README.md
+www.cryptonator.com: public-apis/README.md
+www.curecancerwithai.com: public-apis/README.md
+www.cyclecalcs.com: public-apis/README.md
+www.damsuccess.com: public-apis/README.md
+www.dane.gov.co: public-apis/README.md
+www.data.act.gov.au: public-apis/README.md
+www.data.go.kr: public-apis/README.md
+www.data.gouv.fr: public-apis/README.md
+www.data.gov: public-apis/README.md
+www.data.gov.au: public-apis/README.md
+www.data.govt.nz: public-apis/README.md
+www.data.gv.at: public-apis/README.md
+www.data.qld.gov.au: public-apis/README.md
+www.data.vic.gov.au: public-apis/README.md
+www.datacubeai.space: public-apis/README.md
+www.datamuse.com: public-apis/README.md
+www.dataportal.se: public-apis/README.md
+www.dati.gov.it: public-apis/README.md
+www.datosabiertos.gob.pe: public-apis/README.md
+www.deepcode.ai: public-apis/README.md
+www.destatis.de: public-apis/README.md
+www.digikey.com: public-apis/README.md
+www.digital.sncf.com: public-apis/README.md
+www.digite.com: public-apis/README.md
+www.disclosedcapitol.com: public-apis/README.md
+www.discogs.com: public-apis/README.md
+www.disify.com: public-apis/README.md
+www.dnd5eapi.co: public-apis/README.md
+www.domcop.com: public-apis/README.md
+www.dropbox.com: public-apis/README.md
+www.drupal.org: public-apis/README.md
+www.easports.com: public-apis/README.md
+www.econdb.com: public-apis/README.md
+www.emailjs.com: public-apis/README.md
+www.energidataservice.dk: public-apis/README.md
+www.epa.gov: public-apis/README.md
+www.etsy.com: public-apis/README.md
+www.eventbrite.com: public-apis/README.md
+www.ex.com: public-apis/scripts/tests/test_validate_format.py
+www.example.com: public-apis/scripts/tests/test_validate_links.py
+www.example.com#anchor: public-apis/scripts/tests/test_validate_links.py
+www.example.com.br: public-apis/scripts/tests/test_validate_links.py
+www.example.com.gov.br: public-apis/scripts/tests/test_validate_links.py
+www.example.com?p=1&q=2: public-apis/scripts/tests/test_validate_links.py
+www.example.com?param1=1&param2=2#anchor: public-apis/scripts/tests/test_validate_links.py
+www.exchangerate-api.com: public-apis/README.md
+www.fastdol.com: public-apis/README.md
+www.fbi.gov: public-apis/README.md
+www.federalregister.gov: public-apis/README.md
+www.file.io: public-apis/README.md
+www.filestack.com: public-apis/README.md
+www.firstexample.com: public-apis/scripts/tests/test_validate_links.py
+www.fishwatch.gov: public-apis/README.md
+www.flickr.com: public-apis/README.md
+www.foaas.com: public-apis/README.md
+www.football-charts.com: public-apis/README.md
+www.football-data.org: public-apis/README.md
+www.frankfurter.app: public-apis/README.md
+www.fraudlabspro.com: public-apis/README.md
+www.freetogame.com: public-apis/README.md
+www.fruityvice.com: public-apis/README.md
+www.gamerpower.com: public-apis/README.md
+www.gate.io: public-apis/README.md
+www.gbif.org: public-apis/README.md
+www.geoapify.com: public-apis/README.md
+www.geocod.io: public-apis/README.md
+www.geodatasource.com: public-apis/README.md
+www.geojs.io: public-apis/README.md
+www.geonames.org: public-apis/README.md
+www.geoplugin.com: public-apis/README.md
+www.getping.info: public-apis/README.md
+www.getthedata.com: public-apis/README.md
+www.getxapi.com: public-apis/README.md
+www.giantbomb.com: public-apis/README.md
+www.googleapis.com: src/free_claude_code/providers/vertex/auth.py
+www.gov.uk: public-apis/README.md
+www.govdata.de: public-apis/README.md
+www.guerrillamail.com: public-apis/README.md
+www.gunpolicy.org: public-apis/README.md
+www.hackerearth.com: public-apis/README.md
+www.healthcare.gov: public-apis/README.md
+www.hebcal.com: public-apis/README.md
+www.herohunt.ai: public-apis/README.md
+www.hko.gov.hk: public-apis/README.md
+www.hpb.health.gov.lk: public-apis/README.md
+www.hybrid-analysis.com: public-apis/README.md
+www.icndb.com: public-apis/README.md
+www.inegi.org.mx: public-apis/README.md
+www.instagram.com: public-apis/README.md
+www.ip2location.com: public-apis/README.md
+www.ip2whois.com: public-apis/README.md
+www.ipify.org: public-apis/README.md
+www.ipinfodb.com: public-apis/README.md
+www.ipvigilante.com: public-apis/README.md
+www.iqair.com: public-apis/README.md
+www.itis.gov: public-apis/README.md
+www.itsmarta.com: public-apis/README.md
+www.jetbrains.com: README.md
+www.jobdatalake.com: public-apis/README.md
+www.juju.com: public-apis/README.md
+www.kaggle.com: public-apis/README.md
+www.kimi.com: README.md, src/free_claude_code/config/provider_catalog.py
+www.last.fm: public-apis/README.md
+www.latlng.work: public-apis/README.md
+www.lectserve.com: public-apis/README.md
+www.linguarobot.io: public-apis/README.md
+www.linkpreview.net: public-apis/README.md
+www.loginradius.com: public-apis/README.md
+www.machinetutors.com: public-apis/README.md
+www.mailboxvalidator.com: public-apis/README.md
+www.mailcheck.ai: public-apis/README.md
+www.mailjet.com: public-apis/README.md
+www.marketaux.com: public-apis/README.md
+www.mbta.com: public-apis/README.md
+www.meaningcloud.com: public-apis/README.md
+www.mediawiki.org: public-apis/README.md
+www.meetup.com: public-apis/README.md
+www.mercadobitcoin.com.br: public-apis/README.md
+www.mercadopago.com.br: public-apis/README.md
+www.metabase.com: public-apis/README.md
+www.mexc.com: public-apis/README.md
+www.mfapi.in: public-apis/README.md
+www.microsoft.com: public-apis/README.md
+www.mixcloud.com: public-apis/README.md
+www.mmobomb.com: public-apis/README.md
+www.mobilites-m.fr: public-apis/README.md
+www.mockaroo.com: public-apis/README.md
+www.myip.com: public-apis/README.md
+www.nobelprize.org: public-apis/README.md
+www.notion.so: public-apis/README.md
+www.nps.gov: public-apis/README.md
+www.ns.nl: public-apis/README.md
+www.octranspo.com: public-apis/README.md
+www.okex.com: public-apis/README.md
+www.omdbapi.com: public-apis/README.md
+www.onemap.gov.sg: public-apis/README.md
+www.openbrewerydb.org: public-apis/README.md
+www.opendata.dk: public-apis/README.md
+www.opendata.nhs.scot: public-apis/README.md
+www.openfigi.com: public-apis/README.md
+www.openligadb.de: public-apis/README.md
+www.opensanctions.org: public-apis/README.md
+www.opentopodata.org: public-apis/README.md
+www.openuv.io: public-apis/README.md
+www.pathofexile.com: public-apis/README.md
+www.penguinrandomhouse.biz: public-apis/README.md
+www.petfinder.com: public-apis/README.md
+www.pexels.com: public-apis/README.md
+www.photoroom.com: public-apis/README.md
+www.pickanagency.com: public-apis/README.md
+www.plaid.com: public-apis/README.md
+www.pm25.in: public-apis/README.md
+www.postalpincode.in: public-apis/README.md
+www.postman-echo.com: public-apis/README.md
+www.postman.com: public-apis/README.md
+www.purgomalum.com: public-apis/README.md
+www.python.org: README.md, public-apis/scripts/README.md
+www.qrcode-monkey.com: public-apis/README.md
+www.qrtag.net: public-apis/README.md
+www.rainviewer.com: public-apis/README.md
+www.receitaws.com.br: public-apis/README.md
+www.reddit.com: public-apis/README.md
+www.redditapis.com: public-apis/README.md
+www.reed.co.uk: public-apis/README.md
+www.refugerestrooms.org: public-apis/README.md
+www.remove.bg: public-apis/README.md
+www.roadgoat.com: public-apis/README.md
+www.rtd-denver.com: public-apis/README.md
+www.runconvert.com: public-apis/README.md
+www.saidit.net: public-apis/README.md
+www.savepage.io: public-apis/README.md
+www.scoop.it: public-apis/README.md
+www.scorebat.com: public-apis/README.md
+www.scraperapi.com: public-apis/README.md
+www.scrapingdog.com: public-apis/README.md
+www.sec.gov: public-apis/README.md
+www.secondexample.com: public-apis/scripts/tests/test_validate_links.py
+www.sellerscalc.com: public-apis/README.md
+www.smarty.com: public-apis/README.md
+www.solematica.it: public-apis/README.md
+www.songkick.com: public-apis/README.md
+www.songsterr.com: public-apis/README.md
+www.sptrans.com.br: public-apis/README.md
+www.stromberg-api.de: public-apis/README.md
+www.sustainmetrics.net: public-apis/README.md
+www.swapi.tech: public-apis/README.md
+www.synonyms.com: public-apis/README.md
+www.taxid.dev: public-apis/README.md
+www.tcgdex.net: public-apis/README.md
+www.theaudiodb.com: public-apis/README.md
+www.thecocktaildb.com: public-apis/README.md
+www.thegazette.co.uk: public-apis/README.md
+www.themealdb.com: public-apis/README.md
+www.themoviedb.org: public-apis/README.md
+www.themuse.com: public-apis/README.md
+www.thenewsapi.com: public-apis/README.md
+www.thesportsdb.com: public-apis/README.md
+www.thisispaper.com: public-apis/README.md
+www.thunderclient.com: public-apis/README.md
+www.tilth.uk: public-apis/README.md
+www.tokenrouter.com: README.md, src/free_claude_code/config/provider_catalog.py
+www.trafiklab.se: public-apis/README.md
+www.traileraddict.com: public-apis/README.md
+www.transit.land: public-apis/README.md
+www.transitchicago.com: public-apis/README.md
+www.tredict.com: public-apis/README.md
+www.tronalddump.io: public-apis/README.md
+www.tumblr.com: public-apis/README.md
+www.tvmaze.com: public-apis/README.md
+www.twitterapis.com: public-apis/README.md
+www.udemy.com: public-apis/README.md
+www.ups.com: public-apis/README.md
+www.usa.gov: public-apis/README.md
+www.uspto.gov: public-apis/README.md
+www.uuidtools.com: public-apis/README.md
+www.vatcomply.com: public-apis/README.md
+www.velib-metropole.fr: public-apis/README.md
+www.visualcrossing.com: public-apis/README.md
+www.w3.org: assets/free-claude-code-wordmark-dark.svg, assets/free-claude-code-wordmark-light.svg, assets/how-it-works.svg, public-apis/.github/assets/apilayer-banner.png, src/free_claude_code/api/admin_static/admin.css, src/free_claude_code/assets/app-icon.svg
+www.wafer.ai: src/free_claude_code/config/provider_catalog.py
+www.weather.gov: public-apis/README.md
+www.weatherapi.com: public-apis/README.md
+www.weatherbit.io: public-apis/README.md
+www.whatjobs.com: public-apis/README.md
+www.wikidata.org: public-apis/README.md
+www.wordsapi.com: public-apis/README.md
+www.worldcoinindex.com: public-apis/README.md
+www.xfluxapi.com: public-apis/README.md
+www.yahoofinanceapi.com: public-apis/README.md
+www.yelp.com: public-apis/README.md
+www.zenrows.com: public-apis/README.md
+www.zipcodeapi.com: public-apis/README.md
+www.zippopotam.us: public-apis/README.md
+www.ziprecruiter.com: public-apis/README.md
+www.zoho.com: public-apis/README.md
+www2.purpleair.com: public-apis/README.md
+www3.septa.org: public-apis/README.md
+x: tests/cli/test_cli_manager_edge_cases.py, tests/providers/test_deepseek.py, tests/providers/test_openai_compat_5xx_retry.py
+x-math.herokuapp.com: public-apis/README.md
+x.ai: scripts/install.ps1, scripts/install.sh, src/free_claude_code/cli/launchers/grok.py, tests/scripts/test_installers.py
+x.com: tests/providers/test_converter.py
+xeno-canto.org: public-apis/README.md
+xeropdf.com: public-apis/README.md
+xfetch.io: public-apis/README.md
+xivapi.com: public-apis/README.md
+xkcd.com: public-apis/README.md
+yandex.com: public-apis/README.md
+yesno.wtf: public-apis/README.md
+z.ai: README.md, src/free_claude_code/config/provider_catalog.py
+zelothorn.com: public-apis/README.md
+zenmux.ai: README.md, src/free_claude_code/config/provider_catalog.py, tests/providers/test_zenmux.py
+zennet.cloud: public-apis/README.md
+zenquotes.io: public-apis/README.md
+zenserp.com: public-apis/README.md
+zestfuldata.com: public-apis/README.md
+ziptasticapi.com: public-apis/README.md
+zmok.io: public-apis/README.md
+zube.io: public-apis/README.md
+{OPENAI_CALLBACK_HOST}:{candidate}: src/free_claude_code/providers/openai_codex/login.py
+{_browser_host_for_local_urls: src/free_claude_code/config/server_urls.py
+{descriptor.provider_id}.example.invalid: smoke/product/test_config_extensibility_product_live.py
+{normalized}-aiplatform.googleapis.com: src/free_claude_code/providers/vertex/endpoint.py
+
+=== INSTALLER WRITE TARGETS (STATIC ANALYSIS) ===
+install.sh:108:     exec 4>"$selection_output"
+install.sh:244:         rm -f "$temporary_file"
+install.sh:247:         rm -f "$temporary_binary"
+install.sh:253: trap 'exit 143' HUP TERM
+install.sh:357:         print_command curl -fsSL "$url" -o "<temporary-script>"
+install.sh:368:             print_command "$interpreter" "<temporary-script>" "$@"
+install.sh:412:     rm -f "$temporary_file"
+install.sh:474:     rtk_platform=$(uname -s)
+install.sh:476:     case "$rtk_platform:$rtk_architecture" in
+install.sh:494:             fail "RTK $RTK_VERSION does not provide a release for $rtk_platform $rtk_architecture."
+install.sh:503:         print_command curl -fsSL "$rtk_archive_url" -o "<temporary-archive>"
+install.sh:540:     run mkdir -p "$rtk_install_directory"
+install.sh:543:     if tar -xOzf "$temporary_file" rtk >"$temporary_binary"; then
+install.sh:549:     run chmod +x "$temporary_binary"
+install.sh:550:     run mv "$temporary_binary" "$rtk_install_directory/rtk"
+install.sh:552:     rm -f "$temporary_file"
+install.sh:589:     run mkdir -p "$rtk_claude_config_directory"
+install.sh:828:     hermes_platform=$(uname -s)
+install.sh:830:     case "$hermes_platform:$hermes_architecture" in
+install.sh:840: confirm_hermes_platform() {
+install.sh:844:     fail "Hermes Agent does not provide a supported release for $hermes_platform $hermes_architecture."
+install.sh:848:     confirm_hermes_platform
+install.sh:1347:     run uv tool update-shell
+install.sh:1409:         print_command mkdir -p "$executable_dir" "$resources_dir" "$desktop_dir"
+install.sh:1412:         print_command ln -s "$app_dir" "$desktop_link"
+install.sh:1416:     mkdir -p "$executable_dir" "$resources_dir" "$desktop_dir"
+install.sh:1419:     printf '%s\n' "$FCC_MACOS_BUNDLE_ID" > "$owner_file"
+install.sh:1420:     cat > "$contents_dir/Info.plist" <<'PLIST'
+install.sh:1448:     } > "$executable_path"
+install.sh:1449:     chmod +x "$executable_path"
+install.sh:1453:             rm -f "$desktop_link"
+install.sh:1462:     ln -s "$app_dir" "$desktop_link"
+
+=== RESULT ===
+No installation ran. --dry-run may inspect local prerequisites but should not alter files; review its output before any GO.

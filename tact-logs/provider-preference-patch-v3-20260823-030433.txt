@@ -1,0 +1,10 @@
+=== PROVIDER PREFERENCE PATCH V3 ===
+source_matrix_v2=/home/mmber/MetaClaw/tact-logs/staged-capability-matrix-v2-draft-20260823-030216.md
+patch_md=/home/mmber/MetaClaw/tact-logs/provider-preference-patch-v3-20260823-030433.md
+patch_json=/home/mmber/MetaClaw/tact-logs/provider-preference-patch-v3-20260823-030433.json
+patch_sha256=7ed14d0abce29465b73b4f57ebf85d66dfcedec0ecdb877299dd7bbdafdfb19d
+kimi=MANDATORY_CANDIDATE_FAMILY
+dip_sig=PREMIUM_CANDIDATE_UNRESOLVED
+runtime_changes=NONE
+provider_calls=NOT_PERFORMED
+credentials_read=NO

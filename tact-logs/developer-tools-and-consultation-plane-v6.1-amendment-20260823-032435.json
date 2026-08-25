@@ -1,0 +1,25 @@
+{
+  "status": "DRAFT_ONLY_NON_OPERATIONAL",
+  "amends": {
+    "policy_v6": "/home/mmber/MetaClaw/tact-logs/developer-tools-and-consultation-plane-v6-draft-20260823-032218.md",
+    "codex_review": "/home/mmber/MetaClaw/tact-logs/developer-tools-and-consultation-plane-v6-codex-review-20260823-032308.txt"
+  },
+  "review_findings_closed": [
+    "universal_no_self_approval",
+    "unavailable_or_unclassified_route_fails_closed"
+  ],
+  "applies_to": [
+    "Codex plugin/CLI",
+    "Mistral API",
+    "Mistral Vibe",
+    "Kimi",
+    "DeepSeek",
+    "Fable 5",
+    "OpenRouter",
+    "local-safe aliases"
+  ],
+  "route_failure_action": "BLOCK_DISPATCH_RECORD_EVIDENCE_REQUIRE_EXPLICIT_REROUTE",
+  "provider_calls": "NOT_PERFORMED",
+  "runtime_changes": "NONE",
+  "credentials_read_or_written": "NO"
+}

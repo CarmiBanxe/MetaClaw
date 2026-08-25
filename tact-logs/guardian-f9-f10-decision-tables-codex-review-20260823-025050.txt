@@ -1,0 +1,50 @@
+bundle=/home/mmber/MetaClaw/tact-logs/guardian-f9-f10-decision-tables-review-20260823-025013.md
+codex=/home/mmber/.nvm/versions/node/v22.22.0/bin/codex
+exit_code=0
+
+VERDICT: APPROVE_WITH_CHANGES
+F9_DECISION_TABLE: Define “role compatible” and capability approval; reroute PASS must re-run every allowlist, role, data-class, trust-tier, quota, and egress check.
+F10_DECISION_TABLE: Remove the universal distinct planner/executor-invocation requirement; the protocol requires an approved plan, not separate invocations.
+ROLE_COLLISIONS: Keep executor/self-review and primary/independent-review blocks; reviewer/approver overlap is not categorically forbidden—block only where required independence or MLRO independence is compromised.
+LEGACY_MIGRATION: Migration must not retroactively manufacture classification or approval; permit prospective use only through a new linked decision record with current evidence and approvals.
+EVIDENCE_INTEGRITY: Specify canonical hashing, immutable linkage, actor authentication, timestamps, append-only corrections, and rejection of dangling or mutable evidence references.
+MODEL_FREEDOM_CHECK: Provider neutrality is preserved, but undefined role compatibility could falsely exclude an allowlisted capable cloud model.
+DATA_BOUNDARY_CHECK: Clarify that reroute never bypasses full validation and that unknown/mixed data defaults to protected/local-safe until explicitly classified.
+BANXE_NON_REGRESSION: Gate promotion on executable domain tests and preserve MLRO authority independently of planner, executor, reviewer, Operator, and routing administration.
+MISSING_TESTS: Add mixed/unknown payload, tampered reroute evidence, local-to-cloud reroute, stale/revoked allowlist, capability mismatch, reused invocation IDs, forged approval, and prospective legacy reauthorization cases.
+MINIMAL_IMPLEMENTATION_NOTES: Use one fail-closed validator for initial routes and reroutes; model roles and approval authorities separately; return stable reason codes for PASS/DEFER/BLOCK.
+NEXT_SAFE_ACTION: Amend the tables and synthetic matrix, then obtain independent material review, Operator approval, and named MLRO approval before activation.
+
+stderr_summary=OpenAI Codex v0.146.0
+--------
+workdir: /home/mmber/MetaClaw
+model: gpt-5.6-sol
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: none
+reasoning summaries: none
+session id: 01a02c19-4d8e-7a92-9748-44d265bec6f0
+--------
+user
+You are an independent, read-only reviewer of Guardian F9/F10 decision tables.
+
+All review material is in this prompt. Do not use shell commands, tools, filesystem access,
+network access, or make any edits. Do not request more files.
+
+Assess whether the draft is implementable without reducing cloud-first, provider-neutral,
+role-based model routing. Look specifically for:
+- ambiguous terms that could falsely block a valid development task;
+- a bypass that could permit protected-data cloud egress or silent trust-tier fallback;
+- incorrect role-collision rules;
+- problematic legacy-evidence migration semantics;
+- missing minimal test cases;
+- risks to BANXE double-entry, CQRS/event sourcing, ISO 20022, KYC/AML, or MLRO independence.
+
+Return no more than 14 lines in EXACTLY this format:
+VERDICT: APPROVE | APPROVE_WITH_CHANGES | REJECT
+F9_DECISION_TABLE: ...
+F10_DECISION_TABLE: ...
+ROLE_COLLISIONS: ...
+LEGACY_MIGRATION: ...
+EVIDENCE_INTEGRITY: ...

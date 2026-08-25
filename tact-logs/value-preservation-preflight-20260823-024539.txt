@@ -1,0 +1,11 @@
+=== VALUE-PRESERVATION AMENDMENT PREFLIGHT ===
+draft=/home/mmber/MetaClaw/tact-logs/value-preservation-amendment-draft-20260823-024539.md
+bundle=/home/mmber/MetaClaw/tact-logs/value-preservation-codex-bundle-20260823-024539.md
+guardian_rule_hits=33
+guardian_test_hits=0
+codex_cli=/home/mmber/.nvm/versions/node/v22.22.0/bin/codex
+runtime=UNCHANGED
+fcc_server=NOT_STARTED
+providers=NOT_CONFIGURED
+credentials=NOT_READ_OR_WRITTEN
+decision=DRAFT_ONLY — await independent Codex review before policy or guardian modification

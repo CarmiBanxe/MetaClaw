@@ -1,0 +1,30 @@
+{
+  "status": "READ_ONLY_CANDIDATE_EXTRACTION",
+  "source_inventory": "/home/mmber/MetaClaw/tact-logs/route-alias-inventory-readonly-20260823-030633.json",
+  "source_inventory_sha256": "e7b015ebe3539416c3b589dad3a55adfb17f406bd22948aa4a3366e72db56d08",
+  "candidate_count": 1,
+  "candidates": [
+    {
+      "observed_alias_or_model_id": "codestral",
+      "proposed_tier": "B-code-candidate",
+      "proposed_role": "draft coding, code review and synthetic code proof",
+      "state": "CANDIDATE_ONLY",
+      "required_before_proof": [
+        "Exact gateway alias and vendor model/version confirmation",
+        "Approved Mistral Studio API key stored outside repository",
+        "Approved endpoint, region and egress posture",
+        "F9 validation",
+        "Positive and negative synthetic proof",
+        "Rollback proof, immutable evidence and independent approval"
+      ]
+    }
+  ],
+  "source_file_basenames_only": [
+    ".env.example",
+    "README.md",
+    "README.zh.md"
+  ],
+  "provider_calls": "NOT_PERFORMED",
+  "runtime_changes": "NONE",
+  "credentials_read_or_printed": "NO"
+}

@@ -1,0 +1,101 @@
+{
+  "status": "DRAFT_ONLY_ALL_CLOUD_ROUTES_NON_OPERATIONAL",
+  "sources": {
+    "matrix_v2": "/home/mmber/MetaClaw/tact-logs/staged-capability-matrix-v2-draft-20260823-030216.md",
+    "provider_correction_v4": "/home/mmber/MetaClaw/tact-logs/provider-preference-correction-v4-20260823-030851.md",
+    "kimi_candidates": "/home/mmber/MetaClaw/tact-logs/kimi-route-candidates-readonly-20260823-030725.json",
+    "mistral_discovery": "/home/mmber/MetaClaw/tact-logs/mistral-model-discovery-20260823-031606.json"
+  },
+  "mistral_model_discovery_status": "MODEL_DISCOVERY_ONLY",
+  "mistral_discovered_model_count": 56,
+  "routes": [
+    {
+      "family": "Kimi / Moonshot",
+      "route": "kimi-k2.6",
+      "tier": "A",
+      "role": "strong long-context synthesis, document analysis, agent preparation",
+      "state": "CANDIDATE_PIN_REQUIRED"
+    },
+    {
+      "family": "DeepSeek",
+      "route": "exact chat/coder alias unresolved",
+      "tier": "A",
+      "role": "sanitized draft coding, migration/test drafts, refactor options",
+      "state": "CANDIDATE_ALIAS_DISCOVERY_REQUIRED"
+    },
+    {
+      "family": "Mistral",
+      "route": "devstral-2512",
+      "tier": "A",
+      "role": "draft-only coding, synthetic code planning, test planning, codebase analysis",
+      "state": "API_DISCOVERED_PIN_AND_PROOF_REQUIRED"
+    },
+    {
+      "family": "Mistral",
+      "route": "mistral-small-2603",
+      "tier": "A",
+      "role": "cost-efficient sanitized summaries, extraction and task decomposition",
+      "state": "API_DISCOVERED_PIN_AND_PROOF_REQUIRED"
+    },
+    {
+      "family": "Kimi / Moonshot",
+      "route": "kimi-k3",
+      "tier": "B",
+      "role": "premium long-context material reasoning and large-corpus analysis",
+      "state": "CANDIDATE_PIN_REQUIRED"
+    },
+    {
+      "family": "DeepSeek",
+      "route": "exact reasoning alias unresolved",
+      "tier": "B",
+      "role": "independent challenging analysis and reasoning review",
+      "state": "CANDIDATE_ALIAS_DISCOVERY_REQUIRED"
+    },
+    {
+      "family": "Mistral",
+      "route": "mistral-large-2512",
+      "tier": "B",
+      "role": "independent architecture, synthesis and material second opinion",
+      "state": "API_DISCOVERED_PIN_AND_PROOF_REQUIRED"
+    },
+    {
+      "family": "Mistral",
+      "route": "magistral-medium-latest",
+      "tier": "B",
+      "role": "reasoning-focused challenge review and ADR critique",
+      "state": "API_DISCOVERED_PIN_AND_PROOF_REQUIRED"
+    },
+    {
+      "family": "Codex",
+      "route": "existing approved CLI route",
+      "tier": "EXECUTOR",
+      "role": "approved implementation, tests, diff review and verification",
+      "state": "EXISTING_EXECUTOR_POLICY_GOVERNED"
+    },
+    {
+      "family": "Local-safe",
+      "route": "approved authenticated local aliases",
+      "tier": "C",
+      "role": "protected, mixed or unknown data; offline continuity",
+      "state": "LOCAL_SAFE_ONLY"
+    }
+  ],
+  "routing_rules": [
+    "No cloud provider receives protected, mixed or unknown data.",
+    "No route is operational until exact alias/model/version, F9 revalidation, positive proof, negative proof, rollback proof, immutable evidence and independent approval exist.",
+    "No silent provider, tier or data-boundary fallback.",
+    "Codex remains executor/verifier; non-Codex coding routes are draft-only until separately approved.",
+    "Mistral staging key is injected only for a bounded proof session and removed afterward.",
+    "Mistral workspace spending cap must be set before any inference proof."
+  ],
+  "proof_order": [
+    "mistral/devstral-2512",
+    "kimi/kimi-k2.6",
+    "deepseek/exact-tier-a-chat-or-coder-alias",
+    "comparative evidence review",
+    "tier-b nominations"
+  ],
+  "provider_calls": "NOT_PERFORMED",
+  "runtime_changes": "NONE",
+  "credentials_read_or_written": "NO"
+}

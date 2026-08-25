@@ -1,0 +1,41 @@
+=== TECHNOLOGY SEQUENCE — LIVE READ-ONLY AUDIT ===
+report_json=/home/mmber/MetaClaw/tact-logs/technology-sequence-live-audit-20260823-032627.json
+host=mark-legion
+
+=== OPERATIONAL STATUS ===
+codex_plugin_cli=INSTALLED_RESPONDS
+mistral_vibe_cli=NOT_INSTALLED_OR_NOT_ON_PATH
+litellm_gateway_cli=INSTALLED_RESPONDS
+ollama_cli=INSTALLED_RESPONDS
+claude_or_fcc_cli=INSTALLED_RESPONDS
+mistral_api=REACHABLE_MODEL_DISCOVERY_CONFIRMED
+kimi=CONFIG_REFERENCE_FOUND_NO_LIVE_PROOF
+deepseek=CONFIG_REFERENCE_FOUND_NO_LIVE_PROOF
+local_safe=ONE_OR_MORE_OLLAMA_ENDPOINTS_REACHABLE
+policy=POLICY_EXISTS_NON_OPERATIONAL_UNTIL_PROOFS
+
+=== TOOL PRESENCE ===
+codex=path:/home/mmber/.nvm/versions/node/v22.22.0/bin/codex; state:INSTALLED_RESPONDS; version:codex-cli 0.146.0 
+mistral_vibe=path:NONE; state:NOT_INSTALLED_OR_NOT_ON_PATH; version:N/A
+litellm=path:/home/mmber/.local/bin/litellm; state:INSTALLED_RESPONDS; version: LiteLLM: Current Version = 1.82.0  
+ollama=path:/usr/local/bin/ollama; state:INSTALLED_RESPONDS; version:ollama version is 0.23.1 
+claude=path:/home/mmber/.nvm/versions/node/v22.22.0/bin/claude; state:INSTALLED_RESPONDS; version:2.1.241 (Claude Code) 
+
+=== MISTRAL DISCOVERY EVIDENCE ===
+mistral_discovery_exists=True
+mistral_http_status=200
+mistral_model_count=56
+mistral_inference_proof=NOT_PERFORMED
+
+=== LOCAL OLLAMA TAGS (READ ONLY) ===
+http://127.0.0.1:11434=state:REACHABLE; http:200; models:3
+http://192.168.0.72:11434=state:UNREACHABLE; http:N/A; models:N/A
+http://100.68.102.48:11434=state:REACHABLE; http:200; models:9
+http://100.99.208.21:11434=state:REACHABLE; http:200; models:1
+
+=== AUDIT BOUNDARY ===
+provider_inference_calls=NONE
+runtime_changes=NONE
+credentials_read_or_printed=NO
+interpretation=INSTALLED_OR_DISCOVERED_DOES_NOT_EQUAL_OPERATIONAL
+next_action=REVIEW_REPORT_THEN_DESIGN_BOUNDED_SYNTHETIC_PROOFS_PER_ROUTE

@@ -1,0 +1,67 @@
+[2026-08-22 01:00 CEST] TACT: аудит утечки deploy-токенов — DONE (ремедиация pending, ручная)
+Finding: 7 живых GitLab deploy-токенов вкомичены в URL зависимостей 16 репо fiat-int
+         (package.json/package-lock.json, под git-контролем -> в истории) + 1 в devops/k8s/README.md.
+Users: abs-common, acces, banxe, banxe-common, banxe-core, deploy-libs, libs.
+Repos(16): bank-api, banxe-2fa, banxe-abs-api, banxe-accounts, banxe-addresses, banxe-banners,
+           banxe-cards, banxe-circuit-breaker, banxe-companies, banxe-contacts,
+           banxe-discovery-server, banxe-files, banxe-notification, banxe-payments,
+           banxe-referrers, banxe-webhook.
+Constraint: бот RnD_for_vibe_coding_bot НЕ член fiat-int проектов (только 6 R&D) ->
+            API-revoke ботом невозможен (401/404). Требуется ручной revoke owner-ом.
+Action(owner, pending): 1) Revoke 7 токенов в GitLab UI; 2) новые токены в CI-vars/.npmrc;
+                        3) чистка файлов + git filter-repo в 16 репо.
+Priority: КРИТИЧНО — токены активны (last_used свежие).
+
+[2026-08-22 02:00 CEST] TACT A: локальная чистка истории bank-tree — DONE
+Scope: репо banxe-ai-rnd/bank-tree (корень ~/wt/evid02), 193 коммита. Токены были в подкаталогах imports/fiat-int (импорт, НЕ отдельные репо).
+Finding uplift: в ПОЛНОЙ истории найдено 23 уникальных токена (рабочее дерево показывало только 8).
+Action: git filter-repo --replace-text (полный список из 23) -> все заменены на glpat-REDACTED.
+Verify: живые glpat- в дереве=0, в истории=0. Remote удалён filter-repo (норма).
+Pre-clean HEAD (справка): 6fc72b3df0c6f28c23b99ce6cdf6ef2ea4d221be
+Pending: (B) восстановить remote + git push --force в bank-tree [нужен GO].
+         Доотзыв в GitLab UI: 12 полноформатных токенов сверх первых 7 (хвосты .01.0y0x63w98/0i03m2s/08fnqdk/1f79vor/1q3qt0o/038yfz4/0je8qwa/0glnpst/0xjvoqe/02wtmkg/0gugs0c/1p1az81).
+
+[2026-08-22 02:00 CEST] TACT: ремедиация утечки токенов — ЗАКРЫТА (по безопасности)
+Revoke: подтверждён отзыв ВСЕХ токенов — 7 (первичные) + 12 доп. полноформатных + 4 усечённых = 23. Токены мертвы.
+Local history: bank-tree очищен filter-repo, 0 живых glpat- (дерево+история) — верифицировано.
+Server history: force-push ОТКЛОНЁН — main protected (allow_force_push=false) + общий pre-receive hook на все ветки.
+  Решение: обход хуков НЕ выполняется (защитный механизм). Переписывание серверной истории — опционально,
+  только через GitLab-админа (снятие protected + hook). НЕ критично: токены отозваны -> остаточные строки мертвы.
+Follow-up (не блокирует): 1) заменить схему npm-auth (токены в CI-vars/.npmrc, не в URL зависимостей);
+                          2) при желании — server-side history rewrite через админа GitLab.
+Итог: риск нейтрализован (revoke=100%). Раздел закрыт.
+
+[2026-08-23 00:00 CEST] TACT: приоритет агента -> Codex — DONE
+Context: Claude Code на лимите. Проверен Codex CLI как основной агент.
+Audit: codex-cli 0.146.0, auth.json есть, config trusted для bank-tree.
+Test: codex exec "CODEX_OK" -> CODEX_OK, rc=0, model=gpt-5.6-sol, provider=openai, tokens=6749 (лимит активен).
+Note: bubblewrap отсутствует -> Codex использует встроенный (не блокер).
+Decision: Codex = основной агент до восстановления лимитов Claude Code.
+          FCC не требуется для доступа к сильной облачной модели — gpt-5.6-sol доступна легитимно через Codex.
+
+[2026-08-23 01:00 CEST] TACT: локальный Codex-исполнитель для фабрики — DONE (canon-compliant)
+Canon read: software-factory-canon-v1.md INV-01/02/03 + CLAUDE_CODE_CANON.md (dословно).
+Key finding: канон режет по local-vs-cloud (INV-03 "No cloud LLM calls"), НЕ по роли агент/модель.
+  -> Codex как исполняющая модель РАЗРЕШЁН только на локальном inference.
+Verify: codex --oss --local-provider ollama -m qwen2.5-coder:7b -> FACTORY_LOCAL_* OK, rc=0.
+Artifact: ~/MetaClaw/scripts/ai/factory-codex.sh (read-only по умолч., --write для правок).
+Cloud Codex (gpt-5.6-sol): НЕ используется — нарушает INV-03; требует поправки §11 + CTIO sign-off.
+
+[2026-08-23 01:00 CEST] TACT: диагноз "торможения" — РАЗРЕШЁН (не нужен ни delete, ни cloud)
+Root cause: Codex сидел на ЛОКАЛЬНОМ ноутбучном Ollama (qwen2.5-coder:7b, RTX4070 Laptop 8GB VRAM, ctx 4096) -> слабо.
+Reality: кластер evo-x1 (100.68.102.48) + evo-x2 (100.99.208.21) ЖИВЫ (Tailscale active).
+  Мощные локальные модели уже развёрнуты: llama3.3:70b, qwen3-coder-next:51.7GB, qwen3.5:35b,
+  qwen2.5-coder:14b-banxe-factory, qwen3-banxe-v2 и др.
+Fix: направить Codex на кластерную модель (OLLAMA_HOST=100.68.102.48) -> 14b-factory/70b. INV-03 соблюдён.
+REJECTED (окончательно): удаление локальных моделей и cloud-first — основаны на галлюцинации 7b
+  ("2x128GB / remove local"). Реальность: сильные ЛОКАЛЬНЫЕ мощности есть -> cloud не требуется, §11 не нужен.
+
+[2026-08-25 22:00 CEST] TACT: поправка рабочего режима Claude Code фабрики — DONE
+Audit (dословно): Rule 8 (no approval menus/auto-approve) + Rule 3/T3.4 (unsafe->OPERATOR_RUN+STOP+wait) +
+  T3.2 (no self-execute) + smart-routing (consultation = distinct invocation, no self-approval).
+Artifact: docs/canon/factory-terminal-working-mode-v1.md
+Rules set: (1) фабрика Claude Code = bypass permissions ON (--dangerously-skip-permissions);
+           (2) фабрика НЕ консультируется сама -> готовит БРИФ -> STOP -> Оператор вручную несёт в окно
+               консультаций (distinct route) -> возвращает результат -> продолжение;
+           (3) cloud-consult только non-protected; protected -> LiteLLM :4000 local; no cross-tier fallback;
+           (4) финальный апрув = Operator (+MLRO где regulated).

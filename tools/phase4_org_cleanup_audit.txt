@@ -1,0 +1,37 @@
+=== HEAD ===
+Branch : org-cleanup/phase4-hw-matrix-roc-rpc
+SHA    : 1df8b6610f4512f97787a1cc1591d0d7e51edeb5
+Message: docs(org): HW-MODEL-UPGRADE-matrix.md — closes organisational roadmap to 100% (3 planes interlinked via INDEX.md)
+
+=== Range ===
+Start  : 1df8b6610  (1df8b66)
+End    : 016dc26ef  (016dc26)
+
+=== Commits 1df8b66..016dc26 inclusive (16 total) ===
+
+SHORT SHA     STATUS                  MESSAGE
+-----------------------------------------------------------------------------------------------
+016dc26ef     ✓ in main               feat(org-cleanup): phase4 execution log + HW matrix actual
+52f74a23d     ✓ in main               fix(hw-matrix): TOPS correction — XDNA 2 NPU=50 TOPS/node 
+64f68007d     ✓ in main               docs(runbook): P4.3-Q235 — RPC split (evo2 master + evo1:5
+e80274580     ✓ in main               docs(runbook): P4.2-ROCm — Vulkan to ROCm migration plan (
+156e10dd5     ✓ in main               docs(runbook): P4.4-NPU — discovery + 5-phase implementati
+a97143958     ✓ in main               docs(runbook): P4.3-evo2 — BIOS UMA rebalance 64/64 to 32/
+d6f7e8c3b     ✓ in main               feat(phase-B): dedup §8 HW matrix + §5 INDEX (single canon
+b71b166d8     ✓ in main               feat(guardian-A.6): r7 rule engine v2 — ADR-022 bootstrap 
+beed1d690     ✓ in main               feat(roadmap): Phase 4 backlog file — P4-Guardian-Rollout 
+763b3075f     ✓ in main               feat(guardian-A.3.3): real deterministic rule engines — 8 
+dbaadbf7f     ✓ in main               feat(guardian-A.3.2): runtime slice — POST /audit + GET /h
+1932c1520     ✓ in main               feat(guardian-A.3.1): Guardian core skeleton — memory_load
+ea5ce1562     ✓ in main               docs(arch): cross-link ADR-018 5-layer hybrid as canonical
+06937cb10     ✓ in main               docs(arch): cross-link ADR-018 5-layer hybrid as canonical
+d5f234b08     ✓ in main               feat(v2.3-QW): 5 quick wins PASS — evo2 ufw + legion dubli
+1df8b6610     ✓ in main               docs(org): HW-MODEL-UPGRADE-matrix.md — closes organisatio
+
+Summary : 16 in main, 0 unique to branch
+Target  : org-cleanup/phase4-hw-matrix-roc-rpc
+
+Legend:
+  ✓ in main         — commit is reachable from main (already merged or cherry-picked)
+  — unique to branch — commit exists on target branch only
+  ? other           — commit not on main or target (detached / other branch)

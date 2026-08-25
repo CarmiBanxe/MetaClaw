@@ -1,0 +1,167 @@
+{
+  "generated_at": "2026-08-23T02:59:44.871072+02:00",
+  "source_policy": "/home/mmber/MetaClaw/tact-logs/cloud-provider-priority-policy-draft-20260823-025841.md",
+  "status": "DRAFT_ONLY",
+  "rows": [
+    {
+      "route_candidate": "Kimi/Moonshot via FCC",
+      "tier": "A-cheap-cloud",
+      "primary_role": "long-context preparation",
+      "allowed_task_classes": [
+        "sanitized document reading",
+        "research synthesis",
+        "task decomposition",
+        "ADR option drafts",
+        "documentation drafts"
+      ],
+      "forbidden_task_classes": [
+        "protected data",
+        "final material approval",
+        "production secrets",
+        "real KYC/KYB/AML/payment/ledger payloads"
+      ],
+      "trust_tier": "cloud",
+      "synthetic_proof": "Summarize a sanitized architecture corpus and produce a traceable task tree.",
+      "proof_success": "Required sections present; no sensitive markers; route/model/evidence recorded.",
+      "fallback": "Explicit recorded reroute to another Tier A allowlisted cloud route; never silently to local/cloud across data boundary.",
+      "activation_status": "NOT_TESTED"
+    },
+    {
+      "route_candidate": "DeepSeek chat/coder via FCC",
+      "tier": "A-cheap-cloud",
+      "primary_role": "draft reasoning and coding preparation",
+      "allowed_task_classes": [
+        "synthetic code scaffolding",
+        "draft migrations",
+        "draft test cases",
+        "refactor proposals",
+        "sanitized debugging hypotheses"
+      ],
+      "forbidden_task_classes": [
+        "protected data",
+        "final production patch",
+        "final security decision",
+        "unreviewed banking-control design"
+      ],
+      "trust_tier": "cloud",
+      "synthetic_proof": "Generate a migration plan and unit-test draft for a synthetic NestJS module.",
+      "proof_success": "Output passes structural rubric; no provider error; evidence hash and route record exist.",
+      "fallback": "Recorded Tier A reroute after allowlist, data-class, trust-tier, quota and egress revalidation.",
+      "activation_status": "NOT_TESTED"
+    },
+    {
+      "route_candidate": "OpenRouter allowlisted economical route",
+      "tier": "A-cheap-cloud",
+      "primary_role": "provider-flexible bulk work",
+      "allowed_task_classes": [
+        "repository comparison",
+        "API mapping",
+        "fixture ideas",
+        "research reduction",
+        "non-sensitive prompt preparation"
+      ],
+      "forbidden_task_classes": [
+        "protected data",
+        "provider-policy changes",
+        "material approval",
+        "regulated evidence"
+      ],
+      "trust_tier": "cloud",
+      "synthetic_proof": "Compare two public repositories and output a cited integration checklist.",
+      "proof_success": "Checklist is complete, source-linked, sanitized and evidence-recorded.",
+      "fallback": "Recorded Tier A reroute only after full F9 validation.",
+      "activation_status": "NOT_TESTED"
+    },
+    {
+      "route_candidate": "Gemini Flash-class or NVIDIA NIM efficient route",
+      "tier": "A-cheap-cloud",
+      "primary_role": "high-throughput long-context reduction",
+      "allowed_task_classes": [
+        "bulk document extraction",
+        "classification proposals",
+        "synthetic fixture design",
+        "non-sensitive summaries"
+      ],
+      "forbidden_task_classes": [
+        "protected data",
+        "final architecture decision",
+        "approval authority"
+      ],
+      "trust_tier": "cloud",
+      "synthetic_proof": "Extract requirements from a sanitized multi-document corpus.",
+      "proof_success": "Requirements traceability table is complete and no restricted data appears.",
+      "fallback": "Recorded allowlisted Tier A reroute; no silent cross-tier fallback.",
+      "activation_status": "NOT_TESTED"
+    },
+    {
+      "route_candidate": "Opus-class or Fable 5 via approved route",
+      "tier": "B-premium-cloud",
+      "primary_role": "material architecture and deep reasoning",
+      "allowed_task_classes": [
+        "ADR",
+        "threat modeling",
+        "ledger/payment/KYC/AML design",
+        "cross-service contracts",
+        "hard trade-off analysis"
+      ],
+      "forbidden_task_classes": [
+        "protected data outside local-safe route",
+        "sole final approval",
+        "unreviewed production activation"
+      ],
+      "trust_tier": "cloud",
+      "synthetic_proof": "Analyze a synthetic double-entry ledger design and issue ADR alternatives.",
+      "proof_success": "Explicit trade-offs, domain invariants, primary-analysis hash and independent-review requirement recorded.",
+      "fallback": "Explicit approved premium reroute with complete revalidation; no trust-tier bypass.",
+      "activation_status": "NOT_TESTED"
+    },
+    {
+      "route_candidate": "Codex CLI",
+      "tier": "B-premium-cloud",
+      "primary_role": "implementation executor and precision verification",
+      "allowed_task_classes": [
+        "approved code patches",
+        "tests",
+        "migrations",
+        "refactors",
+        "implementation verification"
+      ],
+      "forbidden_task_classes": [
+        "unapproved policy changes",
+        "credential changes",
+        "independent final approval",
+        "protected cloud-data work"
+      ],
+      "trust_tier": "approved execution route",
+      "synthetic_proof": "Apply a patch to a synthetic repository, run tests, and produce diff/test evidence.",
+      "proof_success": "Patch matches approved plan, tests pass, diff is reviewable, evidence recorded.",
+      "fallback": "Explicit recorded executor reroute; no self-review and no policy/config mutation without approval.",
+      "activation_status": "CLI_AVAILABLE_NOT_PROVEN"
+    },
+    {
+      "route_candidate": "LiteLLM local-safe aliases to Ollama",
+      "tier": "C-local-safe-minimum",
+      "primary_role": "protected data and continuity",
+      "allowed_task_classes": [
+        "protected workloads",
+        "offline continuity",
+        "local advisory review",
+        "embeddings",
+        "narrow utility inference"
+      ],
+      "forbidden_task_classes": [
+        "default bulk reasoning",
+        "strategic default coding",
+        "cloud-eligible task forced local without reason"
+      ],
+      "trust_tier": "local_safe",
+      "synthetic_proof": "Run a local-only protected synthetic classification task through an authenticated approved alias.",
+      "proof_success": "No cloud egress; route evidence captured; local-safe boundary remains intact.",
+      "fallback": "Fail closed or explicit local-safe alternate; protected data never reroutes to cloud.",
+      "activation_status": "GATEWAY_HEALTHY_MODEL_ROUTE_NOT_PROVEN"
+    }
+  ],
+  "runtime_changes": "NONE",
+  "provider_calls": "NOT_PERFORMED",
+  "credentials_read": "NO"
+}

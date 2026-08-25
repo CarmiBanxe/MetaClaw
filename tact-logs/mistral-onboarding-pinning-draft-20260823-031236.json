@@ -1,0 +1,24 @@
+{
+  "status": "DRAFT_ONLY_NON_OPERATIONAL",
+  "source_inventory": "/home/mmber/MetaClaw/tact-logs/mistral-route-candidates-readonly-20260823-031135.json",
+  "source_policy_correction": "/home/mmber/MetaClaw/tact-logs/provider-preference-correction-v4-20260823-030851.md",
+  "observed_candidates": [
+    "codestral"
+  ],
+  "selected_candidate": null,
+  "required_exact_fields": [
+    "gateway_alias",
+    "vendor_model_id",
+    "vendor_model_version",
+    "workspace",
+    "region",
+    "egress_posture",
+    "route_owner",
+    "monthly_spend_cap"
+  ],
+  "proposed_provider_prefix": "mistral/<exact-model-id>",
+  "first_proof": "synthetic draft unit-test and code-correction proposal",
+  "provider_calls": "NOT_PERFORMED",
+  "runtime_changes": "NONE",
+  "credentials_read_or_created": "NO"
+}

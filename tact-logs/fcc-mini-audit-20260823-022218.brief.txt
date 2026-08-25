@@ -1,0 +1,13 @@
+=== FCC DECISION REPORT ===
+origin: https://github.com/Alishahryar1/free-claude-code.git
+head: f8a3b119972532c3204b7f0aae2ab1076bc1cf02
+commit_signature: NOT_VERIFIED_LOCALLY
+worktree: ?? public-apis/
+installer: PRESENT
+pyproject: PRESENT
+installer_risk_pattern_count: 16
+installer_effects: uv tool install; uv tool update-shell; optional npm installs; downloads via curl
+providers_mentioned_in_readme: anthropic, deepseek, google, kimi, moonshot, nvidia, ollama, openai, openrouter, x.ai
+decision: NO_INSTALL_YET — requires policy amendment + isolated installation plan
+full_log_local: /home/mmber/MetaClaw/tact-logs/fcc-mini-audit-20260823-022218.full.txt
+brief_local: /home/mmber/MetaClaw/tact-logs/fcc-mini-audit-20260823-022218.brief.txt

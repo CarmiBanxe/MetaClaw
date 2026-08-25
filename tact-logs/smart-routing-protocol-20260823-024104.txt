@@ -1,0 +1,19 @@
+=== SMART MODEL ROUTING PROTOCOL ===
+timestamp=2026-08-23T02:41:04.827039+02:00
+protocol=/home/mmber/MetaClaw/docs/canon/smart-model-routing-protocol-v1.md
+backup=/home/mmber/MetaClaw/tact-logs/smart-routing-protocol-backup-20260823-024104
+references_added=software-factory-canon-v1.md,CLAUDE_CODE_CANON.md,ADR-032-cloud-fcc-gateway-amendment-DRAFT.md,factory-target-model-policy.md,cloud-first-fcc-policy.md,operator-fcc-cloud-cutover.md
+protocol_created=PASS
+all_targets_referenced=PASS
+backup_created=PASS
+cloud_capability=PASS
+codex_primary=PASS
+opus_architecture=PASS
+second_opinion=PASS
+local_safe=PASS
+no_automatic_cross_tier=PASS
+runtime=UNCHANGED
+fcc_server=NOT_STARTED
+codex=NOT_CALLED
+providers=NOT_CONFIGURED
+credentials=NOT_READ_OR_WRITTEN
