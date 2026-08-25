@@ -1,0 +1,48 @@
+matrix=/home/mmber/MetaClaw/tact-logs/staged-capability-matrix-draft-20260823-025944.md
+policy=/home/mmber/MetaClaw/tact-logs/cloud-provider-priority-policy-draft-20260823-025841.md
+codex=/home/mmber/.nvm/versions/node/v22.22.0/bin/codex
+exit_code=0
+
+VERDICT: APPROVE_WITH_CHANGES
+TIER_A_WORKLOAD_SHIFT: Sound for classified non-sensitive bulk work; retain human/premium review before outputs become authoritative.
+TIER_B_PREMIUM_SCOPE: Correctly limited to material architecture, security, banking controls, difficult trade-offs, and final verification.
+TIER_C_LOCAL_SCOPE: Correctly minimal: protected workloads, continuity, advisory review, embeddings, and narrow utilities.
+KIMI_ROUTE_SPEC: Role and boundaries are precise; activation must name the exact model, corpus limits, rubric threshold, and pass state.
+DEEPSEEK_ROUTE_SPEC: Draft-only coding role is clear; explicitly forbid merge-ready migrations/tests without Codex or approved executor verification.
+OPENROUTER_ROUTE_SPEC: Too abstract; pin provider/model/version and replace undefined “F9 validation” with the enumerated revalidation checks.
+CODEX_BUDGET_PROTECTION: Strong, but Codex is the only concrete executor; define an approved equivalent executor route or document intentional exclusivity.
+FALLBACK_SAFETY: Fail-closed and recorded rerouting are preserved; require tested quota, outage, denial, and rollback paths with no silent cross-tier fallback.
+DATA_BOUNDARY: Strong: unknown/mixed data defaults protected/local-safe, and protected data cannot egress to cloud.
+EVIDENCE_AND_APPROVAL: Preserved in principle; require immutable evidence linkage, named approval identity, reviewer separation, and primary/secondary analysis hashes.
+BANXE_NON_REGRESSION: Invariants are stated but activation gates must test double entry, CQRS/events, ISO 20022 boundaries, KYC/KYB/AML, and MLRO independence.
+MISSING_SYNTHETIC_PROOFS: Negative egress tests, silent-fallback prevention, approval spoofing, reviewer independence, rollback, and invariant-specific BANXE cases.
+MINIMAL_CHANGES: Split Gemini/NIM and Opus/Fable candidates, pin exact routes, define objective activation thresholds, remove “optional/equivalent,” define F9, and add missing negative proofs.
+NEXT_SAFE_ACTION: Revise the draft matrix only; keep every route non-operational until route-specific proofs, evidence, rollback tests, and independent approval pass.
+
+stderr_summary=OpenAI Codex v0.146.0
+--------
+workdir: /home/mmber/MetaClaw
+model: gpt-5.6-sol
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: none
+reasoning summaries: none
+session id: 01a02c22-1e29-7c70-815b-8acb8f86ccc6
+--------
+user
+You are an independent, read-only reviewer of a cloud-first model-routing capability matrix.
+
+Review only the supplied policy and matrix. Do not use tools, shell commands, filesystem access,
+network access, or make changes. Do not request more files.
+
+Objectives:
+- Shift eligible non-sensitive bulk work away from Codex/Claude Code to Tier A providers.
+- Reserve Codex for approved implementation, tests, migrations, precision verification and independent review.
+- Reserve premium Tier B for material architecture/reasoning.
+- Keep unstable local models Tier C/local-safe minimum, not the strategic default.
+- Preserve fail-closed data classification, no protected-data cloud egress, no silent cross-tier fallback.
+- Preserve evidence integrity, independent review, approval identity, MLRO independence, and BANXE invariants.
+
+Check whether every candidate has a precise role, allowed and forbidden task classes, a synthetic proof,
+a safe fallback, and a

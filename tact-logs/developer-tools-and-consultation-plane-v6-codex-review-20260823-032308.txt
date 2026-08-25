@@ -1,0 +1,52 @@
+policy=/home/mmber/MetaClaw/tact-logs/developer-tools-and-consultation-plane-v6-draft-20260823-032218.md
+policy_sha256=6f5012a708790b9e0441c843560ccdd3548f78fca4f697a4c7c67f04f98b4ac5
+codex=/home/mmber/.nvm/versions/node/v22.22.0/bin/codex
+exit_code=0
+mode=READ_ONLY_POLICY_REVIEW
+provider_calls=NOT_PERFORMED
+runtime_changes=NONE
+credentials_read_or_written=NO
+
+VERDICT: APPROVE_WITH_CHANGES
+CODEX_ROLE: Permanent controlled executor, verifier and independent consultant; never an approver of its own work.
+MISTRAL_API_ROLE: Permanent provider plane only after exact route pinning, F9, positive/negative/rollback proofs, immutable evidence and independent approval.
+MISTRAL_VIBE_ROLE: Separate optional persistent interface; cannot bypass LiteLLM, approval, evidence, classification or protected-data controls.
+CONSULTATION_LADDER: Primary Tier B analysis, independent Codex opinion, independent Mistral opinion, then optional independent Fable 5 escalation.
+EXECUTION_SEPARATION: Codex executes only named-approved scope and records diff/test evidence; availability grants no authority.
+DATA_BOUNDARY: Protected, mixed and unknown data is restricted to authenticated local-safe aliases; cloud routing is prohibited.
+FALLBACK_SAFETY: Silent cross-provider, cross-tier and cross-boundary fallback is expressly prohibited.
+EVIDENCE_REQUIREMENTS: Route pin, F9, positive/negative/rollback proof, immutable evidence, reviewer identities, hashes, dissent and approval are required.
+MISSING_GUARDRAILS: Universal no-self-approval language and explicit fail-closed behavior when an eligible route is unavailable.
+MINIMAL_CHANGES: Add “No participant may approve its own analysis, execution, verification or evidence; unavailable or unclassified routes fail closed.”
+NEXT_SAFE_ACTION: Amend the draft, obtain independent policy approval, then perform staging-only proofs without activating runtime routes.
+
+stderr_summary=OpenAI Codex v0.146.0
+--------
+workdir: /home/mmber/MetaClaw
+model: gpt-5.6-sol
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: none
+reasoning summaries: none
+session id: 01a02c36-e103-7950-bf53-cda7b27bb310
+--------
+user
+You are an independent, read-only reviewer.
+
+Review only the policy text supplied below. Do not use shell, network, filesystem tools,
+MCP, plugins, credentials, or make changes. Do not infer operational readiness.
+
+Verify:
+- Codex plugin/CLI remains permanently available as controlled executor, verifier and consultant.
+- Mistral API remains a permanent provider plane only after route pinning, F9, synthetic proofs,
+  rollback evidence and independent approval.
+- Mistral Vibe is a separate optional persistent developer interface and does not bypass LiteLLM,
+  approval, evidence, data classification or protected-data restrictions.
+- Consultation order supports primary analysis + independent Codex opinion + independent Mistral
+  opinion + optional independent Fable 5 escalation.
+- No participant self-approves its own work.
+- Protected/mixed/unknown data remains local-safe.
+- There is no silent cross-provider/tier fallback.
+
+Return at most 14 line

@@ -1,0 +1,364 @@
+{
+  "audit_type": "READ_ONLY_NO_INFERENCE_NO_SECRET_VALUES",
+  "timestamp_local": "2026-08-23T03:26:36.274473+02:00",
+  "host": "mark-legion",
+  "summary": {
+    "codex_plugin_cli": "INSTALLED_RESPONDS",
+    "mistral_vibe_cli": "NOT_INSTALLED_OR_NOT_ON_PATH",
+    "litellm_gateway_cli": "INSTALLED_RESPONDS",
+    "ollama_cli": "INSTALLED_RESPONDS",
+    "claude_or_fcc_cli": "INSTALLED_RESPONDS",
+    "mistral_api": "REACHABLE_MODEL_DISCOVERY_CONFIRMED",
+    "kimi": "CONFIG_REFERENCE_FOUND_NO_LIVE_PROOF",
+    "deepseek": "CONFIG_REFERENCE_FOUND_NO_LIVE_PROOF",
+    "local_safe": "ONE_OR_MORE_OLLAMA_ENDPOINTS_REACHABLE",
+    "policy": "POLICY_EXISTS_NON_OPERATIONAL_UNTIL_PROOFS"
+  },
+  "tools": {
+    "codex": {
+      "path": "/home/mmber/.nvm/versions/node/v22.22.0/bin/codex",
+      "version": {
+        "found": true,
+        "exit": 0,
+        "stdout": "codex-cli 0.146.0\n",
+        "stderr": ""
+      }
+    },
+    "mistral_vibe": {
+      "path": null,
+      "version": {
+        "found": false,
+        "exit": null,
+        "stdout": "",
+        "stderr": "not_found"
+      }
+    },
+    "litellm": {
+      "path": "/home/mmber/.local/bin/litellm",
+      "version": {
+        "found": true,
+        "exit": 0,
+        "stdout": "\nLiteLLM: Current Version = 1.82.0\n\n",
+        "stderr": ""
+      }
+    },
+    "ollama": {
+      "path": "/usr/local/bin/ollama",
+      "version": {
+        "found": true,
+        "exit": 0,
+        "stdout": "ollama version is 0.23.1\n",
+        "stderr": ""
+      }
+    },
+    "claude": {
+      "path": "/home/mmber/.nvm/versions/node/v22.22.0/bin/claude",
+      "version": {
+        "found": true,
+        "exit": 0,
+        "stdout": "2.1.241 (Claude Code)\n",
+        "stderr": ""
+      }
+    }
+  },
+  "policy": {
+    "latest_policy": "/home/mmber/MetaClaw/tact-logs/developer-tools-and-consultation-plane-v6.1-amendment-20260823-032435.md",
+    "exists": true,
+    "sha256": "95922ba3fbf084f0382bc46f25e1e8f70edecb6f913cf19434f2a024e52b2ebc",
+    "activation_indicator": "POLICY_EXISTS_NON_OPERATIONAL_UNTIL_PROOFS"
+  },
+  "config_files_considered": [
+    ".claude/settings.json",
+    "CLAUDE.md",
+    "LibreChat/.github/workflows/config-review.yml",
+    "LibreChat/helm/librechat-rag-api/templates/configmap.yaml",
+    "LibreChat/helm/librechat/templates/configmap-env.yaml",
+    "LibreChat/helm/librechat/templates/configmap.yaml",
+    "LibreChat/helm/librechat/templates/configmaps-additional.yaml",
+    "docs/adr/ADR-032-cloud-fcc-gateway-amendment-DRAFT.md",
+    "docs/architecture/ai-gateway.md",
+    "docs/architecture/banxe-custom-agentic-stack-canonical-2026-07-10.md",
+    "docs/architecture/legion-generic-engine-and-banxe-specialization-canonical-2026-07-10.md",
+    "docs/architecture/roadmap-and-sprints-2026-07-10.md",
+    "free-claude-code/.github/ISSUE_TEMPLATE/config.yml",
+    "litellm/litellm-config.canonical.yaml",
+    "litellm/litellm-config.v2.yaml",
+    "tact-logs/cloud-fcc-canon-backup-20260823-023141/ADR-032-cloud-fcc-gateway-amendment-DRAFT.md",
+    "tact-logs/smart-routing-precedence-backup-20260823-024209/ADR-032-cloud-fcc-gateway-amendment-DRAFT.md",
+    "tact-logs/smart-routing-protocol-backup-20260823-024104/ADR-032-cloud-fcc-gateway-amendment-DRAFT.md"
+  ],
+  "route_presence_in_nonsecret_config_docs": {
+    "kimi": [
+      {
+        "file": "CLAUDE.md",
+        "terms": [
+          "\\bkimi\\b|moonshot"
+        ]
+      },
+      {
+        "file": "docs/architecture/ai-gateway.md",
+        "terms": [
+          "\\bkimi\\b|moonshot"
+        ]
+      }
+    ],
+    "deepseek": [
+      {
+        "file": "CLAUDE.md",
+        "terms": [
+          "\\bdeepseek\\b"
+        ]
+      },
+      {
+        "file": "docs/architecture/ai-gateway.md",
+        "terms": [
+          "\\bdeepseek\\b"
+        ]
+      },
+      {
+        "file": "litellm/litellm-config.canonical.yaml",
+        "terms": [
+          "\\bdeepseek\\b"
+        ]
+      },
+      {
+        "file": "litellm/litellm-config.v2.yaml",
+        "terms": [
+          "\\bdeepseek\\b"
+        ]
+      }
+    ],
+    "mistral": [],
+    "codex": [
+      {
+        "file": "CLAUDE.md",
+        "terms": [
+          "\\bcodex\\b"
+        ]
+      }
+    ],
+    "litellm": [
+      {
+        "file": "docs/adr/ADR-032-cloud-fcc-gateway-amendment-DRAFT.md",
+        "terms": [
+          "\\blitellm\\b"
+        ]
+      },
+      {
+        "file": "docs/architecture/banxe-custom-agentic-stack-canonical-2026-07-10.md",
+        "terms": [
+          "\\blitellm\\b"
+        ]
+      },
+      {
+        "file": "litellm/litellm-config.canonical.yaml",
+        "terms": [
+          "\\blitellm\\b"
+        ]
+      },
+      {
+        "file": "litellm/litellm-config.v2.yaml",
+        "terms": [
+          "\\blitellm\\b"
+        ]
+      },
+      {
+        "file": "tact-logs/cloud-fcc-canon-backup-20260823-023141/ADR-032-cloud-fcc-gateway-amendment-DRAFT.md",
+        "terms": [
+          "\\blitellm\\b"
+        ]
+      },
+      {
+        "file": "tact-logs/smart-routing-precedence-backup-20260823-024209/ADR-032-cloud-fcc-gateway-amendment-DRAFT.md",
+        "terms": [
+          "\\blitellm\\b"
+        ]
+      },
+      {
+        "file": "tact-logs/smart-routing-protocol-backup-20260823-024104/ADR-032-cloud-fcc-gateway-amendment-DRAFT.md",
+        "terms": [
+          "\\blitellm\\b"
+        ]
+      }
+    ],
+    "fcc": [
+      {
+        "file": "CLAUDE.md",
+        "terms": [
+          "free[-_ ]?claude[-_ ]?code|\\bfcc\\b"
+        ]
+      },
+      {
+        "file": "docs/adr/ADR-032-cloud-fcc-gateway-amendment-DRAFT.md",
+        "terms": [
+          "free[-_ ]?claude[-_ ]?code|\\bfcc\\b"
+        ]
+      },
+      {
+        "file": "docs/architecture/ai-gateway.md",
+        "terms": [
+          "free[-_ ]?claude[-_ ]?code|\\bfcc\\b"
+        ]
+      },
+      {
+        "file": "free-claude-code/.github/ISSUE_TEMPLATE/config.yml",
+        "terms": [
+          "free[-_ ]?claude[-_ ]?code|\\bfcc\\b"
+        ]
+      },
+      {
+        "file": "tact-logs/cloud-fcc-canon-backup-20260823-023141/ADR-032-cloud-fcc-gateway-amendment-DRAFT.md",
+        "terms": [
+          "free[-_ ]?claude[-_ ]?code|\\bfcc\\b"
+        ]
+      },
+      {
+        "file": "tact-logs/smart-routing-precedence-backup-20260823-024209/ADR-032-cloud-fcc-gateway-amendment-DRAFT.md",
+        "terms": [
+          "free[-_ ]?claude[-_ ]?code|\\bfcc\\b"
+        ]
+      },
+      {
+        "file": "tact-logs/smart-routing-protocol-backup-20260823-024104/ADR-032-cloud-fcc-gateway-amendment-DRAFT.md",
+        "terms": [
+          "free[-_ ]?claude[-_ ]?code|\\bfcc\\b"
+        ]
+      }
+    ],
+    "ollama": [
+      {
+        "file": "CLAUDE.md",
+        "terms": [
+          "\\bollama\\b"
+        ]
+      },
+      {
+        "file": "docs/adr/ADR-032-cloud-fcc-gateway-amendment-DRAFT.md",
+        "terms": [
+          "\\bollama\\b"
+        ]
+      },
+      {
+        "file": "docs/architecture/ai-gateway.md",
+        "terms": [
+          "\\bollama\\b"
+        ]
+      },
+      {
+        "file": "docs/architecture/banxe-custom-agentic-stack-canonical-2026-07-10.md",
+        "terms": [
+          "\\bollama\\b"
+        ]
+      },
+      {
+        "file": "litellm/litellm-config.canonical.yaml",
+        "terms": [
+          "\\bollama\\b"
+        ]
+      },
+      {
+        "file": "litellm/litellm-config.v2.yaml",
+        "terms": [
+          "\\bollama\\b"
+        ]
+      },
+      {
+        "file": "tact-logs/cloud-fcc-canon-backup-20260823-023141/ADR-032-cloud-fcc-gateway-amendment-DRAFT.md",
+        "terms": [
+          "\\bollama\\b"
+        ]
+      },
+      {
+        "file": "tact-logs/smart-routing-precedence-backup-20260823-024209/ADR-032-cloud-fcc-gateway-amendment-DRAFT.md",
+        "terms": [
+          "\\bollama\\b"
+        ]
+      },
+      {
+        "file": "tact-logs/smart-routing-protocol-backup-20260823-024104/ADR-032-cloud-fcc-gateway-amendment-DRAFT.md",
+        "terms": [
+          "\\bollama\\b"
+        ]
+      }
+    ]
+  },
+  "mistral_discovery_evidence": {
+    "exists": true,
+    "status": "MODEL_DISCOVERY_ONLY",
+    "http_status": 200,
+    "model_count": 56,
+    "candidate_model_ids": [
+      "codestral-2508",
+      "codestral-embed",
+      "codestral-embed-2505",
+      "codestral-latest",
+      "devstral-2512",
+      "devstral-latest",
+      "devstral-medium-latest",
+      "magistral-medium-latest",
+      "magistral-small-latest",
+      "ministral-14b-2512",
+      "ministral-14b-latest",
+      "ministral-3b-2512",
+      "ministral-3b-latest",
+      "ministral-8b-2512",
+      "ministral-8b-latest",
+      "mistral-large-2512",
+      "mistral-large-latest",
+      "mistral-medium",
+      "mistral-medium-2505",
+      "mistral-medium-2508",
+      "mistral-medium-2604",
+      "mistral-medium-3",
+      "mistral-medium-3-5",
+      "mistral-medium-3.5",
+      "mistral-medium-latest",
+      "mistral-small-2603",
+      "mistral-small-latest"
+    ],
+    "all_model_ids_sha256": "3e3c6955a78015a515c93553434a6d38662c68233f070ab29ef2dfbdb9bfe3fc"
+  },
+  "ollama_readonly_tags_checks": {
+    "http://127.0.0.1:11434": {
+      "state": "REACHABLE",
+      "http_status": 200,
+      "model_count": 3,
+      "models": [
+        "nomic-embed-text:latest",
+        "qwen2.5-coder:7b-instruct-q4_K_M",
+        "qwen2.5:7b-instruct"
+      ]
+    },
+    "http://192.168.0.72:11434": {
+      "state": "UNREACHABLE",
+      "reason": "[Errno 113] No route to host"
+    },
+    "http://100.68.102.48:11434": {
+      "state": "REACHABLE",
+      "http_status": 200,
+      "model_count": 9,
+      "models": [
+        "llama3.3:70b",
+        "qwen2.5-coder:14b-banxe-factory",
+        "qwen2.5-coder:7b-instruct-q4_K_M",
+        "qwen3-banxe-v2:latest",
+        "qwen3-coder-next:q4_K_M",
+        "qwen3.5:35b",
+        "qwen3.5:latest",
+        "qwen3:30b-a3b",
+        "qwen3:4b"
+      ]
+    },
+    "http://100.99.208.21:11434": {
+      "state": "REACHABLE",
+      "http_status": 200,
+      "model_count": 1,
+      "models": [
+        "deepseek-r1:70b"
+      ]
+    }
+  },
+  "runtime_changes": "NONE",
+  "provider_inference_calls": "NONE",
+  "credentials_read_or_printed": "NO"
+}

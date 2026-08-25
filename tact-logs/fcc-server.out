@@ -1,0 +1,393 @@
+nohup: ignoring input
+INFO:     Started server process [554010]
+INFO:     Waiting for application startup.
+INFO:     Admin UI: http://127.0.0.1:8082/admin (local-only)
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8082 (Press CTRL+C to quit)
+INFO:     127.0.0.1:55394 - "GET /health HTTP/1.1" 200 OK
+/usr/bin/xdg-open: 882: x-www-browser: not found
+/usr/bin/xdg-open: 882: firefox: not found
+/usr/bin/xdg-open: 882: iceweasel: not found
+/usr/bin/xdg-open: 882: seamonkey: not found
+/usr/bin/xdg-open: 882: mozilla: not found
+/usr/bin/xdg-open: 882: epiphany: not found
+/usr/bin/xdg-open: 882: konqueror: not found
+/usr/bin/xdg-open: 882: chromium: not found
+/usr/bin/xdg-open: 882: chromium-browser: not found
+/usr/bin/xdg-open: 882: google-chrome: not found
+/usr/bin/xdg-open: 882: www-browser: not found
+/usr/bin/xdg-open: 882: links2: not found
+/usr/bin/xdg-open: 882: elinks: not found
+/usr/bin/xdg-open: 882: links: not found
+INFO:     127.0.0.1:55408 - "GET / HTTP/1.1" 200 OK
+/usr/bin/xdg-open: 882: lynx: not found
+/usr/bin/xdg-open: 882: w3m: not found
+xdg-open: no method available for opening 'http://127.0.0.1:8082/admin'
+INFO:     127.0.0.1:52884 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52884 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52890 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57286 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57286 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57290 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52748 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52748 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52762 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60666 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60666 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60670 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49738 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49738 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49744 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46698 - "GET /v1/models?limit=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41486 - "GET /v1/models?limit=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41486 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41486 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41494 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37020 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41680 - "GET /v1/models?limit=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37550 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37550 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37558 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48728 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48728 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48734 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48734 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48734 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37184 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37184 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37200 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58182 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55878 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55878 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55886 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34722 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34722 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34738 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34742 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34742 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34756 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34738 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34756 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34738 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34738 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34756 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34756 - "POST /v1/messages/count_tokens?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34756 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34738 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34738 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34738 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34738 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34738 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59354 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33698 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58404 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58404 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58408 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46322 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46322 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46330 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58408 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46330 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58408 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46330 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58408 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58408 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46330 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58408 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58408 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52492 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58408 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52492 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52492 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58408 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52492 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52492 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58408 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58408 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52492 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58408 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52492 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52492 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52492 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52492 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38732 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38732 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38742 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38742 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52238 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52238 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52248 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38742 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38742 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52248 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38742 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52248 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38742 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52248 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38742 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52248 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38742 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38742 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52248 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38742 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52248 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52248 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52248 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52248 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52248 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52248 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52248 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52248 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52248 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52248 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52248 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52248 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52248 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52248 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52248 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52248 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38942 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53950 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57088 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57088 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57094 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57102 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57102 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57106 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57094 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57106 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57094 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57106 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57094 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57106 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57094 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57106 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57094 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57094 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57094 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57094 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57094 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57094 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57094 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57106 - "POST /v1/messages/count_tokens?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46702 - "POST /v1/messages/count_tokens?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46690 - "POST /v1/messages/count_tokens?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46706 - "POST /v1/messages/count_tokens?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57106 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57106 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57106 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57106 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57106 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57106 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57106 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57106 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57106 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57106 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57106 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57106 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57106 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57106 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57106 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57106 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57106 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42286 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42286 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57106 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42296 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42296 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57106 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42296 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42296 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57106 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41014 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41024 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40798 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40798 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40812 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40812 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40812 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40812 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40812 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40812 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40812 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46880 - "HEAD /api/hello HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:46808 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46808 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46812 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54132 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46712 - "HEAD /api/hello HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:46716 - "GET /v1/models?limit=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59994 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59994 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60004 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60004 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39252 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39252 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39258 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39258 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39258 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38642 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38642 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39258 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38642 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38642 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39258 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38642 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39258 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38642 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39258 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38642 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38642 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39258 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38642 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39258 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39258 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38642 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39258 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38642 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38642 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38642 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40084 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39418 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51886 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48886 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48886 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48902 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48902 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48902 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48902 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48902 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42056 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48902 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48902 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43828 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43828 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43832 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43832 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43832 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40246 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40246 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40260 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51908 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51908 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51916 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51916 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51916 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51916 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52450 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52450 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52460 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52460 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+nohup: ignoring input
+INFO:     Started server process [109335]
+INFO:     Waiting for application startup.
+INFO:     Admin UI: http://127.0.0.1:8082/admin (local-only)
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8082 (Press CTRL+C to quit)
+INFO:     127.0.0.1:56950 - "GET /health HTTP/1.1" 200 OK
+/usr/bin/xdg-open: 882: x-www-browser: not found
+/usr/bin/xdg-open: 882: firefox: not found
+/usr/bin/xdg-open: 882: iceweasel: not found
+INFO:     127.0.0.1:56960 - "GET / HTTP/1.1" 200 OK
+/usr/bin/xdg-open: 882: seamonkey: not found
+/usr/bin/xdg-open: 882: mozilla: not found
+/usr/bin/xdg-open: 882: epiphany: not found
+/usr/bin/xdg-open: 882: konqueror: not found
+/usr/bin/xdg-open: 882: chromium: not found
+/usr/bin/xdg-open: 882: chromium-browser: not found
+/usr/bin/xdg-open: 882: google-chrome: not found
+/usr/bin/xdg-open: 882: www-browser: not found
+/usr/bin/xdg-open: 882: links2: not found
+/usr/bin/xdg-open: 882: elinks: not found
+/usr/bin/xdg-open: 882: links: not found
+/usr/bin/xdg-open: 882: lynx: not found
+/usr/bin/xdg-open: 882: w3m: not found
+xdg-open: no method available for opening 'http://127.0.0.1:8082/admin'
+INFO:     127.0.0.1:33562 - "HEAD /api/hello HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:57588 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57588 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57600 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53854 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53870 - "POST /v1/messages HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [109335]
+/home/mmber/.local/share/uv/python/cpython-3.14.0-linux-x86_64-gnu/lib/python3.14/multiprocessing/resource_tracker.py:297: UserWarning: resource_tracker: There appear to be 8 leaked semaphore objects to clean up at shutdown: {'/mp-5jpkbg6l', '/mp-bpmck0ou', '/mp-pdyoi4ds', '/mp-eacyd_wp', '/mp-9nbrxb7j', '/mp-32km6k06', '/mp-ne_wskwu', '/mp-d9lyr5a8'}
+  warnings.warn(
+INFO:     Started server process [135517]
+INFO:     Waiting for application startup.
+INFO:     Admin UI: http://127.0.0.1:8082/admin (local-only)
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8082 (Press CTRL+C to quit)
+INFO:     127.0.0.1:57960 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57962 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57962 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+/usr/bin/xdg-open: 882: x-www-browser: not found
+/usr/bin/xdg-open: 882: firefox: not found
+/usr/bin/xdg-open: 882: iceweasel: not found
+/usr/bin/xdg-open: 882: seamonkey: not found
+/usr/bin/xdg-open: 882: mozilla: not found
+/usr/bin/xdg-open: 882: epiphany: not found
+/usr/bin/xdg-open: 882: konqueror: not found
+/usr/bin/xdg-open: 882: chromium: not found
+/usr/bin/xdg-open: 882: chromium-browser: not found
+/usr/bin/xdg-open: 882: google-chrome: not found
+/usr/bin/xdg-open: 882: www-browser: not found
+/usr/bin/xdg-open: 882: links2: not found
+/usr/bin/xdg-open: 882: elinks: not found
+/usr/bin/xdg-open: 882: links: not found
+/usr/bin/xdg-open: 882: lynx: not found
+/usr/bin/xdg-open: 882: w3m: not found
+xdg-open: no method available for opening 'http://127.0.0.1:8082/admin'
+INFO:     127.0.0.1:57970 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57962 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42050 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42050 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42038 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45260 - "HEAD /api/hello HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:45274 - "GET /v1/models?limit=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40168 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40168 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40178 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [135517]
+/home/mmber/.local/share/uv/python/cpython-3.14.0-linux-x86_64-gnu/lib/python3.14/multiprocessing/resource_tracker.py:297: UserWarning: resource_tracker: There appear to be 8 leaked semaphore objects to clean up at shutdown: {'/mp-84hr2dla', '/mp-ypk6ssqq', '/mp-i7zci_27', '/mp-2xaqbkgb', '/mp-s0pwsm8k', '/mp-3km5u63h', '/mp-fs7btjh1', '/mp-on_hehw4'}
+  warnings.warn(
+INFO:     Started server process [145017]
+INFO:     Waiting for application startup.
+INFO:     Admin UI: http://127.0.0.1:8082/admin (local-only)
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8082 (Press CTRL+C to quit)
+INFO:     127.0.0.1:32838 - "GET /health HTTP/1.1" 200 OK
+/usr/bin/xdg-open: 882: x-www-browser: not found
+/usr/bin/xdg-open: 882: firefox: not found
+/usr/bin/xdg-open: 882: iceweasel: not found
+/usr/bin/xdg-open: 882: seamonkey: not found
+/usr/bin/xdg-open: 882: mozilla: not found
+/usr/bin/xdg-open: 882: epiphany: not found
+/usr/bin/xdg-open: 882: konqueror: not found
+/usr/bin/xdg-open: 882: chromium: not found
+/usr/bin/xdg-open: 882: chromium-browser: not found
+/usr/bin/xdg-open: 882: google-chrome: not found
+/usr/bin/xdg-open: 882: www-browser: not found
+/usr/bin/xdg-open: 882: links2: not found
+/usr/bin/xdg-open: 882: elinks: not found
+/usr/bin/xdg-open: 882: links: not found
+/usr/bin/xdg-open: 882: lynx: not found
+/usr/bin/xdg-open: 882: w3m: not found
+xdg-open: no method available for opening 'http://127.0.0.1:8082/admin'
+INFO:     127.0.0.1:44446 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60174 - "GET /v1/models?limit=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47298 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41124 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41124 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41124 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41124 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41124 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41124 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49406 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42592 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42592 - "POST /v1/messages?beta=true HTTP/1.1" 200 OK

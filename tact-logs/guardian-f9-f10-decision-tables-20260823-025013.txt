@@ -1,0 +1,14 @@
+=== F9/F10 DECISION-TABLES DRAFT ===
+spec=/home/mmber/MetaClaw/tact-logs/guardian-f9-f10-decision-tables-draft-20260823-025013.md
+bundle=/home/mmber/MetaClaw/tact-logs/guardian-f9-f10-decision-tables-review-20260823-025013.md
+spec_sha256=7169d0866e1a22ddcf925e5258e6f4292d0707dff75ec19b0125f5b4423a21b1
+f9_role_data_trust=PASS
+f10_role_separation=PASS
+legacy_migration=PASS
+banxe_non_regression=PASS
+guardian=UNCHANGED
+protocol=UNCHANGED
+runtime=UNCHANGED
+fcc_server=NOT_STARTED
+providers=NOT_CONFIGURED
+credentials=NOT_READ_OR_WRITTEN

@@ -1,0 +1,13 @@
+=== PROVIDER ROUTING SEQUENCE V5 — DRAFT ===
+sequence_md=/home/mmber/MetaClaw/tact-logs/provider-routing-sequence-v5-draft-20260823-031858.md
+sequence_json=/home/mmber/MetaClaw/tact-logs/provider-routing-sequence-v5-draft-20260823-031858.json
+sha256=6b64b6982426fde765bdb008166b58a3950a327c66bcedbdae37eedac61da14c
+mandatory_cloud_families=KIMI,DEEPSEEK,MISTRAL
+mistral_api_discovery=CONFIRMED_HTTP_200
+mistral_first_tier_a_route=devstral-2512
+codex_role=EXECUTOR_VERIFIER
+cloud_activation_state=ALL_NON_OPERATIONAL
+provider_calls=NOT_PERFORMED
+runtime_changes=NONE
+credentials_read_or_written=NO
+next_action=REVIEW_V5_THEN_PIN_MISTRAL_DEVSTRAL_2512_FOR_ONE_SYNTHETIC_PROOF

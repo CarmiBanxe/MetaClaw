@@ -1,0 +1,28 @@
+{
+  "status": "DRAFT_ONLY",
+  "sources": {
+    "v5": "/home/mmber/MetaClaw/tact-logs/provider-routing-sequence-v5-draft-20260823-031858.md",
+    "mistral_discovery": "/home/mmber/MetaClaw/tact-logs/mistral-model-discovery-20260823-031606.json"
+  },
+  "permanent_tool_planes": {
+    "codex_plugin_cli": "CONTROLLED_EXECUTOR_VERIFIER_AND_CONSULTANT",
+    "mistral_api_litellm": "PERMANENT_PROVIDER_AFTER_GATES",
+    "mistral_vibe_cli": "OPTIONAL_DEVELOPER_INTERFACE_AFTER_SEPARATE_REVIEW"
+  },
+  "consultation_ladder": [
+    "primary_tier_b_analysis",
+    "independent_codex_consultation",
+    "independent_mistral_consultation",
+    "optional_independent_fable5_escalation",
+    "decision_record_and_named_approval",
+    "codex_approved_execution_and_evidence"
+  ],
+  "mistral_verified_models": [
+    "mistral-medium-3.5",
+    "magistral-medium-latest",
+    "mistral-large-2512"
+  ],
+  "provider_calls": "NOT_PERFORMED",
+  "runtime_changes": "NONE",
+  "credentials_read_or_written": "NO"
+}

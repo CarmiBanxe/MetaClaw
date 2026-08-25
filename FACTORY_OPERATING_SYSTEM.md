@@ -275,6 +275,49 @@ All instruction-bearing documents must align:
 | `COLLAB.md` (root) | ✅ | ❌ | ⚠️ | ⚠️ | ⚠️ | ❌ | Needs update |
 | `free-claude-code/AGENTS.md` | ❌ **CONFLICT** | ❌ | ❌ | ❌ | ❌ | ❌ | **MUST FIX** |
 
+## 10. SANDBOX AUTO-COMMIT PRINCIPLE (Controlled Environment)
+
+### 10.1 Scope
+This principle applies when work is performed in:
+- Sandbox / controlled worktree;
+- Governed factory contour;
+- Environment without external risk factors.
+
+### 10.2 Valuable Files Do Not Wait
+In controlled environment, valuable untracked files **must not** automatically hang in "wait for operator sanction" state.
+
+After audit-and-triage:
+- Separate trash from valuable files;
+- Separate secrets/local runtime from useful artifacts;
+- For valuable safe untracked files — execute **governed automatic commit** without waiting for separate operator sanction.
+
+### 10.3 Auto-Commit Criteria
+| Category | Action |
+|----------|--------|
+| Safe valuable untracked (docs, canons, policies, sources) | **AUTO-COMMIT** after triage |
+| Safe trash/temp/backups | Delete or add to .gitignore |
+| Local settings/runtime | Leave untracked or .gitignore |
+| Secrets/credentials | **RISK BUCKET** — no auto-commit |
+| Unknown/suspicious binaries | **RISK BUCKET** — no auto-commit |
+| Large external/vendor artifacts | Review case-by-case |
+
+### 10.4 Risk Bucket Exception
+If untracked files include:
+- Secrets or credentials;
+- Unknown binaries;
+- Suspicious external artifacts;
+- Potentially dangerous executables;
+
+then auto-commit **does not apply** — these paths go to risk bucket for operator review.
+
+### 10.5 Override Rule
+In sandbox/controlled environment, waiting for sanction on safe valuable untracked files is considered **obsolete blocking logic** and is **cancelled**.
+
+**Preserved blocks:**
+- Real risk categories;
+- Merge/push restrictions (unless explicitly allowed by sandbox rules);
+- Secrets/credentials exposure risk.
+
 ---
 
 *Enacted: 2026-08-25*  

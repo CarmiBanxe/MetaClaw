@@ -8,3 +8,28 @@ memory_data/skills.venv/
 litellm/.env
 litellm/*.bak*
 litellm/litellm-config.v2.yaml.*
+.claude/settings.local.json
+CLAUDE.local.md
+.env
+.env.*
+secrets/
+.fcc/
+
+# Nested git repositories (subprojects)
+LibreChat/
+free-claude-code/
+
+# Backup files
+*.bak*
+*.bak-*
+
+# Binary packages
+*.deb
+
+# Local settings (may contain sensitive data)
+.claude/settings.json
+.claude/settings.local.json.example
+
+# secrets — never commit
+litellm/ops/litellm-director.env
+docs/sources/

@@ -1,0 +1,10 @@
+=== MISTRAL ROUTE CANDIDATES — READ ONLY ===
+source_inventory=route-alias-inventory-readonly-20260823-030633.json
+candidates_json=/home/mmber/MetaClaw/tact-logs/mistral-route-candidates-readonly-20260823-031135.json
+sha256=acf5b469b8e459e9a763eb94d78f268511667b6a9caada46a04abc9daa36612e
+candidate_count=1
+candidate_names=codestral
+provider_calls=NOT_PERFORMED
+runtime_changes=NONE
+credentials_read_or_printed=NO
+next_action=REVIEW_AND_PIN_ONE_EXACT_MISTRAL_ROUTE

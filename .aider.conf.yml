@@ -1,6 +1,9 @@
 # Aider project config (migrated from .qoder/context.md)
 # Project: MetaClaw
-model: ollama_chat/qwen3-banxe-v2:latest
+# ADR-021: route via LiteLLM router
+model: openai/factory-coder
+openai-api-base: http://localhost:4000
+env-file: ~/.aider.env
 auto-commits: true
 dirty-commits: true
 gitignore: true
