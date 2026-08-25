@@ -1,4 +1,4 @@
-# FACTORY OPERATING SYSTEM v1.0
+# FACTORY OPERATING SYSTEM v1.1
 ## ROOT-LEVEL UNIVERSAL ARTIFACT — ALL TERMINALS / ALL CONTOURS
 
 **Status:** EFFECTIVE IMMEDIATELY  
@@ -35,8 +35,8 @@ Every task must utilize all available Factory agents and workers in their respec
 
 ### 1.4 Factory Execution Only
 Production code is written **exclusively** by:
-- **Aider** (via MCP/Qoder) — primary executor
-- **Codex** (plugin/CLI) — secondary executor when enabled
+- **Aider** (via MCP/Qoder) — **primary executor**
+- **Codex** (plugin/CLI) — **secondary executor** when enabled
 - **Factory agents** — via controlled task queue
 
 **Claude Code NEVER writes production code.** Claude Code assigns, plans, reviews, validates.
@@ -191,9 +191,74 @@ CONSULT PROMPTS:
 
 ---
 
-## 6. CANON OVERRIDE RULE
+## 6. ROUTING POLICY — CLOUD-FIRST FCC WITH TIERED DATA BOUNDARY
 
-### 6.1 Cancelled Formulations
+### 6.1 Primary Development Route
+Claude Code-compatible requests are routed through **Free Claude Code (FCC)** gateway to explicit allowlist of cloud providers/models.
+
+### 6.2 Data Classification & Routing Matrix
+| Data Class | Routing | Examples |
+|------------|---------|----------|
+| **Non-protected** | Cloud-first FCC | Synthetic fixtures, architecture/design, ADRs, scaffolding, tests, docs, sanitized debugging |
+| **Protected** | Local-only (Ollama) | Secrets, KYC/AML, payment/ledger, production logs, regulated evidence |
+| **Mixed** | Decomposed — cloud for logic, local for data | Feature with both scaffolding and PII |
+
+### 6.3 Compatibility Boundary
+- FCC preserves Claude Code interface
+- Direct provider calls by agents remain disallowed unless separately approved
+- LiteLLM and local Ollama remain approved fallback for offline/protected workloads
+
+### 6.4 Mandatory Controls
+Provider/model allowlist, loopback-bound gateway, task/route/model audit records, spend/quota limits, credential isolation, tested rollback.
+
+---
+
+## 7. CONSULT POLICY MATRIX (sandbox/preprod/prod × reversible/material/irreversible)
+
+| Environment | Reversible | Material | Irreversible |
+|-------------|------------|----------|--------------|
+| **Sandbox** | Advisory — single opinion | Codex primary + Fable second | Codex + Fable parallel + operator |
+| **Preprod** | Codex single | Codex + Fable | Full chain + operator sanction |
+| **Prod** | Codex single | Full consult chain | Full chain + MLRO/CTIO + operator |
+
+**Irreversible =** secret exposure, production data leak, financial transaction, architectural lock-in.
+
+---
+
+## 8. AUTO-COMMIT SCOPE (Factory Contour Only)
+
+### 8.1 Principle
+In controlled environment (sandbox/governed factory contour), valuable untracked files **must not** automatically hang in "wait for operator" state.
+
+### 8.2 Auto-Commit Criteria
+| Category | Action |
+|----------|--------|
+| Safe valuable untracked (docs, canons, policies, sources) | **AUTO-COMMIT** after triage |
+| Safe trash/temp/backups | Delete or add to .gitignore |
+| Local settings/runtime | Leave untracked or .gitignore |
+| Secrets/credentials | **RISK BUCKET** — no auto-commit |
+| Unknown/suspicious binaries | **RISK BUCKET** — no auto-commit |
+
+### 8.3 Central Terminal Exception
+**Central terminal does NOT auto-commit.** Central plans/reviews; Factory (Left) executes commits. Auto-commit applies **only** to Factory contour operations.
+
+---
+
+## 9. TERMINAL NAMING UNIFICATION
+
+| Legacy Name | Canonical Name | Role |
+|-------------|----------------|------|
+| Left | **LEFT / Factory Interface** | Task assignment, agent orchestration |
+| Central / Brain | **CENTRAL** | Planning, review, decision, verification |
+| Right / BEN | **RIGHT / Assistant** | Research, audit, summary, brief preparation |
+
+All documentation must use canonical names. Legacy references should be updated on next edit.
+
+---
+
+## 10. CANON OVERRIDE RULE
+
+### 10.1 Cancelled Formulations
 Any instruction implying:
 - "complete one step and wait" ❌
 - "stop after audit and ask" ❌
@@ -206,7 +271,7 @@ Any instruction implying:
 - Explicit canon-required sanction boundary
 - Real fork requiring operator decision
 
-### 6.2 Preserved Sanction Boundaries
+### 10.2 Preserved Sanction Boundaries
 These remain valid stops:
 - MLRO gate (compliance changes)
 - CTIO gate (architecture changes)
@@ -217,19 +282,19 @@ These remain valid stops:
 
 ---
 
-## 7. PROPAGATION TO ALL CONTOURS
+## 11. PROPAGATION TO ALL CONTOURS
 
-### 7.1 Read Obligation
+### 11.1 Read Obligation
 This document MUST be read by:
 - **Left Terminal** — before Factory task assignment
 - **Factory** — before code generation
 - **Central Terminal** — before planning/orchestration
 - **Right Terminal** — before audit/summary tasks
 
-### 7.2 One Recording, Universal Application
+### 11.2 One Recording, Universal Application
 Recording this principle in root-level `FACTORY_OPERATING_SYSTEM.md` binds all contours. Local copies are references, not substitutes.
 
-### 7.3 Alignment Requirement
+### 11.3 Alignment Requirement
 All instruction-bearing documents must align:
 - canon files
 - README / REDMI
@@ -242,19 +307,20 @@ All instruction-bearing documents must align:
 
 ---
 
-## 8. EXCEPTIONS (SANCTIONED ONLY)
+## 12. EXCEPTIONS (SANCTIONED ONLY)
 
 | Exception | Justification | Approval |
 |-----------|---------------|----------|
 | Emergency direct edit | System down, no Factory path | Operator real-time sanction |
 | Documentation-only change | No code impact, markdown only | Documented in commit |
 | Factory bypass for experiment | Explicit research mode | Operator pre-approval |
+| Integration preparation | Operator-directed merge prep | Operator directive (this document) |
 
 **Default:** No exceptions. Factory-only coding is absolute.
 
 ---
 
-## 9. AMENDMENT RULES
+## 13. AMENDMENT RULES
 
 - **Operator approval** — all amendments
 - **CTIO approval** — structural changes (roles, tiers, consult chain)
@@ -267,59 +333,14 @@ All instruction-bearing documents must align:
 | Source | Factory-Only | Cheap-First | Non-Atomic | Audit-First | Shell Audit | Consult Chain | Status |
 |--------|--------------|-------------|------------|-------------|-------------|---------------|--------|
 | `FACTORY_OPERATING_SYSTEM.md` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | **THIS DOCUMENT** |
-| `.claude/CLAUDE_CODE_CANON.md` | ✅ | ❌ | ⚠️ | ⚠️ | ⚠️ | ⚠️ | Needs update |
-| `docs/canon/software-factory-canon-v1.md` | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | Needs update |
-| `docs/canon/smart-model-routing-protocol-v1.md` | ❌ | ✅ | ❌ | ❌ | ❌ | ⚠️ | Reference only |
-| `factory-target-model-policy.md` | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | Reference only |
-| `AGENTS.md` (root) | ⚠️ | ❌ | ⚠️ | ❌ | ❌ | ❌ | Needs update |
-| `COLLAB.md` (root) | ✅ | ❌ | ⚠️ | ⚠️ | ⚠️ | ❌ | Needs update |
-| `free-claude-code/AGENTS.md` | ❌ **CONFLICT** | ❌ | ❌ | ❌ | ❌ | ❌ | **MUST FIX** |
-
-## 10. SANDBOX AUTO-COMMIT PRINCIPLE (Controlled Environment)
-
-### 10.1 Scope
-This principle applies when work is performed in:
-- Sandbox / controlled worktree;
-- Governed factory contour;
-- Environment without external risk factors.
-
-### 10.2 Valuable Files Do Not Wait
-In controlled environment, valuable untracked files **must not** automatically hang in "wait for operator sanction" state.
-
-After audit-and-triage:
-- Separate trash from valuable files;
-- Separate secrets/local runtime from useful artifacts;
-- For valuable safe untracked files — execute **governed automatic commit** without waiting for separate operator sanction.
-
-### 10.3 Auto-Commit Criteria
-| Category | Action |
-|----------|--------|
-| Safe valuable untracked (docs, canons, policies, sources) | **AUTO-COMMIT** after triage |
-| Safe trash/temp/backups | Delete or add to .gitignore |
-| Local settings/runtime | Leave untracked or .gitignore |
-| Secrets/credentials | **RISK BUCKET** — no auto-commit |
-| Unknown/suspicious binaries | **RISK BUCKET** — no auto-commit |
-| Large external/vendor artifacts | Review case-by-case |
-
-### 10.4 Risk Bucket Exception
-If untracked files include:
-- Secrets or credentials;
-- Unknown binaries;
-- Suspicious external artifacts;
-- Potentially dangerous executables;
-
-then auto-commit **does not apply** — these paths go to risk bucket for operator review.
-
-### 10.5 Override Rule
-In sandbox/controlled environment, waiting for sanction on safe valuable untracked files is considered **obsolete blocking logic** and is **cancelled**.
-
-**Preserved blocks:**
-- Real risk categories;
-- Merge/push restrictions (unless explicitly allowed by sandbox rules);
-- Secrets/credentials exposure risk.
+| `CLAUDE_CODE_OPERATING_PRINCIPLE.md` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Aligned v1.1 |
+| `AGENTS.md` (root) | ✅ | ✅ | ✅ | ✅ | ⚠️ | ⚠️ | Updated v1.1 |
+| `docs/canon/software-factory-canon-v1.md` | ✅ | ✅ | ✅ | ✅ | ⚠️ | ⚠️ | References this doc |
+| `.claude/CLAUDE_CODE_CANON.md` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Rule 9 overridden |
 
 ---
 
-*Enacted: 2026-08-25*  
+*Enacted: 2026-08-26*  
+*Version: 1.1 (normalized)*  
 *Authority: Operator directive — root-level universal, all contours*  
 *Supersedes: All factory/canon instructions where conflict exists*
