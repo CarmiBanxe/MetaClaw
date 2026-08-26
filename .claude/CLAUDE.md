@@ -66,4 +66,13 @@ python examples/basic_agent.py
 
 ---
 
+## РЕЖИМ ОБЪЯСНЕНИЯ (EXPLAIN MODE) — активен
+
+Правило поднято на глобальный уровень: полный текст в `~/.claude/CLAUDE.md`,
+секция «РЕЖИМ ОБЪЯСНЕНИЯ (EXPLAIN MODE) — глобально, все проекты».
+Действует во всех проектах, включая MetaClaw. Здесь дубликата больше нет —
+правим только глобальный файл.
+
+---
+
 *Workspace: /home/mmber/MetaClaw | Stack: Python + MetaClaw framework*

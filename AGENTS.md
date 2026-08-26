@@ -1,292 +1,177 @@
-# AGENTS.md — Developer Core: Central Repository for Shared Components
-
-**Repository:** `~/developer/`  
-**Version:** 3.0 | 2026-04-03  
-**Purpose:** Shared components, templates, and configurations distributed across all projects  
-**Architecture:** Three-Partner Synergy (Claude Code + Qoder CLI + MiroFish)
+# AGENTS.md — MetaClaw Agent Architecture
+**Version:** 2.0 | 2026-08-26  
+**Authority:** Project-level — defers to Root Canon (`CLAUDE.md`) and SSOT CORE-10-29
 
 ---
 
-## Core mission
+## ROOT CANON DEFERENCE
 
-This repository is the **central source of truth** for:
+**SSOT:** `banxe-ai-rnd/research` → `docs/canon/CANON-FACTORY-SSOT.md`, norm **CORE-10-29**  
+(terminal workflow, Factory-only execution, audit-first, non-atomic, consult chain, token economy).
 
-- Agent instructions (AGENTS.md, CLAUDE.md templates)
-- Qoder CLI configurations (.qoder/config.yml)
-- **Three-partner synergy architecture** (Claude + Qoder + MiroFish)
-- Compliance architecture (COMPLIANCE_ARCH.md)
-- Shared scripts and automation (sync-all.sh, onboard-project.sh)
-- Project templates
-- MCP best practices
-- **MiroFish scenario templates** (MASTER copies for all projects)
-
-### Three-Partner Architecture
-
-All projects use the same three-partner stack:
-
-| Partner | Role | Activation | Scope |
-|---------|------|------------|-------|
-| **Claude Code** | Architect & Coordinator | Every session | Design, review, orchestration |
-| **Qoder CLI** | Executor | MCP auto-load | Implementation, edits, tests |
-| **MiroFish** | Simulator & Validator | Auto-trigger by keywords | Behavioral simulation, stress-testing |
-
-**Key principle:** MiroFish is a partner for ALL projects, not just Banxe.
-- Banxe projects: banking/FCA/fraud scenarios
-- Legal projects: court/judge/appeal scenarios
-- Developer-core: infrastructure & sync validation
-
-### Distribution model
-
-Components from this repository are synced to:
-
-| Project | Type | Sync target | MiroFish | Scenarios |
-|---------|------|-------------|----------|-----------|
-| vibe-coding | banxe | `/home/mmber/vibe-coding/` | ✅ | banking/FCA/fraud |
-| collaboration | banxe | `/home/mmber/collaboration/` | ✅ | multi-agent conflicts |
-| MetaClaw | banxe | `/home/mmber/MetaClaw/` | ✅ | orchestration scaling |
-| guiyon | legal | `/home/mmber/guiyon/` | ✅ | court strategy |
-| ss1 | legal | `/home/mmber/ss1/` | ✅ | appeal dynamics |
-| banxe-mirofish | tool | `/home/mmber/banxe-mirofish/` | ✅ | MASTER templates |
-| developer-core | core | `/home/mmber/developer/` | ✅ | ALL (MASTER) |
+`FACTORY_OPERATING_SYSTEM.md` and `CLAUDE_CODE_OPERATING_PRINCIPLE.md` in this repo are **pointers to SSOT**, not copies (ADR-102).
 
 ---
 
-## Instruction hierarchy (for THIS repository)
+## CORE MISSION
 
-1. **Explicit user instruction** (highest authority)
-2. **Repository-level contracts**:
-   - `.qoder/context.md` (execution contract)
-   - `CLAUDE.md` (project context)
-3. **Global defaults**: `~/.claude/CLAUDE.md`
-
-### Rule for downstream projects
-
-When syncing components TO a project, that project's local files take precedence over these templates.
-
-**These are templates and starting points, not immutable laws.**
+MetaClaw — meta-learning AI agent framework. Agents learn and evolve from conversations without GPU.
 
 ---
 
-## Repository structure
+## THREE-TERMINAL ARCHITECTURE (Canonical)
+
+| Terminal | Name | Function | Execution |
+|----------|------|----------|-----------|
+| **Central** | BRAIN | Architect, planner, reviewer, orchestrator | **NO direct code execution** — plans and routes |
+| **Left** | FACTORY INTERFACE | Task assignment, agent orchestration, evidence routing | **NO direct code generation** — drives Factory |
+| **Right** | ASSISTANT (BEN) | Research, audit, summary, brief preparation | **NO code execution** — read-only audit |
+| **Factory** | AIDER + CODEX | Code generation, edits, tests, commands | **SOLE execution layer** |
+
+**Key principle:** Terminals decide and plan; Factory executes. **No terminal bypasses Factory.**
+
+---
+
+## FACTORY-ONLY EXECUTION
+
+- Any terminal (Central/Left/Right) formulates tasks for Factory.
+- Code and implementation flow **only** through Factory (Aider primary, Codex secondary).
+- Direct coding outside Factory default flow: **prohibited**.
+
+---
+
+## AUDIT-FIRST CYCLE
+
+**Mandatory cycle:** `AUDIT → DECIDE → FACTORY EXECUTION → RE-AUDIT`
+
+- Shell audit embedded before every material step.
+- Read-only audit = safe class; auto-execute silently.
+- State-changing work = operator gate.
+
+---
+
+## NON-ATOMIC CONTINUOUS WORK
+
+- Default: continuous unified-front execution.
+- Stop only at: real fork / sanction gate / authority boundary / unresolved factual conflict.
+- Factory resumes work after consultation without atomic pauses.
+
+---
+
+## TOKEN ECONOMY
+
+| Tier | Resources | Role |
+|------|-----------|------|
+| **Cheap/free** | Open Claude Code, local models, Codex | Bulk work: prep, aux, decomposition, drafting |
+| **Expensive** | Main Claude | Final verification, critical review, decision |
+
+Main Claude verifies Factory outputs, not re-processes bulk.
+
+---
+
+## CONSULTATION MODE (Strict)
+
+**Factory NEVER self-consults.**
+
+On real fork:
+1. Factory prepares **one brief** (task, context, question, expected output).
+2. Factory emits brief as text artifact, **stops**.
+3. **Operator performs consultation externally** via separate window.
+4. **Consult chain (fixed order):** `Codex → Fable → Mistral → Kimi`.
+5. Operator returns results; Factory reconciles; work continues.
+
+**Brief delivery:** Prepared as artifact. **NEVER autonomously sent.** Operator controls delivery.
+
+---
+
+## GOVERNED MERGE
+
+- Consultation preparation: automatic.
+- Consultation execution: operator-run.
+- Merge/push: operator approval required.
+- No uncontrolled merge autonomy.
+
+---
+
+## INSTRUCTION HIERARCHY
+
+1. **Explicit user instruction** (highest)
+2. **Root Canon** (`CLAUDE.md`)
+3. **SSOT:** `banxe-ai-rnd/research/docs/canon/CANON-FACTORY-SSOT.md` CORE-10-29
+4. **Session Canon:** `.claude/CLAUDE_CODE_CANON.md`
+5. **Project context:** `AGENTS.md` (this file), `COLLAB.md`
+6. **Global defaults:** `~/.claude/CLAUDE.md`
+
+---
+
+## REPOSITORY STRUCTURE
 
 ```
-~/developer/
-├── .claude/CLAUDE.md          ← Global collaboration contract (symlink target)
-├── .qoder/config.yml          ← Qoder configuration template
-├── .qoder/context.md          ← Qoder execution contract template
-├── AGENTS.md                  ← This file — agent instructions template
-├── docs/
-│   ├── COLLAB.md              ← Collaboration pattern documentation
-│   └── MCP-BEST-PRACTICES.md  ← MCP server configuration guide
-├── scripts/
-│   ├── check-agent-instructions.sh  ← Diagnostic tool
-│   └── sync-to-project.sh           ← Sync script (TO BE CREATED)
-├── templates/
-│   ├── project-template/            ← New project bootstrap
-│   └── compliance-module/           ← AML/KYC module template
-├── agents/
-│   ├── code-reviewer.skill          ← Code review skill
-│   ├── test-runner.subagent         ← Test execution agent
-│   └── compliance-checker.subagent  ← FCA compliance agent
-└── compliance/
-    ├── COMPLIANCE_ARCH.md           ← Invariants contract
-    └── api.py                       ← Reference implementation
-```
-
----
-
-## Component catalog
-
-### Templates (copy to new projects)
-
-| Component | Source | Target | Purpose |
-|-----------|--------|--------|---------|
-| `AGENTS.md` | `./AGENTS.md` | `{project}/AGENTS.md` | Agent instructions |
-| `.qoder/config.yml` | `./.qoder/config.yml` | `{project}/.qoder/config.yml` | Qoder config |
-| `.qoder/context.md` | `./.qoder/context.md` | `{project}/.qoder/context.md` | Execution contract |
-| `docs/COLLAB.md` | `./docs/COLLAB.md` | `{project}/docs/COLLAB.md` | Collaboration docs |
-| `docs/MCP-BEST-PRACTICES.md` | `./docs/MCP-BEST-PRACTICES.md` | `{project}/docs/MCP-BEST-PRACTICES.md` | MCP guide |
-
-### Compliance stack (read-only reference)
-
-| Component | Purpose | Projects using |
-|-----------|---------|----------------|
-| `compliance/COMPLIANCE_ARCH.md` | Invariants contract | vibe-coding |
-| `compliance/api.py` | Reference API | vibe-coding |
-| `compliance/sanctions_check.py` | OFAC Watchman integration | vibe-coding |
-| `compliance/audit_trail.py` | ClickHouse audit logging | vibe-coding |
-
-### Scripts (shared utilities)
-
-| Script | Purpose | Usage |
-|--------|---------|-------|
-| `scripts/sync-all.sh` | Sync all projects from registry | `bash sync-all.sh [--dry-run]` |
-| `scripts/onboard-project.sh` | Onboard new project | `./onboard-project.sh <name> <type>` |
-| `scripts/check-agent-instructions.sh` | Verify instruction hierarchy | Debug agent setup |
-
----
-
-## Sync protocol
-
-### Sync protocol
-
-#### Manual sync (current method)
-
-```bash
-cd ~/developer
-bash scripts/sync-all.sh
-```
-
-#### Automatic sync (future state)
-
-**Post-commit hook** (`~/developer/.git/hooks/post-commit`):
-- On commit to `~/developer/`: auto-run sync-all.sh
-- Detect changed components
-- Identify affected projects
-- Commit and push to all repos automatically
-
-### Change management
-
-### Safe changes (auto-sync allowed)
-
-- Documentation updates
-- Comment additions
-- Formatting fixes
-- Test additions
-
-### Review-required changes (manual sync)
-
-- Configuration changes (.qoder/config.yml)
-- Instruction hierarchy changes (AGENTS.md)
-- Compliance invariant changes (COMPLIANCE_ARCH.md)
-- Script logic changes
-
-### Sync approval workflow
-
-1. Change committed to `~/developer/`
-2. User runs `bash scripts/sync-to-project.sh <project>`
-3. Script shows diff for each target
-4. User approves/rejects per project
-5. Changes applied to targets
-
----
-
-## Project isolation enforcement
-
-**CRITICAL:** This repository contains SHARED templates and MASTER scenario copies.
-
-When working IN this repository:
-- Edit templates for distribution
-- Test changes before syncing
-- Document breaking changes
-- Maintain MiroFish scenario templates (MASTER)
-
-When working IN a target project:
-- Use synced templates as starting point
-- Local overrides allowed and expected (especially MIROFISH-SCENARIOS.md)
-- Report useful improvements back to developer/
-- Project-specific scenarios stay in the project (not synced back)
-
----
-
-## Testing requirements
-
-Before syncing any component:
-
-| Component type | Required validation |
-|----------------|---------------------|
-| Config files | Syntax check + dry-run |
-| Scripts | Shellcheck + manual test |
-| Templates | Bootstrap test project |
-| Compliance | Compare with production |
-| Documentation | Link check + build |
-
----
-
-## Version tracking
-
-Each synced component should include:
-
-```markdown
-**Source:** `~/developer/{path}`  
-**Synced:** YYYY-MM-DD  
-**Version:** X.Y
+~/MetaClaw/
+├── .claude/
+│   └── CLAUDE_CODE_CANON.md     ← Session canon
+├── metaclaw/                   ← Core package
+├── tests/                      ← Test suite
+├── examples/                   ← Usage examples
+├── docs/                       ← Documentation
+├── FACTORY_OPERATING_SYSTEM.md ← Pointer → SSOT
+├── CLAUDE_CODE_OPERATING_PRINCIPLE.md ← Pointer → SSOT
+├── AGENTS.md                   ← This file
+└── COLLAB.md                   ← Collaboration canon
 ```
 
 ---
 
-## Rollback procedure
+## PROJECT ISOLATION
 
-If a synced change breaks a project:
-
-1. Identify the broken component
-2. Restore previous version in target project
-3. Report issue to `~/developer/`
-4. Fix in developer repo
-5. Re-sync when ready
+This repository is **MetaClaw only**. Do not mix with:
+- Banxe (`vibe-coding`)
+- GUIYON
+- Developer-core (`~/developer`)
 
 ---
 
-## Quick start for new components
+## BEFORE MAKING CHANGES
 
-To add a new shared component:
-
-1. Create in appropriate directory (`scripts/`, `templates/`, etc.)
-2. Add documentation header with purpose and usage
-3. Test in isolation
-4. Commit to `~/developer/`
-5. Manually sync to interested projects
-6. Update this AGENTS.md if needed
+1. Read `CANON-FACTORY-SSOT.md` CORE-10-29 §1 (Factory-only) and §3 (non-atomic).
+2. Preserve API contracts.
+3. Run tests: `pytest tests/ -v`
+4. Keep deps in sync.
 
 ---
 
-## People and responsibilities
+## COMMIT STYLE
 
-| Role | Person | Scope |
-|------|--------|-------|
-| Component author | Any developer | Create/maintain specific components |
-| Sync coordinator | Moriel Carmi | Approve cross-project distribution |
-| Integration tester | Qoder CLI | Validate synced components work |
-
----
-
-## Files reference
-
-| File | Purpose | Sync targets |
-|------|---------|--------------|
-| `AGENTS.md` | This file — three-partner agent instructions | All projects |
-| `.qoder/config.yml` | Qoder CLI configuration | All projects |
-| `.qoder/context.md` | Qoder execution contract (UNIVERSAL) | All projects |
-| `docs/COLLAB.md` | Collaboration documentation | All projects |
-| `docs/MCP-BEST-PRACTICES.md` | MCP server guide | All projects |
-| `docs/PROJECT-REGISTRY.csv` | Project registry for sync-all.sh | Internal use |
-| `scripts/sync-all.sh` | Multi-repo sync automation | Internal use |
-| `scripts/onboard-project.sh` | New project onboarding | Internal use |
-| `scripts/check-agent-instructions.sh` | Diagnostic tool | All projects |
-| `compliance/COMPLIANCE_ARCH.md` | Compliance invariants | vibe-coding |
+- English identifiers
+- Prefix: `feat/fix/test/docs/chore/canon`
+- Never commit secrets
+- Format: `type(scope): message [IL-XXX]`
 
 ---
 
-## Definition of done (for component development)
+## FILES REFERENCE
 
-A component is ready for sync when:
-
-- [ ] Implementation complete and tested
-- [ ] Documentation header added
-- [ ] No project-specific assumptions
-- [ ] Works in isolation
-- [ ] Backward-compatible or migration documented
-- [ ] Committed to `~/developer/`
-- [ ] Synced to at least one target project
+| File | Purpose | Authority |
+|------|---------|-----------|
+| `CLAUDE.md` | **Root Canon** — all 10 mandatory results | Root |
+| `FACTORY_OPERATING_SYSTEM.md` | Pointer → SSOT | Pointer |
+| `CLAUDE_CODE_OPERATING_PRINCIPLE.md` | Pointer → SSOT | Pointer |
+| `.claude/CLAUDE_CODE_CANON.md` | Session rules | Session |
+| `AGENTS.md` | This file — architecture | Project |
+| `COLLAB.md` | Collaboration patterns | Project |
 
 ---
 
-## Next steps (pending work)
+## DEFINITION OF DONE
 
-- [x] Create sync-all.sh for automated distribution
-- [x] Update AGENTS.md with three-partner architecture
-- [x] Create onboard-project.sh for new project onboarding
-- [ ] Create git post-commit hook for auto-sync
-- [ ] Deploy full Qoder stack to banxe-mirofish
-- [ ] Create project-specific MIROFISH-SCENARIOS.md for all 6 projects
-- [ ] Update MEMORY.md with three-partner documentation
+- [ ] Factory execution verified (Aider/Codex)
+- [ ] Tests pass (`pytest`)
+- [ ] Lint clean (`ruff`)
+- [ ] Audit trail recorded
+- [ ] Commit with proper format
+- [ ] No secrets committed
+
+---
+
+*Updated: 2026-08-26 (v2.0)*  
+*Alignment: Root Canon v2.0 / SSOT CORE-10-29*

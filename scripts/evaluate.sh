@@ -63,7 +63,7 @@ warn "Canon Judge in audit mode — no blocking (Sprint 8 will enable enforce)"
 if $RUN_PROMPTFOO; then
   log "Stage 5: promptfoo adversarial"
   export PATH="/home/mmber/.nvm/versions/node/v22.22.0/bin:$PATH"
-  export OPENAI_API_KEY="sk-banxe-llm-gateway-2026"
+  export OPENAI_API_KEY="sk-banxe-llm-gateway-2026-93173fc9dc7ef1dcb02daf7698d04a31"
   export OPENAI_BASE_URL="http://127.0.0.1:4000/v1"
   if command -v promptfoo >/dev/null 2>&1; then
     PFOO_OUT=$(npx promptfoo eval -c ~/developer/compliance/training/promptfoo.yaml 2>&1 | tail -5)

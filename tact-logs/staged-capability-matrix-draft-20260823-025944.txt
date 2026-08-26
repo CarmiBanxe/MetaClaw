@@ -1,0 +1,13 @@
+=== STAGED CAPABILITY MATRIX DRAFT ===
+policy=/home/mmber/MetaClaw/tact-logs/cloud-provider-priority-policy-draft-20260823-025841.md
+matrix_md=/home/mmber/MetaClaw/tact-logs/staged-capability-matrix-draft-20260823-025944.md
+matrix_json=/home/mmber/MetaClaw/tact-logs/staged-capability-matrix-draft-20260823-025944.json
+matrix_sha256=2655e97502f5660d527e9b1cfdca2009a0dc64e391d4e3552b87db81643b6551
+route_candidates=7
+tier_a_candidates=4
+tier_b_candidates=2
+tier_c_candidates=1
+provider_calls=NOT_PERFORMED
+runtime_changes=NONE
+provider_activation=NONE
+credentials_read=NO

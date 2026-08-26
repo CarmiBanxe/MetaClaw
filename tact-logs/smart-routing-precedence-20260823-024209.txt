@@ -1,0 +1,10 @@
+=== SMART ROUTING PRECEDENCE AMENDMENT ===
+backup=/home/mmber/MetaClaw/tact-logs/smart-routing-precedence-backup-20260823-024209
+changed=software-factory-canon-v1.md,CLAUDE_CODE_CANON.md,ADR-032-cloud-fcc-gateway-amendment-DRAFT.md
+protocol_present=PASS
+all_precedence_blocks_present=PASS
+backup_count=PASS
+runtime=UNCHANGED
+fcc_server=NOT_STARTED
+providers=NOT_CONFIGURED
+credentials=NOT_READ_OR_WRITTEN

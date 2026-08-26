@@ -1,0 +1,17 @@
+{
+  "status": "DRAFT_ONLY",
+  "source_matrix_v2": "/home/mmber/MetaClaw/tact-logs/staged-capability-matrix-v2-draft-20260823-030216.md",
+  "source_closure": "/home/mmber/MetaClaw/tact-logs/staged-capability-matrix-review-closure-20260823-030216.txt",
+  "operator_preferences": {
+    "kimi": "MANDATORY_CANDIDATE_FAMILY",
+    "dip_sig": "PREMIUM_CANDIDATE_UNRESOLVED"
+  },
+  "policy_effects": {
+    "tier_a_requires_kimi_candidate": true,
+    "tier_b_reserve_slot_for_dip_sig_review": true,
+    "explicit_pinning_overrides_auto_routing": true
+  },
+  "runtime_changes": "NONE",
+  "provider_calls": "NOT_PERFORMED",
+  "credentials_read": "NO"
+}

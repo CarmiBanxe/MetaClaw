@@ -6,6 +6,8 @@
 **Scope:** CarmiBanxe organisation — all repos under banxe-emi-stack and MetaClaw
 **Binding ADRs:** ADR-019 (Guardian two-family), ADR-020 (memory governance), ADR-025 (agent interaction canon), ADR-031 (deny-paths)
 
+**Root Operating Principle:** `CLAUDE_CODE_OPERATING_PRINCIPLE.md` — mandatory read for all terminals. Defines: audit-first, non-atomic execution, token economy (cheap models for bulk, expensive for final check), factory-only coding, continuous work until fork.
+
 ---
 
 ## 1. Purpose
@@ -14,11 +16,11 @@ This canon defines the operating model for a role-based software factory where:
 
 - **Claude Code** acts as planner, reviewer, and orchestrator.
 - **Aider** (via MCP/Qoder) acts as the sole code executor.
-- **LiteLLM** serves as the gateway-only routing layer to local Ollama endpoints.
+- LiteLLM provides approved local fallback routing to Ollama endpoints; FCC is the approved Claude-compatible cloud-first development gateway.
 - **Guardian** enforces factory and project invariants deterministically.
 - **Canon Judge** evaluates agent output against ADR-025 via LLM (audit mode).
 
-No cloud LLM calls are permitted (ADR-031). All inference runs on the local cluster (evo1, evo2).
+- Cloud LLM calls are permitted only through the FCC local gateway and approved allowlisted providers/models, subject to the Cloud-first development routing amendment.
 
 ---
 
@@ -130,7 +132,7 @@ plan -> route -> execute -> evaluate -> review -> promote/defer
 
 ### 7.1 Plan
 
-- Claude Code decomposes the task into atomic work items.
+- Claude Code decomposes the task into work items (non-atomic continuous execution per `FACTORY_OPERATING_SYSTEM.md` §3).
 - Each work item gets a sprint assignment and instruction ID (INS-YYYY-MM-DD-NNN).
 - Factory rule F4 enforces: no work without an instruction ID.
 
@@ -250,6 +252,20 @@ Every completed work unit must produce:
 
 ---
 
+## 13. Factory Operating System (Root-Level Universal)
+
+All Factory execution contours (LEFT, CENTRAL, RIGHT terminals) are governed by `FACTORY_OPERATING_SYSTEM.md`:
+
+- **FACTORY-ONLY CODING:** No terminal codes directly; all code via Factory (Aider/Codex).
+- **TIERED MODEL ECONOMY:** Cheap/free/lower-tier for bulk work; expensive model for final check only.
+- **NON-ATOMIC:** Continuous execution across non-branching work; no stop-and-wait default.
+- **AUDIT-FIRST:** Fresh shell audit precedes every material step.
+- **CONSULT CHAIN:** Codex → Fable → Mistral → Kimi on forks (prepared packet, not casual question).
+
+This Factory Canon (`software-factory-canon-v1.md`) remains authoritative for role matrix, invariants, mandatory packs, and promotion rules. Where operating principle and factory canon conflict, the more restrictive safety rule applies.
+
+---
+
 ## 11. Canon Amendment Rules
 
 ### 11.1 Amendment process
@@ -323,3 +339,24 @@ This canon is grounded in the following repo artefacts:
 | **CTIO** | Chief Technology/Innovation Officer — architecture gate |
 | **Defer** | Return a work item to Plan phase with diagnostic notes |
 | **Promote** | Merge a completed work item to target branch |
+
+
+## Cloud-first development routing amendment
+
+**Status:** EFFECTIVE by Operator directive; implementation remains staged and auditable.
+
+1. **Primary development route:** Claude Code-compatible requests may be routed through a local Free Claude Code (FCC) gateway to an explicit allowlist of cloud providers/models.
+2. **Compatibility boundary:** FCC preserves the Claude Code interface; direct provider calls by agents remain disallowed unless separately approved.
+3. **Local continuity:** LiteLLM and local Ollama remain approved fallback routes for offline operation, continuity, and protected workloads.
+4. **Data boundary:** Cloud routes MUST NOT receive secrets, credentials, real customer data, KYC/KYB/AML cases, payment or ledger payloads, production logs, regulated evidence, or other sensitive banking data.
+5. **Permitted cloud work:** Synthetic fixtures, non-sensitive architecture/design, ADRs, code scaffolding, tests, migrations, documentation, and sanitized debugging.
+6. **Controls:** Provider/model allowlist, loopback-bound gateway, task/route/model audit records, spend/quota limits, credential isolation, and tested rollback are mandatory before provider activation.
+7. **Architecture boundary:** FCC accelerates development only. Banking architecture remains based on domain patterns: double-entry ledger, CQRS/event sourcing, KYC/AML orchestration, and ISO 20022/payment adapters.
+
+> **Smart Model Routing:** `docs/canon/smart-model-routing-protocol-v1.md` is the governing role, trust-tier, preflight, and independent-review protocol for this document.
+
+## Smart Routing Precedence
+
+For model selection, execution-role assignment, gateway routing, trust-tier handling, preflight, and independent-review requirements, `docs/canon/smart-model-routing-protocol-v1.md` takes precedence over earlier conflicting wording in this document.
+
+Earlier references to a sole executor, local-only inference, gateway-only routing, or legacy routing behavior remain historical/contextual unless they are explicitly restated in the Smart Model Routing Protocol.

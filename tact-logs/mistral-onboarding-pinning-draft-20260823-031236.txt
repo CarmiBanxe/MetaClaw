@@ -1,0 +1,12 @@
+=== MISTRAL ONBOARDING & ROUTE-PINNING DRAFT ===
+source_inventory=/home/mmber/MetaClaw/tact-logs/mistral-route-candidates-readonly-20260823-031135.json
+draft_md=/home/mmber/MetaClaw/tact-logs/mistral-onboarding-pinning-draft-20260823-031236.md
+draft_json=/home/mmber/MetaClaw/tact-logs/mistral-onboarding-pinning-draft-20260823-031236.json
+sha256=1879ef695f71985f13234ddae40433a13e4bd65c164cef74dc7684f97bd69dbf
+observed_candidate=codestral
+selected_exact_model=UNRESOLVED
+activation_state=NON_OPERATIONAL
+provider_calls=NOT_PERFORMED
+runtime_changes=NONE
+credentials_read_or_created=NO
+next_action=CONFIRM_API_WORKSPACE_LIMIT_AND_EXACT_MODEL_ID

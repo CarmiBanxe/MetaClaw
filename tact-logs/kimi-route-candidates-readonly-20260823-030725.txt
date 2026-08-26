@@ -1,0 +1,10 @@
+=== KIMI ROUTE CANDIDATES — READ ONLY ===
+source_inventory=route-alias-inventory-readonly-20260823-030633.json
+candidates_json=/home/mmber/MetaClaw/tact-logs/kimi-route-candidates-readonly-20260823-030725.json
+sha256=dc8241d5883ef631ebdb6174c1c6308f03d6b7d11fc22ace7c93158f344b1125
+candidate_count=6
+candidate_names=kimi-k2.5,kimi-k2.5,kimi-k3,moonshotai/kimi-k2.5,moonshotai/kimi-k2.6,moonshotai/kimi-k3
+provider_calls=NOT_PERFORMED
+runtime_changes=NONE
+credentials_read_or_printed=NO
+next_action=OPERATOR_REVIEW_AND_PIN_ONE_EXACT_KIMI_ROUTE

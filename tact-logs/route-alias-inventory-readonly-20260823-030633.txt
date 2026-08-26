@@ -1,0 +1,10 @@
+=== READ-ONLY ROUTE ALIAS INVENTORY ===
+inventory_json=/home/mmber/MetaClaw/tact-logs/route-alias-inventory-readonly-20260823-030633.json
+sha256=e7b015ebe3539416c3b589dad3a55adfb17f406bd22948aa4a3366e72db56d08
+kimi_mentions=103
+dip_sig_mentions=0
+other_provider_mentions=1246
+provider_calls=NOT_PERFORMED
+runtime_changes=NONE
+credentials_read_or_printed=NO
+next_action=REVIEW_EXACT_ALIASES_AND_MODEL_IDS_ONLY

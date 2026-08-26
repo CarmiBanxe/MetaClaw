@@ -1,0 +1,31 @@
+=== FCC COMPACT REPORT ===
+full_log=/home/mmber/MetaClaw/tact-logs/fcc-supply-chain-audit-20260823-022006.full.txt
+repo=/home/mmber/MetaClaw/free-claude-code
+head=f8a3b119972532c3204b7f0aae2ab1076bc1cf02
+remote=https://github.com/Alishahryar1/free-claude-code.git
+git_status=?? public-apis/
+entrypoints=533
+risk_patterns=20
+dependency_files=LICENSE:Y, pyproject.toml:Y, uv.lock:Y, requirements.txt:N, package.json:N, package-lock.json:N, README.md:Y
+risk_samples:
+scripts/install.sh:771:             print_command npm install -g cline
+scripts/install.sh:789:         run npm install -g cline
+scripts/install.sh:956:     run npm install -g "$DSH_PACKAGE"
+scripts/install.sh:970:             print_command npm install -g "$DSH_PACKAGE"
+scripts/install.sh:1340:         run uv tool install --force --refresh-package free-claude-code --python "$PYTHON_VERSION" --torch-backend "$torch_backend" "$spec"
+scripts/install.sh:1342:         run uv tool install --force --refresh-package free-claude-code --python "$PYTHON_VERSION" "$spec"
+scripts/uninstall.sh:240:         run rm -rf "$app_dir"
+scripts/uninstall.sh:251:     run rm -rf "$fcc_home"
+scripts/install.ps1:841:             Write-Host "+ npm install -g cline"
+src/free_claude_code/api/command_utils.py:33:         Command prefix (e.g., "git", "git commit", "npm install")
+src/free_claude_code/api/command_utils.py:64:             "docker",
+src/free_claude_code/cli/launchers/claude.py:17: _INSTALL_HINT = "Install Claude Code with: npm install -g @anthropic-ai/claude-code"
+src/free_claude_code/cli/launchers/grok.py:33:     "or `curl -fsSL https://x.ai/cli/install.sh | bash` on macOS/Linux."
+src/free_claude_code/cli/launchers/muse.py:31:     "`curl -fsSL https://dev.meta.ai/install.sh | bash`. "
+src/free_claude_code/cli/launchers/codex.py:25: _INSTALL_HINT = "Install Codex with: npm install -g @openai/codex"
+src/free_claude_code/cli/launchers/dsh.py:34: _INSTALL_COMMAND = f"npm install -g @deepseek-ai/dsh@{_SUPPORTED_VERSION}"
+src/free_claude_code/cli/launchers/pi.py:168:     return "Install Pi with: curl -fsSL https://pi.dev/install.sh | sh"
+src/free_claude_code/messaging/platforms/discord.py:40:             "discord.py is required. Install with: pip install discord.py"
+src/free_claude_code/messaging/platforms/discord.py:85:                 "discord.py is required. Install with: pip install discord.py"
+src/free_claude_code/messaging/platforms/telegram.py:61:                 "python-telegram-bot is required. Install with: pip install python-telegram-bot"
+next_rule=Send this compact report only. Do not paste the full log unless a specific file:line is requested.

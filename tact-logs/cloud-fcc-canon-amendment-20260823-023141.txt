@@ -1,0 +1,17 @@
+=== CLOUD-FIRST FCC CANON AMENDMENT ===
+timestamp=2026-08-23T02:31:41.564170+02:00
+backup_dir=/home/mmber/MetaClaw/tact-logs/cloud-fcc-canon-backup-20260823-023141
+canon=/home/mmber/MetaClaw/docs/canon/software-factory-canon-v1.md
+claude_canon=/home/mmber/MetaClaw/.claude/CLAUDE_CODE_CANON.md
+adr=/home/mmber/MetaClaw/docs/adr/ADR-032-cloud-fcc-gateway-amendment-DRAFT.md
+replacements=canon_cloud:1;canon_litellm:1;claude_cloud:1
+canon_cloud_first=PASS
+canon_no_blanket_cloud_ban=PASS
+claude_cloud_first=PASS
+claude_no_blanket_cloud_ban=PASS
+guardrails_present=PASS
+adr_operator_directive=PASS
+runtime=UNCHANGED
+fcc_server=NOT_STARTED_BY_THIS_COMMAND
+providers=NOT_CONFIGURED_BY_THIS_COMMAND
+credentials=NOT_READ_OR_WRITTEN_BY_THIS_COMMAND

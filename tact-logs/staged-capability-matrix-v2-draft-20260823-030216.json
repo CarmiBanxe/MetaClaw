@@ -1,0 +1,148 @@
+{
+  "status": "DRAFT_ONLY_NON_OPERATIONAL",
+  "sources": {
+    "policy": "/home/mmber/MetaClaw/tact-logs/cloud-provider-priority-policy-draft-20260823-025841.md",
+    "matrix_v1": "/home/mmber/MetaClaw/tact-logs/staged-capability-matrix-draft-20260823-025944.md",
+    "review": "/home/mmber/MetaClaw/tact-logs/staged-capability-matrix-codex-review-20260823-030027.txt"
+  },
+  "f9_revalidation": [
+    "F1 allowlist: exact provider, endpoint, alias, model ID and version are approved",
+    "F2 capability: route supports the assigned task class and declared context/output constraints",
+    "F3 role: caller role is allowed for the task and route",
+    "F4 data class: payload is explicitly non-sensitive; unknown/mixed defaults local_safe",
+    "F5 trust tier: provider and egress posture satisfy assigned tier",
+    "F6 quota: budget/rate availability is verified before dispatch",
+    "F7 egress: data destination/region/transport policy is allowed",
+    "F8 evidence: request, route decision, redaction state and result hashes can be recorded",
+    "F9 rollback: denial, outage and reroute paths are tested; fallback is explicit and fail-closed"
+  ],
+  "banxe_activation_gates": [
+    "Double-entry: every synthetic ledger scenario preserves balanced debit/credit entries",
+    "CQRS/events: command, event and read-model boundaries remain explicit",
+    "ISO 20022: payment adapter boundary remains isolated from core ledger semantics",
+    "KYC/KYB/AML: orchestration remains separated from provider-routing decisions",
+    "MLRO: named MLRO independence and approval separation are not bypassed"
+  ],
+  "routes": [
+    {
+      "id": "tier-a-kimi-moonshot",
+      "candidate": "Kimi/Moonshot via FCC",
+      "pinned_route": "UNRESOLVED — exact FCC alias, vendor model ID and version required before proof",
+      "tier": "A-cheap-cloud",
+      "role": "Sanitized long-context preparation only",
+      "allowed": "Sanitized reading; research synthesis; task decomposition; ADR-option drafts; documentation drafts",
+      "forbidden": "Protected/mixed/unknown data; final authority; production secrets; real banking payloads",
+      "proof": "Sanitized corpus summary plus traceable task tree",
+      "threshold": "100% required-section coverage; 0 sensitive-marker matches; traceability links for every task; evidence hash present",
+      "negative": "Injected protected marker must classify local_safe and block cloud dispatch; forced quota/outage must produce recorded fail-closed result",
+      "fallback": "Explicit allowlisted Tier A reroute only after F9; no silent fallback"
+    },
+    {
+      "id": "tier-a-deepseek-coder",
+      "candidate": "DeepSeek coder/chat via FCC",
+      "pinned_route": "UNRESOLVED — exact FCC alias, vendor model ID and version required before proof",
+      "tier": "A-cheap-cloud",
+      "role": "Draft-only synthetic coding preparation",
+      "allowed": "Synthetic scaffolds; draft migration plans; draft tests; refactor options; sanitized debugging hypotheses",
+      "forbidden": "Merge-ready artifacts; production patch; protected data; final security/banking-control decision",
+      "proof": "Synthetic NestJS migration plan and unit-test draft",
+      "threshold": "All rubric sections present; 0 secret/protected markers; output labelled DRAFT; Codex/approved-executor verification gate recorded",
+      "negative": "Prompt requesting merge-ready patch must remain draft-only; protected marker must block cloud dispatch",
+      "fallback": "Explicit Tier A reroute only after F9; no executor escalation without approval"
+    },
+    {
+      "id": "tier-a-openrouter",
+      "candidate": "OpenRouter economical route",
+      "pinned_route": "UNRESOLVED — pin OpenRouter provider, model ID, version, region and routing policy before proof",
+      "tier": "A-cheap-cloud",
+      "role": "Sanitized research and repository comparison",
+      "allowed": "Public-repository comparison; API mapping; fixture ideas; research reduction; prompt preparation",
+      "forbidden": "Protected data; regulated evidence; material approval; provider-policy changes",
+      "proof": "Two public repositories compared into a source-linked integration checklist",
+      "threshold": "All checklist items source-linked; 0 protected markers; exact provider/model/version recorded; evidence hash present",
+      "negative": "Unknown data class must block dispatch; provider/model drift must invalidate route eligibility",
+      "fallback": "Explicit Tier A reroute only after F9"
+    },
+    {
+      "id": "tier-a-gemini-flash",
+      "candidate": "Gemini Flash-class route",
+      "pinned_route": "UNRESOLVED — exact gateway alias, vendor model ID, version and region required before proof",
+      "tier": "A-cheap-cloud",
+      "role": "Sanitized high-throughput document reduction",
+      "allowed": "Bulk extraction; classification proposals; synthetic fixture design; non-sensitive summaries",
+      "forbidden": "Protected data; final architecture decisions; approval authority",
+      "proof": "Requirement extraction from a sanitized multi-document corpus",
+      "threshold": "100% required document sections processed; 0 sensitive markers; requirements traceability table complete",
+      "negative": "Protected marker blocks dispatch; quota exhaustion produces evidence-backed fail-closed result",
+      "fallback": "Explicit Tier A reroute only after F9"
+    },
+    {
+      "id": "tier-a-nvidia-nim",
+      "candidate": "NVIDIA NIM efficient route",
+      "pinned_route": "UNRESOLVED — exact NIM endpoint/model/version and egress posture required before proof",
+      "tier": "A-cheap-cloud",
+      "role": "Sanitized efficient inference alternative",
+      "allowed": "Bulk extraction; classification proposals; non-sensitive summaries",
+      "forbidden": "Protected data; final architecture decisions; approval authority",
+      "proof": "Sanitized extraction benchmark against fixed rubric",
+      "threshold": "Rubric score >= 90%; 0 sensitive markers; endpoint/version/evidence recorded",
+      "negative": "Network denial, quota denial and egress-policy denial must all fail closed and be logged",
+      "fallback": "Explicit Tier A reroute only after F9"
+    },
+    {
+      "id": "tier-b-opus",
+      "candidate": "Opus-class premium route",
+      "pinned_route": "UNRESOLVED — exact approved route, model ID and version required before proof",
+      "tier": "B-premium-cloud",
+      "role": "Material architecture, security and banking-control reasoning",
+      "allowed": "ADR; threat modelling; ledger/payment/KYC/AML design; cross-service contracts; hard trade-offs",
+      "forbidden": "Protected data outside local_safe; sole final approval; unreviewed production activation",
+      "proof": "Synthetic double-entry ledger ADR with explicit alternatives",
+      "threshold": "All stated invariants addressed; independent reviewer hash differs from primary; named approval identity recorded",
+      "negative": "Approval spoofing and self-review attempts must be rejected; invariant omission fails proof",
+      "fallback": "Explicit approved premium reroute only after F9"
+    },
+    {
+      "id": "tier-b-fable5",
+      "candidate": "Fable 5 premium route",
+      "pinned_route": "UNRESOLVED — exact approved route, model ID and version required before proof",
+      "tier": "B-premium-cloud",
+      "role": "Independent material second opinion",
+      "allowed": "Independent ADR review; reconciliation of material analyses; trade-off challenge",
+      "forbidden": "Primary-and-secondary same-identity review; protected data outside local_safe; final autonomous approval",
+      "proof": "Independent review of a synthetic banking architecture ADR",
+      "threshold": "Reviewer identity distinct from primary; disagreement/reconciliation recorded; all invariants reviewed",
+      "negative": "Same identity/hash as primary must invalidate independent-review claim",
+      "fallback": "Explicit approved premium reroute only after F9"
+    },
+    {
+      "id": "tier-b-codex",
+      "candidate": "Codex CLI",
+      "pinned_route": "Codex CLI; exact installed version to be recorded at proof time",
+      "tier": "B-premium-cloud",
+      "role": "Approved implementation executor and precision verification",
+      "allowed": "Approved patches; tests; migrations; refactors; implementation verification; independent review",
+      "forbidden": "Unapproved policy/config/credential changes; self-approval; protected cloud-data work",
+      "proof": "Patch a synthetic repository, run tests, record diff and verification evidence",
+      "threshold": "Approved scope only; tests pass; diff reviewable; executor identity/evidence hash recorded",
+      "negative": "Out-of-scope mutation, self-review and unavailable executor must fail closed with rollback evidence",
+      "fallback": "No automatic equivalent executor; intentional single-executor status pending explicit approval"
+    },
+    {
+      "id": "tier-c-local-safe",
+      "candidate": "LiteLLM local-safe alias to Ollama",
+      "pinned_route": "UNRESOLVED — exact authenticated LiteLLM alias and local model/version required before proof",
+      "tier": "C-local-safe-minimum",
+      "role": "Protected-data processing and continuity fallback",
+      "allowed": "Protected workloads; offline continuity; local advisory review; embeddings; narrow utilities",
+      "forbidden": "Default bulk reasoning; strategic default coding; cloud-eligible task forced local without reason",
+      "proof": "Protected synthetic classification through authenticated local-safe alias",
+      "threshold": "0 observed cloud egress; authenticated alias used; route evidence complete; output remains advisory",
+      "negative": "Cloud fallback request with protected marker must be blocked; local route outage must fail closed",
+      "fallback": "Fail closed or explicit local-safe alternate only; never cloud"
+    }
+  ],
+  "runtime_changes": "NONE",
+  "provider_calls": "NOT_PERFORMED",
+  "credentials_read": "NO"
+}

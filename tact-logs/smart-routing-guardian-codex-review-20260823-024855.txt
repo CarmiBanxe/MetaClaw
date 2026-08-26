@@ -1,0 +1,43 @@
+bundle=/home/mmber/MetaClaw/tact-logs/smart-routing-guardian-amendment-review-20260823-024818.md
+codex=/home/mmber/.nvm/versions/node/v22.22.0/bin/codex
+exit_code=0
+
+VERDICT: APPROVE_WITH_CHANGES
+POLICY_GAPS: Explicitly forbid one actor/invocation holding incompatible F10 roles; state BANXE invariants as non-regression requirements.
+F9_SPEC: Require allowlisted route, role, data class, trust tier, and immutable reroute record; unknown or mismatched values fail closed.
+F10_SPEC: Require distinct planner, executor, independent reviewer, and identified approver; reviewer must be independent of primary analysis and execution, without brand constraints.
+EVIDENCE_SPEC: Preserve preflight, content hashes, append-only/tamper-evident records, reconciliation, role identities, approvals, reroutes, ceilings, kill switch, synthetic and rollback results.
+TEST_MATRIX: Table-test all route/role/data/trust combinations, unknowns, protected-cloud denial, cross-tier fallback denial, reroutes, role collisions, evidence tampering, approvals, ceilings, kill switch, rollback.
+COMPATIBILITY_RISK: Replacing F9/F10 may accidentally weaken existing non-routing rules or reject legacy evidence lacking explicit fields; require fail-closed migration handling.
+MODEL_FREEDOM_CHECK: Pass—allowlist-based capability routing remains cloud-first and avoids local-only, Aider-only, gateway-only, single-vendor, and model-brand monopoly.
+BANK_DOMAIN_CHECK: Require explicit preservation tests for double-entry, CQRS/event sourcing, ISO 20022 boundary, KYC/AML orchestration, and independent named MLRO approval.
+MINIMAL_PATCH_SCOPE: Replace only F9/F10 predicates and routing tests; add evidence-schema validation and BANXE non-regression tests without altering other factory rules.
+NEXT_SAFE_ACTION: Specify the F9/F10 decision tables and legacy-evidence migration rule, then implement behind synthetic regression tests before activation.
+
+stderr_summary=OpenAI Codex v0.146.0
+--------
+workdir: /home/mmber/MetaClaw
+model: gpt-5.6-sol
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: none
+reasoning summaries: none
+session id: 01a02c17-8bc5-70d3-822a-3d825b6cd51a
+--------
+user
+You are an independent, read-only reviewer.
+
+Review the policy amendment and planned Guardian F9/F10 replacement in the supplied bundle.
+Do not use shell commands, tools, filesystem access, network access, or make edits.
+
+Acceptance criteria:
+1. Preserve capability-expanding cloud-first routing: no local-only, Aider-only,
+   gateway-only, single-vendor, or model-brand monopoly.
+2. Retain protected-data local-safe routing and prohibit silent cloud/local trust-tier fallback.
+3. F9 must enforce explicit allowlisted route, role, data class, trust tier, and recorded reroute.
+4. F10 must enforce planner/executor/independent-reviewer/approver separation without tool branding.
+5. Unknown route/data classification must fail closed until explicitly recorded.
+6. Preserve preflight evidence, tamper-evident evidence integrity, reviewer independence,
+   approval identity, quota/egress ceilings, kill switch, synthetic tests and rollback.
+7. Keep BANXE invar

@@ -1,0 +1,34 @@
+# litellm-director.service — TEMPLATE, review before install.
+# Target (user mode):   ~/.config/systemd/user/litellm-director.service
+# Target (system mode): /etc/systemd/system/litellm-director.service
+#   (system mode: replace %h with the absolute home dir and add User=/Group=)
+# Direct-process model (no docker): runs litellm against the local config.
+
+[Unit]
+Description=LiteLLM Director (local proxy, direct process, :8000)
+# Wait for network readiness before binding upstreams.
+Wants=network-online.target
+After=network-online.target
+# Backoff guard: at most 5 restarts within 5 minutes, then stay down
+# (inspect logs instead of crash-looping).
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+[Service]
+Type=simple
+# %h = home directory of the unit's user.
+# EDIT-ME if the checkout lives elsewhere.
+WorkingDirectory=%h/MetaClaw/litellm
+# All runtime variables and secrets live ONLY here (chmod 600):
+EnvironmentFile=%h/MetaClaw/litellm/ops/litellm-director.env
+# EDIT-ME: absolute path to the litellm binary for THIS user
+# (find it with: command -v litellm). ${VARS} come from EnvironmentFile.
+ExecStart=%h/.local/bin/litellm --config ${LITELLM_CONFIG} --host ${LITELLM_HOST} --port ${LITELLM_PORT}
+Restart=always
+RestartSec=5
+TimeoutStopSec=30
+NoNewPrivileges=true
+
+[Install]
+# User mode. For system mode use: WantedBy=multi-user.target
+WantedBy=default.target

@@ -1,0 +1,66 @@
+{
+  "generated_at": "2026-08-23T02:53:36.124413+02:00",
+  "ollama": {
+    "reachable": true,
+    "models": [
+      {
+        "name": "nomic-embed-text:latest",
+        "family": "nomic-bert",
+        "parameter_size": "137M",
+        "quantization": "F16",
+        "digest": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f",
+        "size_bytes": 274302450
+      },
+      {
+        "name": "qwen2.5:7b-instruct",
+        "family": "qwen2",
+        "parameter_size": "7.6B",
+        "quantization": "Q4_K_M",
+        "digest": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e",
+        "size_bytes": 4683087332
+      },
+      {
+        "name": "qwen2.5-coder:7b-instruct-q4_K_M",
+        "family": "qwen2",
+        "parameter_size": "7.6B",
+        "quantization": "Q4_K_M",
+        "digest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+        "size_bytes": 4683087561
+      }
+    ]
+  },
+  "litellm": {
+    "config": {
+      "present": true,
+      "aliases": [],
+      "secret_values_exposed": false,
+      "env_refs": []
+    },
+    "processes": {
+      "exit": 0,
+      "stdout": "mmber        516     421  0 Aug19 ?        00:09:32 /home/mmber/.local/share/pipx/venvs/litellm/bin/python /home/mmber/.local/bin/litellm --config /home/mmber/MetaClaw/litellm/litellm-config.v2.yaml --host 127.0.0.1 --port 8000\n70        159543    2761  0 Aug20 ?        00:00:00 postgres: litellm litellm 172.27.0.3(46792) idle\n70        225868    2761  0 Aug20 ?        00:00:02 postgres: litellm litellm 172.27.0.3(40116) idle\n70       1277267    2761  0 Aug21 ?        00:00:02 postgres: litellm litellm 172.27.0.3(39000) idle\nmmber    1522546 1514244  0 02:12 ?        00:00:00 node /home/mmber/.nvm/versions/node/v22.22.0/bin/codex -C /home/mmber/MetaClaw --sandbox read-only --ask-for-approval untrusted --no-alt-screen ROLE: Factory Planner/Reviewer only. First read .claude/CLAUDE_CODE_CANON.md, docs/canon/software-factory-canon-v1.md, guardian/src/rules/factory_rules.py, and guardian/src/rules/project_rules.py. Enforce INV-01: Aider is sole code executor; do not create, edit, patch, delete, commit, alter settings, or execute write commands. Enforce INV-02: remain routed through the configured LiteLLM gateway. Enforce INV-03: local inference only; no cloud. Enforce INV-08: work only in this repository. Begin with a compact, evidence-based audit of canonical routing, worktree status, and current task context. Then provide exactly one best next prompt for Aider. Stop.\nmmber    1522563 1522546 96 02:12 ?        00:39:45 /home/mmber/.nvm/versions/node/v22.22.0/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-x64/vendor/x86_64-unknown-linux-musl/bin/codex -C /home/mmber/MetaClaw --sandbox read-only --ask-for-approval untrusted --no-alt-screen ROLE: Factory Planner/Reviewer only. First read .claude/CLAUDE_CODE_CANON.md, docs/canon/software-factory-canon-v1.md, guardian/src/rules/factory_rules.py, and guardian/src/rules/project_rules.py. Enforce INV-01: Aider is sole code executor; do not create, edit, patch, delete, commit, alter settings, or execute write commands. Enforce INV-02: remain routed through the configured LiteLLM gateway. Enforce INV-03: local inference only; no cloud. Enforce INV-08: work only in this repository. Begin with a compact, evidence-based audit of canonical routing, worktree status, and current task context. Then provide exactly one best next prompt for Aider. Stop.\nroot     3087595 3087571  0 Aug20 ?        00:07:46 /app/.venv/bin/python3 /app/.venv/bin/litellm --config /app/config.yaml --port 4000 --host 0.0.0.0\n70       3088610    2761  0 Aug20 ?        00:00:00 postgres: litellm litellm 172.27.0.3(45746) idle",
+      "stderr": ""
+    },
+    "port_4000": {
+      "exit": 0,
+      "stdout": "LISTEN 0      4096                       0.0.0.0:4000       0.0.0.0:*                                     \nLISTEN 0      4096                          [::]:4000          [::]:*",
+      "stderr": ""
+    },
+    "systemd_candidates": {
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "container_candidates": {
+      "exit": 0,
+      "stdout": "litellm-gateway\tghcr.io/berriai/litellm:main-stable\tUp 2 days (healthy)\nlitellm-db\tpostgres:16-alpine\tUp 3 days (healthy)",
+      "stderr": ""
+    }
+  },
+  "guarantees": {
+    "no_service_started": true,
+    "no_config_changed": true,
+    "no_credentials_read": true,
+    "no_cloud_prompt_sent": true
+  }
+}

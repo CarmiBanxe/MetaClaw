@@ -8,3 +8,10 @@ memory_data/skills.venv/
 litellm/.env
 litellm/*.bak*
 litellm/litellm-config.v2.yaml.*
+
+# banxe-uxui-architecture source contains Perplexity presigned S3 URLs (AWS STS tokens) — never commit; kept raw on disk, referenced by audit via path+sha (R1 orphan-exception)
+docs/sources/banxe-uxui-architecture-2026-07-10.md
+
+# banxe-agent-engine-conclusion source quotes a hardcoded api_key example (sk_live_...) from an audit finding — gitleaks-blocked; kept raw on disk, referenced by audit via path+sha (R1 orphan-exception, sha 54a4439e)
+docs/sources/banxe-agent-engine-conclusion-2026-07-10.md
+.aider*

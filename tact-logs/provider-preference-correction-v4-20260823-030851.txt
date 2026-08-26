@@ -1,0 +1,15 @@
+=== PROVIDER PREFERENCE CORRECTION V4 ===
+patch_md=/home/mmber/MetaClaw/tact-logs/provider-preference-correction-v4-20260823-030851.md
+patch_json=/home/mmber/MetaClaw/tact-logs/provider-preference-correction-v4-20260823-030851.json
+patch_sha256=be5f4169a4ecf093ec39dce5f1fa87e0ce3af3ea851980447cead36fe442158c
+supersedes=dip-sig
+mandatory_provider_family_1=KIMI
+mandatory_provider_family_2=DEEPSEEK
+kimi_tier_b_preference=kimi-k3
+kimi_tier_a_preference=kimi-k2.6
+deepseek_tier_b=EXACT_REASONING_ROUTE_UNRESOLVED
+deepseek_tier_a=EXACT_CHAT_OR_CODER_ROUTE_UNRESOLVED
+activation_state=ALL_NON_OPERATIONAL
+provider_calls=NOT_PERFORMED
+runtime_changes=NONE
+credentials_read=NO

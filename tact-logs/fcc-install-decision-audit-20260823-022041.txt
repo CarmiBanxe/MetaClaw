@@ -1,0 +1,261 @@
+=== FCC INSTALL DECISION AUDIT / READ-ONLY ===
+timestamp=2026-08-23T02:20:41.489816+02:00
+repo=/home/mmber/MetaClaw/free-claude-code
+
+=== ORIGIN rc=0 ===
+https://github.com/Alishahryar1/free-claude-code.git
+
+=== HEAD rc=0 ===
+f8a3b119972532c3204b7f0aae2ab1076bc1cf02
+
+=== HEAD_TAGS rc=0 ===
+[empty]
+
+=== VERIFY_COMMIT rc=1 ===
+gpg: Signature made Sat Aug 22 00:58:30 2026 CEST
+gpg:                using RSA key B5690EEEBB952194
+gpg: Can't check signature: No public key
+
+=== WORKTREE rc=0 ===
+?? public-apis/
+
+=== TRACKED_DIFF rc=0 ===
+[empty]
+
+=== LOCAL UNTRACKED CONTENT ===
+public-apis/
+
+=== INSTALLER: UV INSTALL PATH ===
+scripts/install.sh:1300:         shift
+scripts/install.sh:1301:     done
+scripts/install.sh:1302: }
+scripts/install.sh:1303: 
+scripts/install.sh:1304: validate_args() {
+scripts/install.sh:1305:     include_local=$voice_local
+scripts/install.sh:1306:     if [ "$voice_all" -eq 1 ]; then
+scripts/install.sh:1307:         include_local=1
+scripts/install.sh:1308:     fi
+scripts/install.sh:1309: 
+scripts/install.sh:1310:     if [ -n "$torch_backend" ] && [ "$include_local" -ne 1 ]; then
+scripts/install.sh:1311:         fail "--torch-backend requires --voice-local or --voice-all."
+scripts/install.sh:1312:     fi
+scripts/install.sh:1313: }
+scripts/install.sh:1314: 
+scripts/install.sh:1315: package_spec() {
+scripts/install.sh:1316:     include_nim=$voice_nim
+scripts/install.sh:1317:     include_local=$voice_local
+scripts/install.sh:1318: 
+scripts/install.sh:1319:     if [ "$voice_all" -eq 1 ]; then
+scripts/install.sh:1320:         include_nim=1
+scripts/install.sh:1321:         include_local=1
+scripts/install.sh:1322:     fi
+scripts/install.sh:1323: 
+scripts/install.sh:1324:     if [ "$include_nim" -eq 1 ] && [ "$include_local" -eq 1 ]; then
+scripts/install.sh:1325:         printf 'free-claude-code[voice,voice_local] @ %s' "$REPO_ARCHIVE_URL"
+scripts/install.sh:1326:     elif [ "$include_nim" -eq 1 ]; then
+scripts/install.sh:1327:         printf 'free-claude-code[voice] @ %s' "$REPO_ARCHIVE_URL"
+scripts/install.sh:1328:     elif [ "$include_local" -eq 1 ]; then
+scripts/install.sh:1329:         printf 'free-claude-code[voice_local] @ %s' "$REPO_ARCHIVE_URL"
+scripts/install.sh:1330:     else
+scripts/install.sh:1331:         printf 'free-claude-code @ %s' "$REPO_ARCHIVE_URL"
+scripts/install.sh:1332:     fi
+scripts/install.sh:1333: }
+scripts/install.sh:1334: 
+scripts/install.sh:1335: install_free_claude_code() {
+scripts/install.sh:1336:     assert_no_fcc_processes_running
+scripts/install.sh:1337:     spec=$(package_spec)
+scripts/install.sh:1338: 
+scripts/install.sh:1339:     if [ -n "$torch_backend" ]; then
+scripts/install.sh:1340:         run uv tool install --force --refresh-package free-claude-code --python "$PYTHON_VERSION" --torch-backend "$torch_backend" "$spec"
+scripts/install.sh:1341:     else
+scripts/install.sh:1342:         run uv tool install --force --refresh-package free-claude-code --python "$PYTHON_VERSION" "$spec"
+scripts/install.sh:1343:     fi
+scripts/install.sh:1344: }
+scripts/install.sh:1345: 
+scripts/install.sh:1346: configure_and_verify_free_claude_code() {
+scripts/install.sh:1347:     run uv tool update-shell
+scripts/install.sh:1348: 
+scripts/install.sh:1349:     if [ "$dry_run" -eq 1 ]; then
+scripts/install.sh:1350:         print_command uv tool dir --bin
+scripts/install.sh:1351:         printf '+ verify fcc-desktop, fcc-server, fcc-claude, fcc-codex, fcc-pi, fcc-opencode, fcc-cline, fcc-hermes, fcc-dsh, fcc-grok, and fcc-muse in the uv tool bin directory\n'
+scripts/install.sh:1352:         print_command fcc-server --version
+scripts/install.sh:1353:         return 0
+scripts/install.sh:1354:     fi
+scripts/install.sh:1355: 
+scripts/install.sh:1356:     print_command uv tool dir --bin
+scripts/install.sh:1357:     if tool_bin=$(uv tool dir --bin); then
+scripts/install.sh:1358:         :
+scripts/install.sh:1359:     else
+scripts/install.sh:1360:         status=$?
+scripts/install.sh:1361:         fail "Could not determine the uv tool bin directory (exit code $status)."
+scripts/install.sh:1362:     fi
+scripts/install.sh:1363:     [ -n "$tool_bin" ] || fail "uv returned an empty tool bin directory."
+scripts/install.sh:1364: 
+scripts/install.sh:1365:     add_path_entry "$tool_bin"
+
+=== INSTALLER: NETWORK / DOWNLOAD / EXECUTION PATTERNS ===
+scripts/install.sh:107:     exec 3<"$selection_input"
+scripts/install.sh:108:     exec 4>"$selection_output"
+scripts/install.sh:198:     exec 3<&-
+scripts/install.sh:199:     exec 4>&-
+scripts/install.sh:357:         print_command curl -fsSL "$url" -o "<temporary-script>"
+scripts/install.sh:374:     print_command curl -fsSL "$url" -o "$temporary_file"
+scripts/install.sh:375:     if curl -fsSL "$url" -o "$temporary_file"; then
+scripts/install.sh:379:         fail "Could not download the $label installer (curl exit code $status)."
+scripts/install.sh:503:         print_command curl -fsSL "$rtk_archive_url" -o "<temporary-archive>"
+scripts/install.sh:511:     print_command curl -fsSL "$rtk_archive_url" -o "$temporary_file"
+scripts/install.sh:512:     if curl -fsSL "$rtk_archive_url" -o "$temporary_file"; then
+scripts/install.sh:516:         fail "Could not download RTK $RTK_VERSION (curl exit code $status)."
+scripts/install.sh:771:             print_command npm install -g cline
+scripts/install.sh:789:         run npm install -g cline
+scripts/install.sh:956:     run npm install -g "$DSH_PACKAGE"
+scripts/install.sh:970:             print_command npm install -g "$DSH_PACKAGE"
+scripts/install.sh:1340:         run uv tool install --force --refresh-package free-claude-code --python "$PYTHON_VERSION" --torch-backend "$torch_backend" "$spec"
+scripts/install.sh:1342:         run uv tool install --force --refresh-package free-claude-code --python "$PYTHON_VERSION" "$spec"
+scripts/install.sh:1491: require_command curl
+
+=== UNINSTALLER: DELETION TARGETS ===
+scripts/uninstall.sh:215:     [ "$(uname -s)" = "Darwin" ] || return 0
+scripts/uninstall.sh:216: 
+scripts/uninstall.sh:217:     app_dir="$HOME/Applications/Free Claude Code.app"
+scripts/uninstall.sh:218:     desktop_link="$HOME/Desktop/Free Claude Code.app"
+scripts/uninstall.sh:219: 
+scripts/uninstall.sh:220:     if ! macos_app_is_fcc_owned "$app_dir"; then
+scripts/uninstall.sh:221:         if [ -e "$app_dir" ] || [ -L "$app_dir" ]; then
+scripts/uninstall.sh:222:             printf 'An app not managed by Free Claude Code exists at %s; leaving it unchanged.\n' "$app_dir"
+scripts/uninstall.sh:223:         fi
+scripts/uninstall.sh:224:         if [ -e "$desktop_link" ] || [ -L "$desktop_link" ]; then
+scripts/uninstall.sh:225:             printf 'The Free Claude Code desktop item cannot be verified; leaving it unchanged.\n'
+scripts/uninstall.sh:226:         fi
+scripts/uninstall.sh:227:         return 0
+scripts/uninstall.sh:228:     fi
+scripts/uninstall.sh:229: 
+scripts/uninstall.sh:230:     if [ -L "$desktop_link" ]; then
+scripts/uninstall.sh:231:         if [ "$(readlink "$desktop_link")" = "$app_dir" ]; then
+scripts/uninstall.sh:232:             run rm -f "$desktop_link"
+scripts/uninstall.sh:233:         else
+scripts/uninstall.sh:234:             printf 'A non-FCC link exists at %s; leaving it unchanged.\n' "$desktop_link"
+scripts/uninstall.sh:235:         fi
+scripts/uninstall.sh:236:     elif [ -e "$desktop_link" ]; then
+scripts/uninstall.sh:237:         printf 'A non-FCC item exists at %s; leaving it unchanged.\n' "$desktop_link"
+scripts/uninstall.sh:238:     fi
+scripts/uninstall.sh:239:     if [ -e "$app_dir" ]; then
+scripts/uninstall.sh:240:         run rm -rf "$app_dir"
+scripts/uninstall.sh:241:     fi
+scripts/uninstall.sh:242: }
+scripts/uninstall.sh:243: 
+scripts/uninstall.sh:244: purge_fcc_home() {
+scripts/uninstall.sh:245:     fcc_home="$HOME/$FCC_HOME_DIRNAME"
+scripts/uninstall.sh:246:     if [ ! -e "$fcc_home" ]; then
+scripts/uninstall.sh:247:         printf 'No FCC config directory at %s; skipping purge.\n' "$fcc_home"
+scripts/uninstall.sh:248:         return 0
+scripts/uninstall.sh:249:     fi
+scripts/uninstall.sh:250: 
+scripts/uninstall.sh:251:     run rm -rf "$fcc_home"
+scripts/uninstall.sh:252:     if [ "$dry_run" -eq 0 ] && [ -e "$fcc_home" ]; then
+scripts/uninstall.sh:253:         fail "FCC config directory still exists after deletion: $fcc_home"
+scripts/uninstall.sh:254:     fi
+scripts/uninstall.sh:255: }
+scripts/uninstall.sh:256: 
+scripts/uninstall.sh:257: parse_args() {
+scripts/uninstall.sh:258:     while [ "$#" -gt 0 ]; do
+scripts/uninstall.sh:259:         case "$1" in
+scripts/uninstall.sh:260:             --dry-run)
+scripts/uninstall.sh:261:                 dry_run=1
+scripts/uninstall.sh:262:                 ;;
+scripts/uninstall.sh:263:             --help|-h)
+scripts/uninstall.sh:264:                 show_usage
+scripts/uninstall.sh:265:                 exit 0
+scripts/uninstall.sh:266:                 ;;
+scripts/uninstall.sh:267:             *)
+scripts/uninstall.sh:268:                 show_usage >&2
+scripts/uninstall.sh:269:                 fail "unknown option: $1"
+scripts/uninstall.sh:270:                 ;;
+
+=== PYPROJECT: PROJECT + DEPENDENCIES ===
+pyproject.toml:5: [project]
+pyproject.toml:6: name = "free-claude-code"
+pyproject.toml:7: version = "5.12.2"
+pyproject.toml:8: description = "Local proxy connecting coding agents to OpenAI-compatible AI providers"
+pyproject.toml:9: readme = "README.md"
+pyproject.toml:10: requires-python = ">=3.14.0"
+pyproject.toml:11: dependencies = [
+pyproject.toml:12:     "fastapi[standard]>=0.141.1",
+pyproject.toml:13:     "uvicorn>=0.52.1",
+pyproject.toml:14:     "httpx[socks]>=0.28.1",
+pyproject.toml:15:     "httpx2[socks]>=2.7.0,<3",
+pyproject.toml:16:     "markdown-it-py>=4.2.0",
+pyproject.toml:17:     "pydantic>=2.13.4",
+pyproject.toml:18:     "python-dotenv>=1.2.2",
+pyproject.toml:19:     "tiktoken>=0.13.0",
+pyproject.toml:20:     "python-telegram-bot>=22.8",
+pyproject.toml:21:     "discord.py>=2.7.1",
+pyproject.toml:22:     "openai>=3.2.0",
+pyproject.toml:23:     "loguru>=0.7.0",
+pyproject.toml:24:     "aiohttp>=3.14.3",
+pyproject.toml:25:     "jsonschema>=4.25.0",
+pyproject.toml:26:     "google-auth[requests]>=2.56.3",
+pyproject.toml:27:     "requests[socks]>=2.34.2",
+pyproject.toml:28:     "pystray>=0.19.5; sys_platform == 'win32' or sys_platform == 'darwin'",
+pyproject.toml:29:     "Pillow>=12.0.0; sys_platform == 'win32' or sys_platform == 'darwin'",
+pyproject.toml:30: ]
+pyproject.toml:31: 
+pyproject.toml:32: [project.scripts]
+pyproject.toml:33: fcc-server = "free_claude_code.cli.entrypoints:serve"
+pyproject.toml:34: fcc-claude = "free_claude_code.cli.launchers.claude:launch"
+pyproject.toml:35: fcc-codex = "free_claude_code.cli.launchers.codex:launch"
+pyproject.toml:36: fcc-pi = "free_claude_code.cli.launchers.pi:launch"
+pyproject.toml:37: fcc-opencode = "free_claude_code.cli.launchers.opencode:launch"
+pyproject.toml:38: fcc-cline = "free_claude_code.cli.launchers.cline:launch"
+pyproject.toml:39: fcc-hermes = "free_claude_code.cli.launchers.hermes:launch"
+pyproject.toml:40: fcc-dsh = "free_claude_code.cli.launchers.dsh:launch"
+pyproject.toml:41: fcc-grok = "free_claude_code.cli.launchers.grok:launch"
+pyproject.toml:42: fcc-muse = "free_claude_code.cli.launchers.muse:launch"
+pyproject.toml:43: 
+pyproject.toml:44: [project.gui-scripts]
+pyproject.toml:45: fcc-desktop = "free_claude_code.cli.desktop_entrypoint:launch"
+pyproject.toml:46: 
+pyproject.toml:47: [project.optional-dependencies]
+pyproject.toml:48: voice = [
+pyproject.toml:49:     "grpcio>=1.83.0",
+pyproject.toml:50:     "grpcio-tools>=1.81.1",
+pyproject.toml:51:     "nvidia-riva-client>=2.26.0",
+pyproject.toml:52: ]
+pyproject.toml:53: voice_local = [
+pyproject.toml:54:     "torch>=2.13.0",
+pyproject.toml:55:     "transformers>=5.15.0",
+pyproject.toml:56:     "accelerate>=1.14.0",
+pyproject.toml:57:     "librosa>=1.0.0",
+pyproject.toml:58: ]
+pyproject.toml:59: 
+pyproject.toml:63: [tool.uv]
+pyproject.toml:64: required-version = ">=0.11.16"
+pyproject.toml:65: 
+pyproject.toml:66: [tool.uv.sources]
+pyproject.toml:67: torch = { index = "pytorch-cu130" }
+pyproject.toml:68: 
+pyproject.toml:74: [dependency-groups]
+pyproject.toml:75: dev = [
+pyproject.toml:76:     "pytest>=9.1.1",
+pyproject.toml:77:     "pytest-asyncio>=1.4.0",
+pyproject.toml:78:     "pytest-cov>=7.1.0",
+pyproject.toml:79:     "ty>=0.0.70",
+pyproject.toml:80:     "ruff>=0.16.2",
+pyproject.toml:81:     "pytest-xdist>=3.8.0",
+pyproject.toml:82:     "pytest-playwright>=0.9.0",
+pyproject.toml:83: ]
+pyproject.toml:84: 
+
+=== LOCKFILE: DIRECT PACKAGE SUMMARY ===
+cryptography: version=49.0.0 source={ registry = "https://pypi.org/simple" }
+fastapi: version=0.141.1 source={ registry = "https://pypi.org/simple" }
+free-claude-code: version=5.12.2 source={ editable = "." }
+httpx: version=0.28.1 source={ registry = "https://pypi.org/simple" }
+pydantic: version=2.13.4 source={ registry = "https://pypi.org/simple" }
+requests: version=2.34.2 source={ registry = "https://pypi.org/simple" }
+uvicorn: version=0.52.3 source={ registry = "https://pypi.org/simple" }
+websockets: version=15.0.1 source={ registry = "https://pypi.org/simple" }
+
+=== DECISION RULE ===
+No installation, server start, provider login, API-key entry, config write, or cloud request has been performed.
+Send this entire compact report. Do not send the older full audit log unless a specific filename:line is requested.

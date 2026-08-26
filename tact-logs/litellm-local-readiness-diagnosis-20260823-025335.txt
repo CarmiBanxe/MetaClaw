@@ -1,0 +1,13 @@
+=== LITELLM + LOCAL MODEL READINESS DIAGNOSIS ===
+inventory=/home/mmber/MetaClaw/tact-logs/litellm-local-models-20260823-025335.json
+ollama_reachable=True
+ollama_model_count=3
+litellm_process_found=True
+port_4000_listener_found=True
+systemd_candidates_found=False
+container_candidates_found=True
+config_alias_count=0
+no_service_started=true
+no_config_changed=true
+no_credentials_read=true
+no_cloud_prompt_sent=true

@@ -1,0 +1,121 @@
+{
+  "status": "READ_ONLY_CANDIDATE_EXTRACTION",
+  "source_inventory": "/home/mmber/MetaClaw/tact-logs/route-alias-inventory-readonly-20260823-030633.json",
+  "source_inventory_sha256": "e7b015ebe3539416c3b589dad3a55adfb17f406bd22948aa4a3366e72db56d08",
+  "candidate_count": 6,
+  "candidates": [
+    {
+      "observed_alias_or_model_id": "kimi-k2.5",
+      "proposed_tier": "A-efficient-strong",
+      "proposed_role": "long-context synthesis and agent preparation",
+      "state": "CANDIDATE_ONLY",
+      "required_before_proof": [
+        "Exact gateway alias confirmation",
+        "Exact vendor model ID and version",
+        "Approved endpoint/region and egress posture",
+        "Data-class and trust-tier approval",
+        "Positive and negative synthetic-proof definition",
+        "Rollback test and independent approval"
+      ]
+    },
+    {
+      "observed_alias_or_model_id": "kimi-k2.5",
+      "proposed_tier": "A-efficient-strong",
+      "proposed_role": "long-context synthesis and agent preparation",
+      "state": "CANDIDATE_ONLY",
+      "required_before_proof": [
+        "Exact gateway alias confirmation",
+        "Exact vendor model ID and version",
+        "Approved endpoint/region and egress posture",
+        "Data-class and trust-tier approval",
+        "Positive and negative synthetic-proof definition",
+        "Rollback test and independent approval"
+      ]
+    },
+    {
+      "observed_alias_or_model_id": "kimi-k3",
+      "proposed_tier": "B-premium",
+      "proposed_role": "long-context material reasoning",
+      "state": "CANDIDATE_ONLY",
+      "required_before_proof": [
+        "Exact gateway alias confirmation",
+        "Exact vendor model ID and version",
+        "Approved endpoint/region and egress posture",
+        "Data-class and trust-tier approval",
+        "Positive and negative synthetic-proof definition",
+        "Rollback test and independent approval"
+      ]
+    },
+    {
+      "observed_alias_or_model_id": "moonshotai/kimi-k2.5",
+      "proposed_tier": "A-efficient-strong",
+      "proposed_role": "long-context synthesis and agent preparation",
+      "state": "CANDIDATE_ONLY",
+      "required_before_proof": [
+        "Exact gateway alias confirmation",
+        "Exact vendor model ID and version",
+        "Approved endpoint/region and egress posture",
+        "Data-class and trust-tier approval",
+        "Positive and negative synthetic-proof definition",
+        "Rollback test and independent approval"
+      ]
+    },
+    {
+      "observed_alias_or_model_id": "moonshotai/kimi-k2.6",
+      "proposed_tier": "A-efficient-strong",
+      "proposed_role": "long-context synthesis and agent preparation",
+      "state": "CANDIDATE_ONLY",
+      "required_before_proof": [
+        "Exact gateway alias confirmation",
+        "Exact vendor model ID and version",
+        "Approved endpoint/region and egress posture",
+        "Data-class and trust-tier approval",
+        "Positive and negative synthetic-proof definition",
+        "Rollback test and independent approval"
+      ]
+    },
+    {
+      "observed_alias_or_model_id": "moonshotai/kimi-k3",
+      "proposed_tier": "B-premium",
+      "proposed_role": "long-context material reasoning",
+      "state": "CANDIDATE_ONLY",
+      "required_before_proof": [
+        "Exact gateway alias confirmation",
+        "Exact vendor model ID and version",
+        "Approved endpoint/region and egress posture",
+        "Data-class and trust-tier approval",
+        "Positive and negative synthetic-proof definition",
+        "Rollback test and independent approval"
+      ]
+    }
+  ],
+  "source_file_basenames_only": [
+    ".env.example",
+    "ARCHITECTURE.md",
+    "CLAUDE.md",
+    "Hermes-Agent------EMI-BANXE-AI-Bank--Software-Factory.md",
+    "README.md",
+    "README_AR.md",
+    "README_DE.md",
+    "README_ES.md",
+    "README_FR.md",
+    "README_HI.md",
+    "README_IT.md",
+    "README_JA.md",
+    "README_KO.md",
+    "README_PT.md",
+    "README_RU.md",
+    "README_VI.md",
+    "README_ZH.md",
+    "ai-gateway.md",
+    "cloud-first-fcc-policy.md",
+    "emi-banxe-engine-2026-07-06.md",
+    "emi-banxe-engine-v2-2026-07-09.md",
+    "operator-fcc-cloud-cutover.md",
+    "smart-model-routing-protocol-v1.md",
+    "translation.json"
+  ],
+  "provider_calls": "NOT_PERFORMED",
+  "runtime_changes": "NONE",
+  "credentials_read_or_printed": "NO"
+}

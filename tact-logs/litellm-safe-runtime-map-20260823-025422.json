@@ -1,0 +1,51 @@
+{
+  "generated_at": "2026-08-23T02:54:22.600569+02:00",
+  "probes": {
+    "/health/liveliness": {
+      "ok": true,
+      "status": 200,
+      "body": "\"I'm alive!\""
+    },
+    "/health/liveness": {
+      "ok": true,
+      "status": 200,
+      "body": "\"I'm alive!\""
+    },
+    "/health/readiness": {
+      "ok": true,
+      "status": 200,
+      "body": "{\"status\":\"healthy\",\"db\":\"connected\"}"
+    },
+    "/": {
+      "ok": true,
+      "status": 200,
+      "body": "\n    <!DOCTYPE html>\n    <html>\n    <head>\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <link type=\"text/css\" rel=\"stylesheet\" href=\"/swagger/swagger-ui.css\">\n    <link rel=\"shortcut icon\" href=\"/swagger/favicon.png\">\n    <title>LiteLLM API - Swagger UI</title>\n    </head>\n    <body>\n    <div id=\"swagger-ui\">\n    </div>\n    <script src=\"/swagger/swagger-ui-bundle.js\"></script>\n    <!-- `SwaggerUIBundle` is now available on the page -->\n    <script>\n    const TAG_TO_PREFIX = {};const warmedTags = new Set();const LAZY_TAGS = new Set(Object.keys(TAG_TO_PREFIX));const hideStubRows = () => {document.querySelectorAll('.opblock').forEach(op => {const d = op.querySelector('.opblock-summary-description');if (d && LAZY_TAGS.has(d.textContent.trim())) op.style.display = 'none';});};const annotateLazyHeaders = () => {document.querySelectorAll('.opblock-tag').forEach(tagEl => {const m = (tagEl.id || '').match(/^operations-tag-(.+)$/);if (!m || !LAZY_TAGS.has(m[1]))"
+    },
+    "/v1/models": {
+      "ok": false,
+      "status": 401,
+      "body": "{\"error\":{\"message\":\"Authentication Error, No api key passed in.\",\"type\":\"auth_error\",\"param\":\"None\",\"code\":\"401\"}}"
+    }
+  },
+  "containers": [
+    {
+      "listed": "0a2c068a88af\tlitellm-gateway\tghcr.io/berriai/litellm:main-stable\tUp 2 days (healthy)",
+      "safe_metadata": "INSPECT_ERROR:template parsing error: template: :1: function \"dict\" not defined"
+    },
+    {
+      "listed": "2b31aa3da187\tlitellm-db\tpostgres:16-alpine\tUp 3 days (healthy)",
+      "safe_metadata": "INSPECT_ERROR:template parsing error: template: :1: function \"dict\" not defined"
+    }
+  ],
+  "config_candidates": [
+    "/home/mmber/MetaClaw/litellm/litellm-config.v2.yaml"
+  ],
+  "guarantees": {
+    "service_started": false,
+    "service_restarted": false,
+    "config_changed": false,
+    "credentials_read": false,
+    "cloud_prompt_sent": false,
+    "model_inference_requested": false
+  }
+}

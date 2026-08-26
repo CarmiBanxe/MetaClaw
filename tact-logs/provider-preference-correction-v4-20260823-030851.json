@@ -1,0 +1,36 @@
+{
+  "status": "DRAFT_ONLY_NON_OPERATIONAL",
+  "supersedes": {
+    "source": "/home/mmber/MetaClaw/tact-logs/provider-preference-patch-v3-20260823-030433.md",
+    "removed_term": "dip-sig",
+    "correct_term": "DeepSeek"
+  },
+  "sources": {
+    "matrix_v2": "/home/mmber/MetaClaw/tact-logs/staged-capability-matrix-v2-draft-20260823-030216.md",
+    "route_inventory": "/home/mmber/MetaClaw/tact-logs/route-alias-inventory-readonly-20260823-030633.json",
+    "kimi_candidates": "/home/mmber/MetaClaw/tact-logs/kimi-route-candidates-readonly-20260823-030725.json"
+  },
+  "mandatory_provider_families": {
+    "kimi": {
+      "tier_b_preference": "kimi-k3",
+      "tier_a_preference": "kimi-k2.6"
+    },
+    "deepseek": {
+      "tier_b_candidate": "exact pinned reasoning route required",
+      "tier_a_candidate": "exact pinned chat/coder route required"
+    }
+  },
+  "codex_role": "APPROVED_EXECUTOR_AND_VERIFIER",
+  "rollout_gates": [
+    "exact route pinning",
+    "F9 revalidation",
+    "positive synthetic proof",
+    "negative synthetic proof",
+    "rollback proof",
+    "immutable evidence",
+    "independent approval"
+  ],
+  "provider_calls": "NOT_PERFORMED",
+  "runtime_changes": "NONE",
+  "credentials_read": "NO"
+}
