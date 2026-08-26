@@ -227,6 +227,22 @@ model_list:
     api_base: http://100.68.102.48:11434
     api_key: sk-banxe-evo2-local-2026
     timeout: 600
+# Consult chain models (per canon consultation verdict 2026-08-26)
+- model_name: mistral-consult
+  litellm_params:
+    model: mistral/mistral-large-latest
+    api_key: os.environ/MISTRAL_BANXE_CONSORTIUM
+    timeout: 300
+- model_name: kimi-consult
+  litellm_params:
+    model: moonshot/kimi-k2-0711-preview
+    api_key: os.environ/KIMI_BANXE_CONSORTIUM
+    timeout: 300
+- model_name: kimi-consult-alt
+  litellm_params:
+    model: moonshot/kimi-k2-0711-preview
+    api_key: os.environ/KIMI_BANXE_CONSORTIUM_2
+    timeout: 300
 router_settings:
   routing_strategy: least-busy
   num_retries: 2
