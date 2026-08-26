@@ -25,7 +25,7 @@ The preflight record contains task ID, files read, proposed route, model/tool ro
 | Preparation / long context | Any allowlisted efficient model through FCC, including Kimi, Gemini Flash, OpenRouter-class, DeepSeek, NIM, or equivalent | Research synthesis, reading, summaries, task decomposition, ADR input, synthetic fixtures, documentation |
 | Primary coding executor | Codex plugin/CLI when available and not quota-blocked | Code generation, patches, tests, migrations, refactors, implementation verification |
 | Architecture / material reasoning | Any available Opus-class or equivalent high-reasoning model | Architecture, ADRs, cross-service contracts, threat modelling, difficult trade-offs, final design review |
-| Independent second opinion | A model/tool independent from the primary material-decision route; Codex is the initial approved implementation | Challenge assumptions, identify gaps, review material ADRs, gateway/security changes, payment/ledger/KYC/AML design |
+| Independent second opinion | **Fable** (fixed role per consult chain); any model independent from primary route | Challenge assumptions, identify gaps, review material ADRs, gateway/security changes, payment/ledger/KYC/AML design |
 | Local-safe / continuity | LiteLLM to approved local Ollama aliases | Protected workloads, offline continuity, private review, local-only tasks |
 
 “Fable 5” or any future model may be used once reachable through an approved route; it is a role candidate, not a required hard-coded model identifier.
@@ -49,10 +49,12 @@ A material decision is any ADR, gateway/security change, provider/model policy c
 
 For every material decision:
 1. produce a primary analysis;
-2. obtain an independent second opinion;
+2. obtain an independent second opinion (consult chain: Codex → Fable → Mistral → Kimi);
 3. record disagreements and resolution;
 4. obtain Operator approval;
 5. obtain named MLRO approval where compliance, KYC/KYB/AML, payment controls, or regulated banking scope are affected.
+
+**Consultation workflow:** Factory prepares brief → Operator conducts consultation → Results returned → Work resumes. See `factory-terminal-working-mode-v1.md` §2–4.
 
 ## Provider flexibility
 

@@ -8,7 +8,7 @@ All work follows `CLAUDE_CODE_OPERATING_PRINCIPLE.md`:
 - **TIERED MODEL ECONOMY:** Cheap/free/lower-tier for bulk; expensive for **concise final verification only**.
 - **NON-ATOMIC:** Continuous execution across non-branching work.
 - **AUDIT-FIRST:** Fresh shell audit before each material step.
-- **CONSULT CHAIN:** Codex → Fable → Mistral → Kimi on forks.
+- **CONSULT CHAIN:** Codex → Fable → Mistral → Kimi on forks. **Operator controls delivery — brief prepared as text artifact, NEVER autonomously sent.**
 
 Main Claude resource verifies factory outputs/findings/summaries, not re-processes bulk work.
 
