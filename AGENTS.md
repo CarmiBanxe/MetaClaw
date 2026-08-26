@@ -1,153 +1,168 @@
-# AGENTS.md — MetaClaw
-
-**Repository:** `~/MetaClaw`  
-**Version:** 1.1 | 2026-08-26 (normalized)  
-**Purpose:** Agent execution architecture for MetaClaw meta-learning framework  
-**Architecture:** Factory-Only / Three-Terminal (LEFT / CENTRAL / RIGHT)
+# AGENTS.md — MetaClaw Agent Architecture
+**Version:** 2.0 | 2026-08-26  
+**Authority:** Project-level — defers to Root Canon (`CLAUDE.md`) and SSOT CORE-10-29
 
 ---
 
-## ⚠️ ROOT CANON — единый SSOT (2026-08-26)
+## ROOT CANON DEFERENCE
 
-Терминальный workflow всех контуров определяет **один файл**:
-`banxe-ai-rnd/research` → `docs/canon/CANON-FACTORY-SSOT.md`, норма **CORE-10-29**
-(исполнитель кода Aider/Codex, Claude Code оркеструет; cloud-vs-local по классу данных;
-непрерывный фронт + STOP-гейты; consult-цепь Codex → Fable → Mistral → Kimi (бриф отдаёт оператор, не автономно); auto-commit только
-Фабрикой; имена CENTRAL / LEFT / RIGHT). `FACTORY_OPERATING_SYSTEM.md` и
-`CLAUDE_CODE_OPERATING_PRINCIPLE.md` в этом репозитории — указатели туда, не копии (ADR-102).
+**SSOT:** `banxe-ai-rnd/research` → `docs/canon/CANON-FACTORY-SSOT.md`, norm **CORE-10-29**  
+(terminal workflow, Factory-only execution, audit-first, non-atomic, consult chain, token economy).
+
+`FACTORY_OPERATING_SYSTEM.md` and `CLAUDE_CODE_OPERATING_PRINCIPLE.md` in this repo are **pointers to SSOT**, not copies (ADR-102).
 
 ---
 
-## Core mission
+## CORE MISSION
 
-This repository is the **MetaClaw meta-learning framework** — agents learn and evolve from conversations without GPU.
-
-### Three-Terminal Architecture
-
-| Terminal | Canonical Name | Role | Execution |
-|----------|----------------|------|-----------|
-| **Central** | CENTRAL (Brain) | Architect, planner, reviewer, orchestrator | NO direct code execution |
-| **Left** | LEFT (Factory Interface) | Task assignment, agent orchestration, evidence routing | NO direct code generation |
-| **Right** | RIGHT (Assistant) | Research, audit, summary, brief preparation | NO code execution |
-| **Factory** | Aider + Codex + agents | Code generation, edits, tests, commands | SOLE execution layer |
-
-**Key principle:** Terminals decide and plan; Factory executes. No terminal bypasses Factory.
+MetaClaw — meta-learning AI agent framework. Agents learn and evolve from conversations without GPU.
 
 ---
 
-## Instruction hierarchy
+## THREE-TERMINAL ARCHITECTURE (Canonical)
 
-1. **Explicit user instruction** (highest authority)
-2. **Root-level canon**: `research/docs/canon/CANON-FACTORY-SSOT.md` (CORE-10-29);
-   `FACTORY_OPERATING_SYSTEM.md` / `CLAUDE_CODE_OPERATING_PRINCIPLE.md` здесь — указатели
-3. **Session canon**:
-   - `.claude/CLAUDE_CODE_CANON.md` (Rules 1–9 + terminal extensions)
-4. **Project context**:
-   - `CLAUDE.md` (project identity)
-   - `AGENTS.md` (this file)
-   - `COLLAB.md` (collaboration patterns)
-5. **Global defaults**: `~/.claude/CLAUDE.md`
+| Terminal | Name | Function | Execution |
+|----------|------|----------|-----------|
+| **Central** | BRAIN | Architect, planner, reviewer, orchestrator | **NO direct code execution** — plans and routes |
+| **Left** | FACTORY INTERFACE | Task assignment, agent orchestration, evidence routing | **NO direct code generation** — drives Factory |
+| **Right** | ASSISTANT (BEN) | Research, audit, summary, brief preparation | **NO code execution** — read-only audit |
+| **Factory** | AIDER + CODEX | Code generation, edits, tests, commands | **SOLE execution layer** |
+
+**Key principle:** Terminals decide and plan; Factory executes. **No terminal bypasses Factory.**
 
 ---
 
-## Repository structure
+## FACTORY-ONLY EXECUTION
+
+- Any terminal (Central/Left/Right) formulates tasks for Factory.
+- Code and implementation flow **only** through Factory (Aider primary, Codex secondary).
+- Direct coding outside Factory default flow: **prohibited**.
+
+---
+
+## AUDIT-FIRST CYCLE
+
+**Mandatory cycle:** `AUDIT → DECIDE → FACTORY EXECUTION → RE-AUDIT`
+
+- Shell audit embedded before every material step.
+- Read-only audit = safe class; auto-execute silently.
+- State-changing work = operator gate.
+
+---
+
+## NON-ATOMIC CONTINUOUS WORK
+
+- Default: continuous unified-front execution.
+- Stop only at: real fork / sanction gate / authority boundary / unresolved factual conflict.
+- Factory resumes work after consultation without atomic pauses.
+
+---
+
+## TOKEN ECONOMY
+
+| Tier | Resources | Role |
+|------|-----------|------|
+| **Cheap/free** | Open Claude Code, local models, Codex | Bulk work: prep, aux, decomposition, drafting |
+| **Expensive** | Main Claude | Final verification, critical review, decision |
+
+Main Claude verifies Factory outputs, not re-processes bulk.
+
+---
+
+## CONSULTATION MODE (Strict)
+
+**Factory NEVER self-consults.**
+
+On real fork:
+1. Factory prepares **one brief** (task, context, question, expected output).
+2. Factory emits brief as text artifact, **stops**.
+3. **Operator performs consultation externally** via separate window.
+4. **Consult chain (fixed order):** `Codex → Fable → Mistral → Kimi`.
+5. Operator returns results; Factory reconciles; work continues.
+
+**Brief delivery:** Prepared as artifact. **NEVER autonomously sent.** Operator controls delivery.
+
+---
+
+## GOVERNED MERGE
+
+- Consultation preparation: automatic.
+- Consultation execution: operator-run.
+- Merge/push: operator approval required.
+- No uncontrolled merge autonomy.
+
+---
+
+## INSTRUCTION HIERARCHY
+
+1. **Explicit user instruction** (highest)
+2. **Root Canon** (`CLAUDE.md`)
+3. **SSOT:** `banxe-ai-rnd/research/docs/canon/CANON-FACTORY-SSOT.md` CORE-10-29
+4. **Session Canon:** `.claude/CLAUDE_CODE_CANON.md`
+5. **Project context:** `AGENTS.md` (this file), `COLLAB.md`
+6. **Global defaults:** `~/.claude/CLAUDE.md`
+
+---
+
+## REPOSITORY STRUCTURE
 
 ```
 ~/MetaClaw/
 ├── .claude/
-│   └── CLAUDE_CODE_CANON.md     ← Session canon (Rules 1–9 + terminal extensions)
+│   └── CLAUDE_CODE_CANON.md     ← Session canon
 ├── metaclaw/                   ← Core package
-│   ├── agents/
-│   ├── memory/
-│   └── evolution/
 ├── tests/                      ← Test suite
 ├── examples/                   ← Usage examples
 ├── docs/                       ← Documentation
-│   ├── canon/
-│   ├── sources/                  ← Audit sources
-│   └── audit/                    ← Coverage intel
-├── FACTORY_OPERATING_SYSTEM.md ← Universal root canon
-├── CLAUDE_CODE_OPERATING_PRINCIPLE.md ← Execution law
+├── FACTORY_OPERATING_SYSTEM.md ← Pointer → SSOT
+├── CLAUDE_CODE_OPERATING_PRINCIPLE.md ← Pointer → SSOT
 ├── AGENTS.md                   ← This file
-└── COLLAB.md                   ← Project collaboration
+└── COLLAB.md                   ← Collaboration canon
 ```
 
 ---
 
-## Terminal Roles Detail
+## PROJECT ISOLATION
 
-Роли CENTRAL (Brain) / LEFT (Factory Interface) / RIGHT (Assistant) и исполнители Фабрики
-(Aider primary, Codex secondary, агенты очереди) — нормативно в SSOT `CANON-FACTORY-SSOT.md`
-CORE-10-29 п.1 и п.6; здесь не дублируются.
-
----
-
-## Collaboration pattern
-
-- **Claude Code (Central)** — planner, reviewer, orchestrator; assigns to Factory.
-- **Factory (Aider/Codex)** — execution agent (file edits, tests, commands).
-- **User** interacts with Central terminal only.
-
-**One terminal = one project = one repo** (invariant INV-08).
-
----
-
-## Project isolation
-
-This repository is **MetaClaw only**. Do not mix files, code, or context with:
+This repository is **MetaClaw only**. Do not mix with:
 - Banxe (`vibe-coding`)
-- GUIYON (`guiyon`)
+- GUIYON
 - Developer-core (`~/developer`)
-- Any other project
 
 ---
 
-## Repository conventions
+## BEFORE MAKING CHANGES
 
-- Source: `metaclaw/`
-- Tests: `tests/`
-- Scripts: `scripts/`
-- Examples: `examples/`
-- Docs: `docs/`
-- Audit sources: `docs/sources/`
-- Coverage intel: `docs/audit/`
+1. Read `CANON-FACTORY-SSOT.md` CORE-10-29 §1 (Factory-only) and §3 (non-atomic).
+2. Preserve API contracts.
+3. Run tests: `pytest tests/ -v`
+4. Keep deps in sync.
 
 ---
 
-## Before making changes
-
-1. Read `CANON-FACTORY-SSOT.md` CORE-10-29 п.1 (Factory-only coding) и п.3 (non-atomic).
-3. Preserve existing API contracts (other projects may depend on the package).
-4. Run tests after changes: `pytest tests/ -v`
-5. Keep `requirements.txt` and `pyproject.toml` in sync.
-
----
-
-## Commit style
+## COMMIT STYLE
 
 - English identifiers
-- `feat/fix/test/docs/chore/canon` prefix
+- Prefix: `feat/fix/test/docs/chore/canon`
 - Never commit secrets
 - Format: `type(scope): message [IL-XXX]`
 
 ---
 
-## Files reference
+## FILES REFERENCE
 
 | File | Purpose | Authority |
 |------|---------|-----------|
-| `FACTORY_OPERATING_SYSTEM.md` | Pointer → SSOT CORE-10-29 | pointer |
-| `CLAUDE_CODE_OPERATING_PRINCIPLE.md` | Pointer → SSOT CORE-10-29 | pointer |
-| `.claude/CLAUDE_CODE_CANON.md` | Session canon (Rules 1–9) | Session |
-| `AGENTS.md` | This file — terminal architecture | Project |
+| `CLAUDE.md` | **Root Canon** — all 10 mandatory results | Root |
+| `FACTORY_OPERATING_SYSTEM.md` | Pointer → SSOT | Pointer |
+| `CLAUDE_CODE_OPERATING_PRINCIPLE.md` | Pointer → SSOT | Pointer |
+| `.claude/CLAUDE_CODE_CANON.md` | Session rules | Session |
+| `AGENTS.md` | This file — architecture | Project |
 | `COLLAB.md` | Collaboration patterns | Project |
-| `CLAUDE.md` | Project identity (BANXE gateway) | Project |
 
 ---
 
-## Definition of done
-
-A task is complete when:
+## DEFINITION OF DONE
 
 - [ ] Factory execution verified (Aider/Codex)
 - [ ] Tests pass (`pytest`)
@@ -158,5 +173,5 @@ A task is complete when:
 
 ---
 
-*Updated: 2026-08-26 (normalized v1.1)*  
-*Alignment: research/docs/canon/CANON-FACTORY-SSOT.md v7 / CORE-10-29 (2026-08-26)*
+*Updated: 2026-08-26 (v2.0)*  
+*Alignment: Root Canon v2.0 / SSOT CORE-10-29*

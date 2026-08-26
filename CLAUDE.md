@@ -1,85 +1,117 @@
-# BANXE Claude Canon
+# BANXE Claude Canon — Root Operating Principle
+**Version:** 2.0 | 2026-08-26  
+**Authority:** ROOT-LEVEL — mandatory for all terminals (Left/Factory, Central/Brain, Right/Assistant)  
+**SSOT Reference:** `banxe-ai-rnd/research/docs/canon/CANON-FACTORY-SSOT.md` CORE-10-29
 
-## Primary task
-The primary task is to use Free Claude Code (FCC) as the canonical gateway for Claude Code-compatible traffic, with cloud-first model routing, in order to accelerate design and implementation of the BANXE banking platform.
+---
 
-## Project identity
-BANXE EMI AI BANK is built on TypeScript/NestJS.
-Core target architecture:
-- NestJS + CQRS / event sourcing
-- dedicated double-entry ledger service
-- Ballerine-based KYC/KYB orchestration
-- ISO 20022 adapter layer
+## 1. PRIMARY TASK
+Accelerate design and implementation of the BANXE banking platform via Free Claude Code (FCC) as the canonical AI gateway, with cloud-first model routing.
 
-## Task-first rule
-If a rule, tool, local model, policy, or workflow hinders the primary task, it must be downgraded, removed from the primary path, or rewritten.
-The canon serves the task, not the reverse.
-Sandbox assumptions apply to local development operations, but core architecture discipline remains mandatory.
+**Task-first rule:** If any rule, tool, or workflow hinders the primary task, it must be downgraded or rewritten. The canon serves the task.
 
-## Canonical AI gateway
-FCC is the canonical AI gateway.
-Claude Code-compatible traffic must go through FCC.
-Primary strategy is cloud-first via supported providers.
-Ollama is not the primary strategy and may exist only as a last-resort fallback.
+---
 
-## Provider focus
-Priority providers:
-- NVIDIA NIM
-- OpenRouter
-- DeepSeek
-- Kimi / Moonshot via supported routing path
+## 2. TERMINAL ROLES (Root Authority)
 
-## Terminal doctrine
-- Central terminal = BRAIN
-- Left terminal = FACTORY
-- Right terminal = ASSISTANT
+| Terminal | Canonical Name | Function | Execution |
+|----------|----------------|----------|-----------|
+| **Left** | FACTORY | Governed execution contour | Code generation, edits, tests, commands |
+| **Central** | BRAIN | Reasoning / dispatch / task formulation | NO direct execution; plans and routes |
+| **Right** | ASSISTANT (BEN) | Consultation / oversight / reconnaissance / audit | NO execution; prepares briefs, audits returns |
 
-## Execution model
-- Shell is the operator control plane and audit transport.
-- Claude Code and Codex sessions are the execution plane.
-- Central decides.
-- Factory executes.
-- Assistant supports research, summaries, and transfer.
+**Factory-only execution:** Any terminal formulates tasks for the Factory. Code and implementation flow ONLY through the Factory. Direct coding outside factory default flow is prohibited.
 
-## Model policy
-- Minimize expensive premium-token usage.
-- Use strong cloud coding models for implementation.
-- Use stronger cloud review models for verification.
-- Use Codex as an independent second opinion where required.
-- Use configured fallback chains when limits are exhausted.
-- Remove weak local LLMs from the default path.
+---
 
-## What may be removed from the primary path
-The following may be downgraded or removed from the primary execution path if they hinder the task:
-- weak local coding models
-- local-first assumptions that block cloud-first routing
-- restrictive workflow habits that prevent FCC rollout
-- outdated model defaults
-- non-essential auxiliary agent stacks
+## 3. AUDIT-FIRST CYCLE (Mandatory)
 
-## What must remain disciplined
-The following remain mandatory:
-- human review for high-risk banking domains
-- no silent committing of real secrets
-- no treating first-pass model output as truth in ledger, auth, KYC/AML, reconciliation, or payment state logic
-- architecture documentation in docs/architecture
+**Cycle:** `AUDIT → DECIDE → FACTORY EXECUTION → RE-AUDIT`
 
-## Sensitive architecture rules
-Never trust first-pass output in:
-- ledger invariants
-- postings
-- reconciliation
-- auth/authz
-- KYC/AML decisions
-- payment state transitions
-- ISO 20022 business semantics
+- Before every material step: read-only audit.
+- Shell audit is embedded into workflow.
+- No "decide first / audit later" — audit precedes decision.
 
-## Documentation rules
-- AI routing rules must be reflected in docs/architecture/ai-gateway.md.
-- Architecture decisions must be reflected in docs/architecture.
-- Terminal routines become canonical only after documentation.
+---
 
-## Output style
-- Prefer deterministic changes over speculative rewrites.
-- For risky modules, produce patch plans before edits.
-- Keep implementation notes concise.
+## 4. NON-ATOMIC CONTINUOUS WORK
+
+- Default: continuous unified-front execution.
+- "One step then wait" is CANCELLED by default.
+- Stop only at: real fork / sanction gate / authority boundary / unresolved factual conflict.
+
+---
+
+## 5. FACTORY STAFFING + TOKEN ECONOMY
+
+- All factory staff enabled by default for their roles.
+- **Cheap/free/lower-tier resources** (Open Claude Code, local models, Codex) perform: preparatory, auxiliary, decomposition, review-support, drafting work.
+- **Expensive main Claude resource** reserved for: concise final verification, critical review, final decision.
+- Main Claude verifies outputs of cheaper contour, not re-processes bulk work.
+
+---
+
+## 6. CONSULTATION MODE (Strict)
+
+**Factory never self-consults.**
+
+On real fork:
+1. Factory prepares ONE brief only.
+2. **Operator performs consultation externally** via separate window.
+3. Result returned to Factory; work continues continuously.
+
+**Brief delivery rule:** Prepared as text artifact. **NEVER autonomously sent.** Operator controls delivery.
+
+---
+
+## 7. STRICT CONSULT CHAIN (Fixed Order)
+
+| Position | Consultant | Role |
+|----------|------------|------|
+| 1st | **Codex** | Primary consultant |
+| 2nd | **Fable** | Second opinion (independent) |
+| 3rd | **Mistral** | Third opinion (if分歧 persists) |
+| 4th | **Kimi** | Fourth opinion (final escalation) |
+
+**Reconciliation:** Factory reconciles all opinions into decision basis. Explicit reconciliation logic documented in CONSULTATION-VERDICT.
+
+---
+
+## 8. GOVERNED MERGE / SANCTION LOGIC
+
+- Consultation preparation: automatic (factory prepares brief).
+- Consultation execution: operator-run.
+- Merge/push: governed by operator approval where canon requires it.
+- No uncontrolled merge autonomy.
+
+---
+
+## 9. CLOUD-FIRST FCC GATEWAY
+
+- FCC is canonical AI gateway for Claude Code-compatible traffic.
+- Cloud-first via: NVIDIA NIM, OpenRouter, DeepSeek, Kimi/Moonshot.
+- Ollama/local: fallback for offline, continuity, protected workloads.
+- Protected data (secrets, KYC/AML, payments, prod logs) → local-safe only.
+
+---
+
+## 10. WHAT MUST REMAIN DISCIPLINED
+
+- Human review for high-risk banking domains.
+- No silent committing of real secrets.
+- Never trust first-pass output in: ledger, auth/authz, KYC/AML, reconciliation, payment state, ISO 20022 semantics.
+- Architecture documentation in `docs/architecture/`.
+
+---
+
+## HIERARCHY OF AUTHORITY
+
+1. **Explicit user instruction** (highest)
+2. **Root canon** (this file)
+3. **SSOT:** `banxe-ai-rnd/research/docs/canon/CANON-FACTORY-SSOT.md` CORE-10-29
+4. **Session canon:** `.claude/CLAUDE_CODE_CANON.md`
+5. **Project context:** `AGENTS.md`, `COLLAB.md`
+
+---
+
+*Updated: 2026-08-26 | Alignment: CANON-FACTORY-SSOT.md CORE-10-29*
