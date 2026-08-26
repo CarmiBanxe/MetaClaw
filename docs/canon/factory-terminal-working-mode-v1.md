@@ -15,10 +15,17 @@ software-factory-canon-v1.md (§7 loop, §8 approval) + smart-model-routing-prot
   2. Emits it as a single OPERATOR_RUN-style handoff line, then STOPS and waits (Rule 3, T3.4).
   3. Does NOT call the consultation model itself.
 
-## 3. Operator loop (manual)
+## 3. Consultation chain (fixed order)
+- **Codex** = primary consultant (first opinion)
+- **Fable** = second opinion (independent reviewer)
+- **Mistral** = third opinion (if分歧 persists)
+- **Kimi** = fourth opinion (final escalation)
+- Ref: `software-factory-canon-v1.md` §13 for full consult chain specification.
+
+## 4. Operator loop (manual)
 - Operator takes the brief to the SEPARATE consultation window (distinct route).
-- Operator runs the consultation, brings the result back to the factory terminal.
-- Only then the factory terminal resumes work using the returned result.
+- Operator runs the consultation per §3 chain order, brings results back to factory terminal.
+- Factory reconciles opinions into one decision basis, then resumes work.
 
 ## 4. Data-class guard
 - Consultation via cloud route only for NON-protected data.

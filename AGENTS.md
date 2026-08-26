@@ -12,7 +12,7 @@
 Терминальный workflow всех контуров определяет **один файл**:
 `banxe-ai-rnd/research` → `docs/canon/CANON-FACTORY-SSOT.md`, норма **CORE-10-29**
 (исполнитель кода Aider/Codex, Claude Code оркеструет; cloud-vs-local по классу данных;
-непрерывный фронт + STOP-гейты; consult-цепь Codex → Fable → Mistral → Kimi; auto-commit только
+непрерывный фронт + STOP-гейты; consult-цепь Codex → Fable → Mistral → Kimi (бриф отдаёт оператор, не автономно); auto-commit только
 Фабрикой; имена CENTRAL / LEFT / RIGHT). `FACTORY_OPERATING_SYSTEM.md` и
 `CLAUDE_CODE_OPERATING_PRINCIPLE.md` в этом репозитории — указатели туда, не копии (ADR-102).
 
