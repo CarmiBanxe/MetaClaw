@@ -10,13 +10,28 @@ mkdir -p /mnt/d/backups/evo1 /mnt/d/backups/evo2
 {
   echo "=== BANXE Cluster Backup $(date) ==="
 
-  echo "--- evo1 (banxe@192.168.0.72:2222) ---"
-  rsync -av --partial --delete -e 'ssh -p 2222' \
-    banxe@192.168.0.72:/data/ /mnt/d/backups/evo1/ 2>&1 | tail -5
+  # Адреса берутся из ~/.ssh/config по псевдонимам evo1 и evo2, а не вписываются сюда.
+  # Прежняя редакция держала 192.168.0.72 и 192.168.0.15 — оба устарели, и зеркало падало
+  # каждые сутки с 4 мая 2026 на `No route to host`. Фактические адреса: evo1 доступен по
+  # 100.68.102.48:2222, evo2 по 100.99.208.21:22; 192.168.0.15 не отвечает вовсе. Псевдоним
+  # переживает смену адреса, жёстко вписанный адрес — нет.
+  #
+  # Веса моделей исключены намеренно: из 239 ГБ на evo1 их 217 ГБ, и они воспроизводимы
+  # скачиванием. Зеркалить их — значит тратить сутки на то, что и так восстановимо, и прятать
+  # незаменимые 22 ГБ внутри объёма, который никто не проверяет.
+  EXCL=(--exclude 'ollama-models/' --exclude 'models/' --exclude 'llama-cpp/')
 
-  echo "--- evo2 (moriel-carmi@192.168.0.15:22) ---"
-  rsync -av --partial --delete -e 'ssh' \
-    moriel-carmi@192.168.0.15:/data/ /mnt/d/backups/evo2/ 2>&1 | tail -5
+  echo "--- evo1 (псевдоним evo1) ---"
+  rsync -a --partial --delete "${EXCL[@]}" -e ssh evo1:/data/ /mnt/d/backups/evo1/
+
+  echo "--- evo2 (псевдоним evo2) ---"
+  rsync -a --partial --delete "${EXCL[@]}" -e ssh evo2:/data/ /mnt/d/backups/evo2/
 
   echo "=== Done $(date) ==="
 } | tee -a "$LOG"
+
+# Итог пишется отдельным файлом состояния: журнал, который никто не читает, отказ не сообщает.
+# Прежняя редакция падала честно — с set -euo pipefail и записью в журнал, — и именно поэтому
+# отказ оставался незамеченным 111 суток подряд.
+printf 'ok %s\n' "$(date -Is)" > /mnt/d/backups/LAST-SUCCESS
+du -sb /mnt/d/backups/evo1 /mnt/d/backups/evo2 >> /mnt/d/backups/LAST-SUCCESS
