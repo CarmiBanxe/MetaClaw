@@ -33,16 +33,27 @@
 | FN-PM-01 | принять платёжную инструкцию | MAPPED | `ports/payment-engine.port.ts`, `payments/sandbox-engine.ts` — домен и `idempotencyKey`. **Маршрута нет** | — |
 | FN-PM-03 | проверить право/лимиты | MAPPED | `authorization/auth-engine.ts:53` `AuthEngine`, `HITL_THRESHOLD_MINOR=1_000_000n`, коды `RC_APPROVE/DECLINE/REFER/INSUFFICIENT` | `auth-engine.spec.ts` |
 | FN-PM-05 | fincrime-контроль | **CLASSIFIED** | `compliance-bridge/screening.ts:63` `ComplianceScreening` | `screening.spec.ts` — в 72 проходящих |
-| FN-PM-06 | маршрутизация в канал | CARRIER_CONFIRMED | `beneficiary_management/src/payment-rail-router.ts:83` класс, `:93` `route()`, `SEPA_COUNTRIES`, `FPS_MAX_MINOR` | `sepa-rail.spec.ts` |
-| FN-PM-08 | исполнить SEPA-платёж | MAPPED | `payments/sepa-sandbox-rail.ts` `SandboxSepaRail`; донор `imports/banxe-prod-gateway/sepa-service` | `sepa-rail.spec.ts` |
+| FN-PM-06 | маршрутизация в канал | CARRIER_CONFIRMED (уже) | `beneficiary_management/src/payment-rail-router.ts:83` класс, `:93` `route()`, `SEPA_COUNTRIES`, `FPS_MAX_MINOR` | `services/payments/beneficiary_management/src/beneficiary-management.characterization.spec.ts` |
+| FN-PM-08 | исполнить SEPA-платёж | MAPPED | `payments/sepa-sandbox-rail.ts` `SandboxSepaRail`; донор `imports/banxe-prod-gateway/sepa-service` | `services/payments/payment_orchestration/src/payments/sepa-rail.spec.ts` |
 | FN-PM-14 | статусы и события | **CLASSIFIED** | `ports/sepa-rail.port.ts` `SepaRailState` + `RAIL_TRANSITIONS`; донор `ETransactionStatus` (12 состояний) | `ports.spec.ts` |
 | FN-PM-16 | свести исполнение с ledger | MAPPED | `services/ledger/recon/src/midaz-reconciliation` — `EXIT_MATCHED`, `EXIT_DISCREPANCY`, `EXIT_PENDING`, `EXIT_FATAL`; `camt053-parser.ts`, `cron-daily-recon.ts` | наборы recon |
 | FN-LG-15 | LedgerPort — единственная точка мутации | CLASSIFIED | `ports/ledger.port.ts` `LedgerPort`; `adapters/midaz.adapter.ts` `MidazAdapter` | `adapters.spec.ts` |
 | FN-CD-07 | авторизовать карточную операцию | **CLASSIFIED** | `paymentology/remote-handler.ts` `handleDeduct` — **носитель есть, дефектен** (D-CD-07-A/B) | `paymentology.spec.ts` |
 
-Вывод: минимум **девять** функций выбранного канала недооценены реестром. Это не ошибка реестра
-как замысла — он честно писал «носитель не подтверждён», то есть «не искали», а не «нет». Но
-запись теперь отстаёт от факта и должна быть обновлена на этом SHA.
+**Поправка к прежнему выводу.** Я написал «минимум девять функций недооценены» — формулировка
+шире таблицы и снята. FN-PM-06 в реестре уже `CARRIER_CONFIRMED`, недооценки там нет.
+Недооценёнными по этому замеру являются те, у кого носитель прочитан, а ступень ниже:
+FN-PM-05, FN-PM-14, FN-CD-07 (все три `CLASSIFIED` при читаемом носителе) и FN-LG-15.
+Остальные строки — уточнение адреса, а не повышение ступени.
+
+Пересчёт ступеней делается по новым доказательствам **каждой ступени**, а не по числу найденных
+файлов. Это не ошибка реестра как замысла: он честно писал «носитель не подтверждён», то есть
+«не искали», а не «нет».
+
+**Вторая поправка — атрибуция теста.** `sepa-rail.spec.ts` не проверяет `PaymentRailRouter`:
+роутер испытывается в `beneficiary-management.characterization.spec.ts`. Ссылка на набор по
+близости имени — та же ошибка сходства, что запрещена для FN-ID. Для связи с тестом ниже
+указывается полный путь; конкретный вызов и наблюдаемое поведение подлежат проверке при сборке.
 
 ## Чего измерение НЕ даёт
 
@@ -81,8 +92,10 @@
 | **Вне фильтра — не переписаны по устройству** | **1191** |
 
 Состав пропущенного — не мусор, а носители: **274 `.sh`**, **173 `.cjs`**, **121 `.js`**,
-49 `.hbs`, 37 `Dockerfile`, 46 `.example`. Это 568 файлов исполняемого кода и 37 описаний
-сборки, о которых перепись не может сказать даже «искали и не нашли» — она их не смотрела.
+49 `.hbs`, 46 `.example` и **45 описаний сборки**: 37 с суффиксом `.Dockerfile` плюс 8 с точным
+именем `Dockerfile` — вторые я прежде не посчитал. Это 568 файлов исполняемого кода и 45
+описаний сборки, о которых перепись не может сказать даже «искали и не нашли» — она их не
+смотрела.
 
 Отдельно: 12620 подходящих файлов сейчас против 12377 записей тогда — ещё 243 файла
 в фильтре появились за 250 коммитов.
@@ -94,3 +107,13 @@
 
 **Исправление:** расширить фильтр переписи и перезапустить её на `cbfeee8b` (или свежее),
 после чего пересчитать статусы функций. До этого статус `ОТСУТСТВУЕТ` не присваивается никому.
+
+
+---
+
+## Граница барьера в переписи
+
+Перепись ведётся **полной по метаданным**. `creds.dec` и `creds.enc` остаются в общем учёте с
+состоянием «содержимое не читается: барьер» и из знаменателя не исчезают: исключение из чтения
+отсутствием объекта не является. В анализ и копирование они не втягиваются. Бриф барьера —
+`BRIEF-CREDENTIALS-DECISION-2026-09-08.md`.
