@@ -4,6 +4,10 @@
 согласованная: разделы приведены к одному порядку и одним носителям, поправки внесены в основной
 текст, а не сносками поверх противоречия. Требования и отрицательные сценарии сохранены полностью.
 
+> **Таблица §5 — сводка, а не источник.** Она обязана пересматриваться при каждой находке в
+> разделах ниже: сводка, отставшая от подробностей, вреднее отсутствующей, потому что её читают
+> первой. Пересмотрена на `fcfbb1e4`.
+
 **Первоисточник домена:** research `docs/techmap/S4-PAYMENTS.md`. Все FN-ID, порядок шагов,
 права решения и обязательства взяты оттуда, а не из имён файлов реализации.
 **SHA замера кода:** bank-tree main `3aa5b33eaff577cfbbc713ae4ab8ac6f1cd8f05d`.
@@ -94,13 +98,13 @@ S2, а платежи его лишь применяют.
 | FN-ID | Обязательство | Носитель на SHA | Состояние |
 |---|---|---|---|
 | FN-PM-01 | — | `ports/payment-engine.port.ts`, `sandbox-engine.ts` | домен есть, **входа нет** |
-| FN-PM-02 | — | `payment/src/sepa-validation.ts:36` `validateIban` — **носитель есть** | см. §5.1 |
-| FN-PM-03 | `OBL-PAY-EXEC-002` | `payment/src/payment-auth-guard.ts` — **только preflight** | **неполно**, см. §6 |
-| FN-PM-04 | `OBL-PAY-SCA-001` | `ValueSpace="sca_challenge"`, `Space="step_up_proof"`, `trusted-beneficiary.ts` | носители есть, связи с платежом нет |
-| FN-PM-05 | — | `compliance-bridge/screening.ts` | есть, **два разрешающих умолчания** (§7) |
+| FN-PM-02 | — | `payment/src/sepa-validation.ts:36` `validateIban`, `validateBic`, `exceedsSctInstantCap` | носитель есть; **включение в вход не сделано** — §5.1 |
+| FN-PM-03 | `OBL-PAY-EXEC-002` | `payment-auth-guard.ts` (preflight) + `role2-manager` (право агента) | **половина**: право клиента на счёт носителя не имеет — §6, §6.1 |
+| FN-PM-04 | `OBL-PAY-SCA-001` | `customer-gateway/src/step-up-proof.ts` `StepUpVerifier`; второй носитель — `ScaService` роли-2 | **связь с платежом есть и проверена** швом: привязка к сумме, валюте, получателю; выпускающий эмулирован — §12.3 |
+| FN-PM-05 | — | `compliance-bridge/screening.ts` | **умолчания закрыты** структурно; подключён швом — §7, §14.1 |
 | FN-PM-06 | — | `beneficiary_management/src/payment-rail-router.ts:93` `route()` | есть; тест — `beneficiary-management.characterization.spec.ts` |
 | FN-PM-08 | — | `payments/sepa-sandbox-rail.ts`; донор — источник контракта | рельс advisory |
-| FN-PM-14 | `OBL-PAY-EXEC-002` | `SepaRailState` + `RAIL_TRANSITIONS` | нет состояния неизвестности (§9) |
+| FN-PM-14 | `OBL-PAY-EXEC-002` | собственные `OperationState` канала; `SepaRailState` — чужой автомат, не наш | **`OUTCOME_UNKNOWN` есть**, но переходы не проверяются — §11.3 |
 | FN-PM-15 | `OBL-PAY-UNAUTH-003` | сторно через ledger, reason-codes | **enum состояний поведения не реализует** |
 | FN-PM-16 | — | `ledger/recon` — `midaz-reconciliation`, `camt053-parser` | есть; решением recon канал не владеет |
 | FN-LG-15 | — | `ports/ledger.port.ts`, `adapters/midaz.adapter.ts` | порт есть, транспорт отложен |
