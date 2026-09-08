@@ -31,7 +31,7 @@
 | FN-ID | Функция | Статус в реестре | Носитель, подтверждённый чтением | Тест на SHA |
 |---|---|---|---|---|
 | FN-PM-01 | принять платёжную инструкцию | MAPPED | `ports/payment-engine.port.ts`, `payments/sandbox-engine.ts` — домен и `idempotencyKey`. **Маршрута нет** | — |
-| FN-PM-03 | проверить право/лимиты | MAPPED | `authorization/auth-engine.ts:53` `AuthEngine`, `HITL_THRESHOLD_MINOR=1_000_000n`, коды `RC_APPROVE/DECLINE/REFER/INSUFFICIENT` | `auth-engine.spec.ts` |
+| FN-PM-03 | проверить право/лимиты | MAPPED | `services/payments/payment/src/payment-auth-guard.ts` — жизненный цикл, KYC, юрисдикция (I-02), положительность (I-01), порог EDD → предложение человеку (I-27) | наборы `payments/payment` |
 | FN-PM-05 | fincrime-контроль | **CLASSIFIED** | `compliance-bridge/screening.ts:63` `ComplianceScreening` | `screening.spec.ts` — в 72 проходящих |
 | FN-PM-06 | маршрутизация в канал | CARRIER_CONFIRMED (уже) | `beneficiary_management/src/payment-rail-router.ts:83` класс, `:93` `route()`, `SEPA_COUNTRIES`, `FPS_MAX_MINOR` | `services/payments/beneficiary_management/src/beneficiary-management.characterization.spec.ts` |
 | FN-PM-08 | исполнить SEPA-платёж | MAPPED | `payments/sepa-sandbox-rail.ts` `SandboxSepaRail`; донор `imports/banxe-prod-gateway/sepa-service` | `services/payments/payment_orchestration/src/payments/sepa-rail.spec.ts` |
@@ -117,3 +117,20 @@ FN-PM-05, FN-PM-14, FN-CD-07 (все три `CLASSIFIED` при читаемом
 состоянием «содержимое не читается: барьер» и из знаменателя не исчезают: исключение из чтения
 отсутствием объекта не является. В анализ и копирование они не втягиваются. Бриф барьера —
 `BRIEF-CREDENTIALS-DECISION-2026-09-08.md`.
+
+
+---
+
+## Поправка назначения FN-PM-03 (2026-09-08)
+
+Прежняя строка указывала `authorization/auth-engine.ts`. Это **неверно**: `AuthEngine` принимает
+`cardId`, отвечает кодами ISO 8583 и по собственной записи подключён к callback карточного
+эмитента — то есть это FN-CD-07, карточная авторизация, а не право и лимиты платежа. Назначение
+было сделано по сходству слова «authorisation» — ровно тот способ, который для FN-ID запрещён,
+и я допустил его вторично.
+
+Действительный носитель — `services/payments/payment/src/payment-auth-guard.ts`, описывающий себя
+как предполётные проверки перед любой исходящей отправкой платежа.
+
+Отсюда же извлечено требование, которого в контракте не было: по I-27 платежи уровня EDD **только
+предлагаются**, одобряет человек, автоматической отправки не происходит.
