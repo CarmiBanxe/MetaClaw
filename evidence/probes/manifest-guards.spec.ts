@@ -5,7 +5,8 @@
  * стерегут ПРИНЯТУЮ КАРТУ, которой меряется вся миссия: 324 функции, две независимые ветви,
  * происхождение из коммита research.
  *
- * Семь из тринадцати отказов этого модуля не назывались НИ ОДНОЙ пробой дерева. Проба ведётся
+ * Семь из тринадцати отказов этого модуля не назывались НИ ОДНОЙ пробой дерева; проба закрывает
+ * ДЕВЯТЬ стражей из десяти проверяемых. Она ведётся
  * на НАСТОЯЩЕМ манифесте (`governance/org/accepted-org-manifest.json`), а не на игрушечном:
  * хеш подаётся снаружи, поэтому меряются проверки СОДЕРЖИМОГО, а не пересчёт хеша.
  *
@@ -20,6 +21,15 @@
  *
  * ЧЕМ ЭТО ГРОЗИТ БЕЗ СТРАЖА: манифест с повторяющимся идентификатором принимается, и карта несёт
  * 323 различных функции, объявляя 324.
+ *
+ * РАСШИРЕНО тем же тактом до десяти проб. Вторая канарейка — на самый доктринальный страж:
+ * `MANIFEST_INDEPENDENT_BRANCH_SUBSTITUTED`. Ветвь MLRO переименована в `OVERSIGHT_TWO`, тип
+ * оставлен: ветвей по-прежнему ДВЕ, **счётчик удовлетворён, независимость — нет**. Носитель
+ * говорит это сам: «ветвь, переименованная в третью, независимость не создаёт, а лишь
+ * удовлетворяет счётчику».
+ *
+ * Ослепление проверки имён (`joined + " MLRO AUDIT"`) даёт `Tests: 1 failed, 9 passed` —
+ * покраснела ровно она.
  */
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -72,5 +82,37 @@ describe("стражи принятого манифеста карты", () => 
   it("MANIFEST_SOURCE_STALE — манифест из другого коммита research", () => {
     expect(код(() => acceptManifest(ЖИВОЙ, свой, { expectedResearchSha: "0".repeat(40) })))
       .toBe("MANIFEST_SOURCE_STALE");
+  });
+
+  it("MANIFEST_SUPERSESSION_WITHOUT_SUCCESSOR — замещён, преемник не назван", () => {
+    const m = копия();
+    const ps = (m.payload.passports as unknown as { status?: string; superseded_by?: string }[])[0]!;
+    ps.status = "SUPERSEDED"; delete ps.superseded_by;
+    expect(код(() => acceptManifest(m, свой))).toBe("MANIFEST_SUPERSESSION_WITHOUT_SUCCESSOR");
+  });
+
+  it("MANIFEST_AGENT_UNKNOWN — действующий паспорт без agent_id", () => {
+    const m = копия();
+    (m.payload.passports as unknown as { agent_id: string }[])[0]!.agent_id = "  ";
+    expect(код(() => acceptManifest(m, свой))).toBe("MANIFEST_AGENT_UNKNOWN");
+  });
+
+  it("MANIFEST_AGENT_DUPLICATED — два действующих паспорта под одним агентом", () => {
+    const m = копия();
+    const ps = m.payload.passports as unknown as { agent_id: string; status?: string }[];
+    const первый = ps.find((x) => (x.status ?? "").toUpperCase() !== "SUPERSEDED")!;
+    const второй = ps.find((x) => x !== первый && (x.status ?? "").toUpperCase() !== "SUPERSEDED")!;
+    второй.agent_id = первый.agent_id;
+    expect(код(() => acceptManifest(m, свой))).toBe("MANIFEST_AGENT_DUPLICATED");
+  });
+
+  it("MANIFEST_INDEPENDENT_BRANCH_SUBSTITUTED — ветвей две, но имя подменено", () => {
+    const m = копия();
+    const n = m.payload.nodes as unknown as Record<string, { node_type: string }>;
+    const мlro = Object.keys(n).find((k) => k.toUpperCase().includes("MLRO")
+                                          && n[k]!.node_type === "INDEPENDENT_BRANCH")!;
+    n["OVERSIGHT_TWO"] = n[мlro]!; delete n[мlro];
+    // ветвей по-прежнему ДВЕ: счётчик удовлетворён, независимость — нет
+    expect(код(() => acceptManifest(m, свой))).toBe("MANIFEST_INDEPENDENT_BRANCH_SUBSTITUTED");
   });
 });
