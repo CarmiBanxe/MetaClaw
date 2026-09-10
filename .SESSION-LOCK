@@ -1,0 +1,6 @@
+sid=1242482
+label=isolation-repair
+head=9ffa450696b59e96b6e457d9afeadaa2b7ac31b9
+role=OPERATOR
+claimed_at=2026-08-26T05:11:30+02:00
+note=MetaClaw single-session lock 2026-08-26 (no-isolation defect fix)

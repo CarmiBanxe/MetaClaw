@@ -14,200 +14,200 @@ model_list:
 - model_name: fast
   litellm_params:
     model: ollama/qwen3:4b
-    api_base: http://100.68.102.48:11434
-    api_key: sk-banxe-evo1-local-2026
+    api_base: http://100.68.102.48:11435
+    api_key: qYAPP-IgmZ2Sqqxzrd0EZ_OGLE-Hh4_1AC9N6PWp-NA
     timeout: 60
 - model_name: fast
   litellm_params:
     model: ollama/qwen3:4b
-    api_base: http://100.68.102.48:11434
-    api_key: sk-banxe-evo2-local-2026
+    api_base: http://100.68.102.48:11435
+    api_key: qYAPP-IgmZ2Sqqxzrd0EZ_OGLE-Hh4_1AC9N6PWp-NA
     timeout: 60
 - model_name: coding
   litellm_params:
     model: ollama/qwen2.5-coder:14b-banxe-factory
-    api_base: http://100.68.102.48:11434
-    api_key: sk-banxe-evo1-local-2026
+    api_base: http://100.68.102.48:11435
+    api_key: qYAPP-IgmZ2Sqqxzrd0EZ_OGLE-Hh4_1AC9N6PWp-NA
     timeout: 240
 - model_name: coding
   litellm_params:
     model: ollama/qwen2.5-coder:14b-banxe-factory
-    api_base: http://100.68.102.48:11434
-    api_key: sk-banxe-evo2-local-2026
+    api_base: http://100.68.102.48:11435
+    api_key: qYAPP-IgmZ2Sqqxzrd0EZ_OGLE-Hh4_1AC9N6PWp-NA
     timeout: 240
 - model_name: coding-heavy
   litellm_params:
     model: ollama/qwen3-coder-next:q4_K_M
-    api_base: http://100.68.102.48:11434
-    api_key: sk-banxe-evo1-local-2026
+    api_base: http://100.68.102.48:11435
+    api_key: qYAPP-IgmZ2Sqqxzrd0EZ_OGLE-Hh4_1AC9N6PWp-NA
     timeout: 300
 - model_name: coding-heavy
   litellm_params:
     model: ollama/qwen3-coder-next:q4_K_M
-    api_base: http://100.68.102.48:11434
-    api_key: sk-banxe-evo2-local-2026
+    api_base: http://100.68.102.48:11435
+    api_key: qYAPP-IgmZ2Sqqxzrd0EZ_OGLE-Hh4_1AC9N6PWp-NA
     timeout: 300
 - model_name: factory-fast
   litellm_params:
     model: ollama/qwen2.5-coder:7b-instruct-q4_K_M
-    api_base: http://172.17.0.1:11435
-    api_key: sk-banxe-legion-local-2026
+    api_base: http://172.17.0.1:11436
     timeout: 120
 - model_name: factory-coder
   litellm_params:
     model: ollama/qwen2.5-coder:14b-banxe-factory
-    api_base: http://100.68.102.48:11434
-    api_key: sk-banxe-evo1-local-2026
+    api_base: http://100.68.102.48:11435
+    api_key: qYAPP-IgmZ2Sqqxzrd0EZ_OGLE-Hh4_1AC9N6PWp-NA
     timeout: 240
 - model_name: factory-coder
   litellm_params:
     model: ollama/qwen2.5-coder:14b-banxe-factory
-    api_base: http://100.68.102.48:11434
-    api_key: sk-banxe-evo2-local-2026
+    api_base: http://100.68.102.48:11435
+    api_key: qYAPP-IgmZ2Sqqxzrd0EZ_OGLE-Hh4_1AC9N6PWp-NA
     timeout: 240
 - model_name: banxe-general
   litellm_params:
     model: ollama/qwen3-banxe-v2:latest
-    api_base: http://100.68.102.48:11434
-    api_key: sk-banxe-evo1-local-2026
+    api_base: http://100.68.102.48:11435
+    api_key: qYAPP-IgmZ2Sqqxzrd0EZ_OGLE-Hh4_1AC9N6PWp-NA
     timeout: 120
 - model_name: banxe-general
   litellm_params:
     model: ollama/qwen3-banxe-v2:latest
-    api_base: http://100.68.102.48:11434
-    api_key: sk-banxe-evo2-local-2026
+    api_base: http://100.68.102.48:11435
+    api_key: qYAPP-IgmZ2Sqqxzrd0EZ_OGLE-Hh4_1AC9N6PWp-NA
     timeout: 120
 - model_name: qwen3-banxe
   litellm_params:
     model: ollama/qwen3-banxe-v2:latest
-    api_base: http://100.68.102.48:11434
-    api_key: sk-banxe-evo1-local-2026
+    api_base: http://100.68.102.48:11435
+    api_key: qYAPP-IgmZ2Sqqxzrd0EZ_OGLE-Hh4_1AC9N6PWp-NA
     timeout: 120
 - model_name: qwen3-30b
   litellm_params:
     model: ollama/qwen3:30b-a3b
-    api_base: http://100.68.102.48:11434
-    api_key: sk-banxe-evo1-local-2026
+    api_base: http://100.68.102.48:11435
+    api_key: qYAPP-IgmZ2Sqqxzrd0EZ_OGLE-Hh4_1AC9N6PWp-NA
     timeout: 120
 - model_name: qwen3-30b
   litellm_params:
     model: ollama/qwen3:30b-a3b
-    api_base: http://100.68.102.48:11434
-    api_key: sk-banxe-evo2-local-2026
+    api_base: http://100.68.102.48:11435
+    api_key: qYAPP-IgmZ2Sqqxzrd0EZ_OGLE-Hh4_1AC9N6PWp-NA
     timeout: 120
 - model_name: gpt-oss-20b
   litellm_params:
     model: ollama/qwen3:30b-a3b
-    api_base: http://100.68.102.48:11434
-    api_key: sk-banxe-evo1-local-2026
+    api_base: http://100.68.102.48:11435
+    api_key: qYAPP-IgmZ2Sqqxzrd0EZ_OGLE-Hh4_1AC9N6PWp-NA
     timeout: 120
 - model_name: glm-4-flash
   litellm_params:
     model: ollama/qwen3:4b
-    api_base: http://100.68.102.48:11434
-    api_key: sk-banxe-evo1-local-2026
+    api_base: http://100.68.102.48:11435
+    api_key: qYAPP-IgmZ2Sqqxzrd0EZ_OGLE-Hh4_1AC9N6PWp-NA
     timeout: 120
 - model_name: ai
   litellm_params:
     model: ollama/qwen3.5:35b
-    api_base: http://100.68.102.48:11434
-    api_key: sk-banxe-evo1-local-2026
+    api_base: http://100.68.102.48:11435
+    api_key: qYAPP-IgmZ2Sqqxzrd0EZ_OGLE-Hh4_1AC9N6PWp-NA
     timeout: 240
 - model_name: ai
   litellm_params:
     model: ollama/qwen3.5:35b
-    api_base: http://100.68.102.48:11434
-    api_key: sk-banxe-evo2-local-2026
+    api_base: http://100.68.102.48:11435
+    api_key: qYAPP-IgmZ2Sqqxzrd0EZ_OGLE-Hh4_1AC9N6PWp-NA
     timeout: 240
 - model_name: project-mid
   litellm_params:
     model: ollama/qwen3.5:35b
-    api_base: http://100.68.102.48:11434
-    api_key: sk-banxe-evo1-local-2026
+    api_base: http://100.68.102.48:11435
+    api_key: qYAPP-IgmZ2Sqqxzrd0EZ_OGLE-Hh4_1AC9N6PWp-NA
     timeout: 240
 - model_name: project-mid
   litellm_params:
     model: ollama/qwen3.5:35b
-    api_base: http://100.68.102.48:11434
-    api_key: sk-banxe-evo2-local-2026
+    api_base: http://100.68.102.48:11435
+    api_key: qYAPP-IgmZ2Sqqxzrd0EZ_OGLE-Hh4_1AC9N6PWp-NA
     timeout: 240
 - model_name: factory-mid
   litellm_params:
     model: ollama/qwen3:30b-a3b
-    api_base: http://100.68.102.48:11434
-    api_key: sk-banxe-evo1-local-2026
+    api_base: http://100.68.102.48:11435
+    api_key: qYAPP-IgmZ2Sqqxzrd0EZ_OGLE-Hh4_1AC9N6PWp-NA
     timeout: 120
 - model_name: factory-mid
   litellm_params:
     model: ollama/qwen3:30b-a3b
-    api_base: http://100.68.102.48:11434
-    api_key: sk-banxe-evo2-local-2026
+    api_base: http://100.68.102.48:11435
+    api_key: qYAPP-IgmZ2Sqqxzrd0EZ_OGLE-Hh4_1AC9N6PWp-NA
     timeout: 120
 - model_name: ai-heavy
   litellm_params:
     model: ollama/llama3.3:70b
-    api_base: http://100.68.102.48:11434
-    api_key: sk-banxe-evo1-local-2026
+    api_base: http://100.68.102.48:11435
+    api_key: qYAPP-IgmZ2Sqqxzrd0EZ_OGLE-Hh4_1AC9N6PWp-NA
     timeout: 600
 - model_name: ai-heavy
   litellm_params:
     model: ollama/llama3.3:70b
-    api_base: http://100.68.102.48:11434
-    api_key: sk-banxe-evo2-local-2026
+    api_base: http://100.68.102.48:11435
+    api_key: qYAPP-IgmZ2Sqqxzrd0EZ_OGLE-Hh4_1AC9N6PWp-NA
     timeout: 600
 - model_name: factory-heavy
   litellm_params:
     model: ollama/llama3.3:70b
-    api_base: http://100.68.102.48:11434
-    api_key: sk-banxe-evo1-local-2026
+    api_base: http://100.68.102.48:11435
+    api_key: qYAPP-IgmZ2Sqqxzrd0EZ_OGLE-Hh4_1AC9N6PWp-NA
     timeout: 240
 - model_name: factory-heavy
   litellm_params:
     model: ollama/llama3.3:70b
-    api_base: http://100.68.102.48:11434
-    api_key: sk-banxe-evo2-local-2026
+    api_base: http://100.68.102.48:11435
+    api_key: qYAPP-IgmZ2Sqqxzrd0EZ_OGLE-Hh4_1AC9N6PWp-NA
     timeout: 240
 - model_name: project-reason
   litellm_params:
     model: ollama/llama3.3:70b
-    api_base: http://100.68.102.48:11434
-    api_key: sk-banxe-evo1-local-2026
+    api_base: http://100.68.102.48:11435
+    api_key: qYAPP-IgmZ2Sqqxzrd0EZ_OGLE-Hh4_1AC9N6PWp-NA
     timeout: 600
 - model_name: reasoning
   litellm_params:
     model: ollama/qwen3:30b-a3b
-    api_base: http://100.68.102.48:11434
+    api_base: http://100.68.102.48:11435
     timeout: 300
     keep_alive: 30m
+    api_key: qYAPP-IgmZ2Sqqxzrd0EZ_OGLE-Hh4_1AC9N6PWp-NA
 - model_name: reasoning-heavy
   litellm_params:
     model: ollama/deepseek-r1:70b
-    api_base: http://100.99.208.21:11434
+    api_base: http://172.17.0.1:11437
     timeout: 1200
     keep_alive: 30m
 - model_name: reasoning-235b
   litellm_params:
     model: ollama/deepseek-r1:70b
-    api_base: http://100.99.208.21:11434
+    api_base: http://172.17.0.1:11437
     timeout: 1200
     keep_alive: 30m
 - model_name: large
   litellm_params:
     model: openai/glm-4.5-air
     api_base: http://100.68.102.48:8081/v1
-    api_key: sk-rpc-glm47-2026
+    api_key: os.environ/RPC_GLM_KEY
     timeout: 300
 - model_name: glm-4.5-air-distributed
   litellm_params:
     model: openai/GLM-4.5-Air-Q4_K_M-00001-of-00002.gguf
     api_base: http://100.68.102.48:8081/v1
-    api_key: sk-rpc-glm47-2026
+    api_key: os.environ/RPC_GLM_KEY
     timeout: 600
 - model_name: glm-air
   litellm_params:
     model: openai/GLM-4.5-Air-Q4_K_M-00001-of-00002.gguf
     api_base: http://100.68.102.48:8081/v1
-    api_key: sk-rpc-glm47-2026
+    api_key: os.environ/RPC_GLM_KEY
     timeout: 600
 - model_name: grok
   litellm_params:
@@ -218,16 +218,15 @@ model_list:
 - model_name: senior-claude
   litellm_params:
     model: ollama/llama3.3:70b
-    api_base: http://100.68.102.48:11434
-    api_key: sk-banxe-evo1-local-2026
+    api_base: http://100.68.102.48:11435
+    api_key: qYAPP-IgmZ2Sqqxzrd0EZ_OGLE-Hh4_1AC9N6PWp-NA
     timeout: 600
 - model_name: senior-claude
   litellm_params:
     model: ollama/llama3.3:70b
-    api_base: http://100.68.102.48:11434
-    api_key: sk-banxe-evo2-local-2026
+    api_base: http://100.68.102.48:11435
+    api_key: qYAPP-IgmZ2Sqqxzrd0EZ_OGLE-Hh4_1AC9N6PWp-NA
     timeout: 600
-# Consult chain models (per canon consultation verdict 2026-08-26)
 - model_name: mistral-consult
   litellm_params:
     model: mistral/mistral-large-latest

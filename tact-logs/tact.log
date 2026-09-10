@@ -65,3 +65,22 @@ Rules set: (1) фабрика Claude Code = bypass permissions ON (--dangerously
                консультаций (distinct route) -> возвращает результат -> продолжение;
            (3) cloud-consult только non-protected; protected -> LiteLLM :4000 local; no cross-tier fallback;
            (4) финальный апрув = Operator (+MLRO где regulated).
+
+[2026-08-27 16:00 CEST] TACT: диагностика отключения evo1 — ЛОЖНАЯ ТРЕВОГА (ремонт не нужен)
+Заявление Фабрики "первая машина отключается" — НЕВЕРНО. evo1 исправен.
+Факты (изнутри banxe@EVO-X1): ollama.service active running 1h8m без рестартов; Restart=always;
+  логи чистые (нет crash/OOM/CUDA); GPU Vulkan/AMD 122GB грузит модели; temp 45-48C; oom_kill=0.
+Маршрут senior-claude (LiteLLM:4000 -> llama3.3:70b @ evo1) -> EVO1_HEAVY_OK; прямой /api/generate тоже OK.
+Причины ложных сигналов: 1) устаревшие IP 192.168.0.72/15 (реальные Tailscale 100.68.102.48/100.99.208.21);
+  2) health-таймаут 3с считал OLLAMA-DOWN пока шёл инференс 33.5с.
+Fix: адреса -> Tailscale 100.x; health-таймауты >60с; интерактив -> модель легче 70b.
+
+[2026-08-27 18:00 CEST] TACT: РЕШЕНА причина отключений evo1 — DONE
+Диагноз (изнутри evo1): reboot 14:29 = ЧИСТЫЙ systemd-reboot после unattended-upgrades.
+  Улика: systemd-logind "The system will reboot now!" сразу после unattended-upgrades.service.
+  НЕ железо/перегрев/питание: Tctl 81C (<120), reboot.target штатный, hw-watchdog off.
+  В 50unattended-upgrades Automatic-Reboot был закомментирован -> действовал дефолт (ребут).
+Fix (на evo1, sudo): создан /etc/apt/apt.conf.d/99-disable-auto-reboot:
+  Automatic-Reboot "false" + Automatic-Reboot-WithUsers "false". apt-config подтвердил.
+  Обновления безопасности остаются; авто-reboot отключён -> evo1 не перезагружается сам.
+Прежние ложные версии (устаревшие IP 192.168.x, короткие health-таймауты) — тоже фиксировались ранее.
