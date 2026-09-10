@@ -16,6 +16,17 @@
  *
  * Третья проба (чужой клиент) осталась зелёной под канарейкой и потому доказывает, что отказ
  * стережёт СОВПАДЕНИЕ КЛЮЧА, а не границу клиента: границу держит другое место.
+ *
+ * РАСШИРЕНО тем же тактом до пяти проб — закрыты ещё два отказа того же носителя:
+ *   `DERIVED_IS_NOT_A_STORE` — «производное не есть хранилище: оно пересчитывается из прочих
+ *      видов и никогда не становится источником само, иначе разойдётся с ними и будет выглядеть
+ *      надёжнее оттого, что меньше»;
+ *   `MEMORY_UNAVAILABLE` — «недоступное хранилище есть явная ошибка такта, а не работа „без
+ *      памяти“. Работа без памяти ВЫГЛЯДИТ КАК РАБОТА и даёт клиенту банк, который его не
+ *      помнит, — а узнаётся это только по жалобе».
+ *
+ * ВТОРАЯ КАНАРЕЙКА — ровно на этот довод: `markUnavailable` превращён в пустышку, то есть память
+ * начинает работать МОЛЧА вместо отказа. `Tests: 1 failed, 4 passed` — покраснела ровно она.
  */
 import { SharedMemory } from "./store";
 import { TenantRefusal, memoryKey } from "./keys";
@@ -50,5 +61,19 @@ describe("повтор под тем же ключом: идемпотентно
     m.view("cust_b").write({ ...предмет, value: "cards" } as never, "role-2.manager");
     expect(m.view("cust_a").read(memoryKey("last_screen"))?.value).toBe("accounts");
     expect(m.view("cust_b").read(memoryKey("last_screen"))?.value).toBe("cards");
+  });
+
+  it("DERIVED_IS_NOT_A_STORE — производное не становится источником", () => {
+    const m = new SharedMemory();
+    const производное = { ...предмет, key: "derived_last_screen" } as never;
+    expect(код(() => m.view("cust_a").write(производное, "role-2.manager")))
+      .toBe("DERIVED_IS_NOT_A_STORE");
+  });
+
+  it("MEMORY_UNAVAILABLE — недоступная память ОТКАЗЫВАЕТ, а не работает молча без памяти", () => {
+    const m = new SharedMemory();
+    m.view("cust_a").write(предмет as never, "role-2.manager");
+    (m as unknown as { markUnavailable(r: string): void }).markUnavailable("диск не отвечает");
+    expect(код(() => m.view("cust_a"))).toBe("MEMORY_UNAVAILABLE");
   });
 });
