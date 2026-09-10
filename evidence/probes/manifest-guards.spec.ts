@@ -30,6 +30,20 @@
  *
  * Ослепление проверки имён (`joined + " MLRO AUDIT"`) даёт `Tests: 1 failed, 9 passed` —
  * покраснела ровно она.
+ *
+ * ОДИННАДЦАТАЯ ПРОБА — и главное доказательство этого файла. Она проверяет `MANIFEST_TAMPERED`
+ * **КОДОМ**, тогда как проба дерева (`accepted-manifest.spec.ts:81`) проверяет только
+ * `toThrow(OrgRefusal)`.
+ *
+ * ПАРА ПРОГОНОВ, СДЕЛАННАЯ 2026-09-10, — подмена отказа на СОСЕДНИЙ ТОГО ЖЕ КЛАССА
+ * (`MANIFEST_TAMPERED` → `MANIFEST_WITHOUT_PROVENANCE`):
+ *
+ *     набор дерева (класс):   18 passed → 18 passed     ← СЛЕП
+ *     эта проба (код):        11 passed → 1 failed      ← ловит
+ *
+ * То есть страж целостности принятой карты начал бы сообщать «манифест без происхождения» вместо
+ * «манифест подделан», оператор искал бы не ту причину, а набор из восемнадцати проб сказал бы,
+ * что всё хорошо. Класс `OrgRefusal` несёт тринадцать отказов; одна проба зачлась за все.
  */
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -114,5 +128,17 @@ describe("стражи принятого манифеста карты", () => 
     n["OVERSIGHT_TWO"] = n[мlro]!; delete n[мlro];
     // ветвей по-прежнему ДВЕ: счётчик удовлетворён, независимость — нет
     expect(код(() => acceptManifest(m, свой))).toBe("MANIFEST_INDEPENDENT_BRANCH_SUBSTITUTED");
+  });
+
+  it("MANIFEST_TAMPERED называется КОДОМ: класс отказа предмета не различает", () => {
+    const m = копия();
+    (m.payload.functions as unknown as { organisational_owner: string }[])[0]!
+      .organisational_owner = "COO";
+    // ВАЖНО: здесь проверяется КОД, а не класс. Соседняя проба дерева
+    // (`accepted-manifest.spec.ts:81`) проверяет только `toThrow(OrgRefusal)` — и остаётся
+    // ЗЕЛЁНОЙ, если этот страж начнёт сообщать любой другой из тринадцати отказов класса.
+    // Доказано прогоном 2026-09-10: подмена MANIFEST_TAMPERED → MANIFEST_WITHOUT_PROVENANCE
+    // оставила весь набор 18/18 зелёным.
+    expect(код(() => acceptManifest(m, () => "чужой-хеш"))).toBe("MANIFEST_TAMPERED");
   });
 });
