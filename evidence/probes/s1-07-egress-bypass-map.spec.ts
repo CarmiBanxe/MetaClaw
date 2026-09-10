@@ -1,0 +1,61 @@
+/**
+ * ЗАМЕР S1-07 — прогон 2026-09-11 на снимке `b87a9041`. Пункт реестра `S1-07`.
+ *
+ * Поручено проверить три обхода: переименование · вложенные структуры · сочетания признаков.
+ * Проба ЗЕЛЕНА и закрепляет РАЗДЕЛ: что ловится сегодня и что нет.
+ *
+ *   ЛОВИТСЯ   подстрока (`customer_email` тоже почта) · вложенность любой глубины ·
+ *             массив объектов
+ *   НЕ ЛОВИТСЯ переименование вне перечня (`contact_line`, `dob`) ·
+ *             сочетание признаков, ни один из которых не опознаватель
+ *
+ * Перечень закрыт и содержит **37 имён** — число напечатано пробой, а не переписано в неё.
+ *
+ * ПОЧЕМУ ЭТО НЕ ЧИНИТСЯ РАСШИРЕНИЕМ ПЕРЕЧНЯ. Сегодняшнее устройство есть ЗАПРЕТ ПО ИМЕНИ:
+ * отправляется всё, кроме названного. Решение оператора 7 требует обратного — «не отправляются
+ * наружу без ЯВНО УСТАНОВЛЕННОГО разрешённого преобразования и назначения», то есть РАЗРЕШЕНИЯ
+ * ПО ОБЪЯВЛЕНИЮ: не отправляется ничто, кроме объявленного.
+ *
+ * Тридцать восьмое имя в перечне закрыло бы один обход и оставило бесконечность прочих. Инверсия
+ * закрывает их все разом и делает лишним спор о том, «достаточно ли анонимен» набор, — спор,
+ * который решение 7 прямо запретило начинать.
+ */
+import { identifyingName, identifyingWithin, IDENTIFYING_FIELD_NAMES } from "./identifying-fields";
+
+describe("S1-07 · обходы перечня опознавателей", () => {
+  it("ЛОВИТСЯ · подстрока: customer_email тоже почта", () => {
+    expect(identifyingName("customer_email")).toBe("email");
+    expect(identifyingName("primary_iban_ref")).toBe("iban");
+  });
+
+  it("ЛОВИТСЯ · вложенность на любой глубине", () => {
+    const глубоко = { a: { b: { c: { email: "x@y" } } } };
+    expect(identifyingWithin(глубоко, "$")).toBeDefined();
+  });
+
+  it("ЛОВИТСЯ · внутри массива объектов", () => {
+    const в_массиве = { items: [{ ok: 1 }, { passport: "AB123" }] };
+    expect(identifyingWithin(в_массиве, "$")).toBeDefined();
+  });
+
+  it("НЕ ЛОВИТСЯ · переименование: имя вне перечня", () => {
+    // Ни одно из 37 имён не является подстрокой этих.
+    for (const имя of ["contact_line", "dob", "birthdate", "handle", "subscriber_ref"]) {
+      expect(identifyingName(имя)).toBeUndefined();
+    }
+    expect(identifyingWithin({ contact_line: "x@y.z" }, "$")).toBeUndefined();
+  });
+
+  it("НЕ ЛОВИТСЯ · сочетание признаков, ни один из которых не опознаватель", () => {
+    const набор = { birth_date: "1980-01-01", gender: "F", nationality: "FR",
+                    occupation: "cardiologist", city: "Bayonne" };
+    for (const k of Object.keys(набор)) expect(identifyingName(k)).toBeUndefined();
+    expect(identifyingWithin(набор, "$")).toBeUndefined();
+  });
+
+  it("ПРЕДЕЛ НАЗВАН ЧИСЛОМ: перечень закрыт и содержит 37 имён", () => {
+    // eslint-disable-next-line no-console
+    console.log("S1-07 имён в перечне →", IDENTIFYING_FIELD_NAMES.length);
+    expect(IDENTIFYING_FIELD_NAMES.length).toBe(37);
+  });
+});
