@@ -40,12 +40,40 @@ import sys
         "emulation-revocation-test.py",
         "cross-repo-action-check.py",
         "merge-evidence-reconcile.py",
+        # Живые прогоны: поднимают службы, пишут архивы и базы. Мера, меняющая предмет, обходом
+        # не запускается — иначе обход становится участником того, что измеряет.
+        "audit-door-live.cjs",
+        "director-backup-live.cjs",
+        "director-durability-live.cjs",
+        "director-e2e-full.cjs",
+        "director-holder-live.cjs",
+        "director-loop-live.cjs",
+        "director-pseudonymisation-live.cjs",
+        "director-webhook-live.cjs",
+        "fx-door-live.cjs",
+        "director-cell-absent-live.sh",
+        "dist-alias-resolver.cjs",
     }
 )
 
 # Код 2 у argparse есть НЕВЕРНЫЙ ВЫЗОВ, а не отказ меры: скрипт требует довода, которого обход
 # не знает. Считать это отказом значило бы вменить предмету немоту обхода.
 НЕВЕРНЫЙ_ВЫЗОВ = 2
+
+
+# Чем запускается мера. Отбор по расширению здесь ЗАКОНЕН: он о способе запуска, а не о предмете.
+def ЖИВОЙ_ПРОГОН(имя: str) -> bool:
+    """Живой прогон поднимает службу и пишет на диск. Обход его не запускает.
+
+    Правилом, а не перечнем: перечень я писала рукой и пропустила ПЯТЬ из одиннадцати —
+    `recon-door-live`, `safeguarding-door-live`, `sanctions-door-live`, `swift-door-live`,
+    `treasury-live`. Все пять обход объявил ОТКАЗАВШИМИ, тогда как они лишь не нашли среды.
+    Перечень, писанный рукой, есть тот же отбор по признаку, похожему на предмет.
+    """
+    return "-live." in имя or имя.endswith("-live.cjs") or "live" in имя.split(".")[0].split("-")
+
+
+ЗАПУСК = {".py": [sys.executable], ".cjs": ["node"], ".mjs": ["node"], ".sh": ["bash"]}
 
 
 def исход(путь: pathlib.Path, корень: pathlib.Path, таймаут: int) -> tuple[str, str]:
@@ -58,7 +86,7 @@ def исход(путь: pathlib.Path, корень: pathlib.Path, таймау�
     """
     try:
         r = subprocess.run(
-            [sys.executable, str(путь.resolve())],
+            [*ЗАПУСК[путь.suffix], str(путь.resolve())],
             capture_output=True,
             text=True,
             timeout=таймаут,
@@ -123,9 +151,14 @@ def main() -> int:
         return самотест()
     корень = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else ".")
     таймаут = 60
-    меры = sorted(м for м in (корень / "scripts").glob("*.py") if м.name not in МЕНЯЮЩИЕ)
+    меры = sorted(
+        м
+        for шаблон in ("*.py", "*.cjs", "*.mjs", "*.sh")
+        for м in (корень / "scripts").glob(шаблон)
+        if м.name not in МЕНЯЮЩИЕ and not ЖИВОЙ_ПРОГОН(м.name)
+    )
     print(
-        "ВСЕЛЕННАЯ, печатается всегда: все `scripts/*.py`, кроме МЕНЯЮЩИХ дерево. Прежняя "
+        "ВСЕЛЕННАЯ, печатается всегда: `scripts/*.py`, `*.cjs`, `*.mjs`, `*.sh`, кроме МЕНЯЮЩИХ дерево. Прежняя "
         "редакция брала только `*gate*.py` — отбор ПО ИМЕНИ — и не видела 22 скрипта, среди "
         "них `bdr-roadmap-audit.py`, чей отказ нашла линия, а не обход."
     )
