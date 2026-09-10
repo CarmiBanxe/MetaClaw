@@ -78,7 +78,49 @@ def исход(путь: pathlib.Path, корень: pathlib.Path, таймау�
     return "ОТКАЗАЛО", строки[-1][:160] if строки else "отказ без сообщения"
 
 
+ПОДСАДКИ = {
+    "a-passes-gate.py": 'print("всё хорошо")\n',
+    "b-refuses-gate.py": 'import sys\nprint("GATE: FAIL")\nsys.exit(1)\n',
+    "c-crashes-gate.py": 'import subprocess\nsubprocess.run(["git","ls-files"],check=True)\n',
+    "d-needs-arg-gate.py": (
+        'import argparse\np=argparse.ArgumentParser(); p.add_argument("--research",required=True); p.parse_args()\n'
+    ),
+}
+ЖДЁМ = {
+    "a-passes-gate.py": "ПРОШЛО",
+    "b-refuses-gate.py": "ОТКАЗАЛО",
+    "c-crashes-gate.py": "НЕ СМОГЛО",
+    "d-needs-arg-gate.py": "НЕВЕРНЫЙ ВЫЗОВ",
+}
+
+
+def самотест() -> int:
+    """Обход, видевший только зелёное, не проверен ничем.
+
+    Четыре подсадки — по одной на каждый исход. Прогон в каталоге БЕЗ `.git`: третья подсадка
+    падает именно потому, что репозитория нет, и это тот самый случай, который прежняя редакция
+    обхода принимала за отказ меры.
+    """
+    import tempfile
+
+    провалов = 0
+    with tempfile.TemporaryDirectory() as д:
+        корень = pathlib.Path(д)
+        (корень / "scripts").mkdir()
+        for имя, тело in ПОДСАДКИ.items():
+            (корень / "scripts" / имя).write_text(тело, encoding="utf-8")
+        for имя, ждём in ЖДЁМ.items():
+            вышло, _ = исход(корень / "scripts" / имя, корень, 30)
+            if вышло != ждём:
+                провалов += 1
+                print(f"  САМОТЕСТ ПРОВАЛ: {имя} ждали {ждём}, вышло {вышло}")
+    print(f"самотест обхода: подсадок {len(ЖДЁМ)}, провалов {провалов}")
+    return 1 if провалов else 0
+
+
 def main() -> int:
+    if "--self-test" in sys.argv:
+        return самотест()
     корень = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else ".")
     таймаут = 60
     меры = sorted(м for м in (корень / "scripts").glob("*.py") if м.name not in МЕНЯЮЩИЕ)
