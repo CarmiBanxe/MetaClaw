@@ -67,7 +67,7 @@
 ## Учёт на дереве сведения
 
 ```
-227 + 47 = 324 ровно · повторов нет · пересечений нет · функций вне обоих нет
+277 + 47 = 324 ровно · повторов нет · пересечений нет · функций вне обоих нет
 
 225  PARITY_QUARANTINE_UNRELEASED      14  EXTERNAL_RAIL_ABSENT
  12  CARRIER_INCOMPLETE                10  DOMAIN_SPEC_NOT_TRANSFERRED
