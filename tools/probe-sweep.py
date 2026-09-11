@@ -28,9 +28,9 @@ import sys
 РАЗМЕЩЕНИЕ = {
     "append-only-reachability": "libraries/banksy-mlro-boundary/src",
     "timeout-never-approves": "libraries/banksy-mlro-boundary/src",
-    "s3-06-receipt-binding-gap": "libraries/banksy-mlro-boundary/src",
-    "s3-07-caller-switches-gap": "libraries/banksy-mlro-boundary/src",
-    "s3-08-replay-key-bypass": "libraries/banksy-mlro-boundary/src",
+    "s3-06-receipt-binding-protection": "libraries/banksy-mlro-boundary/src",
+    "s3-07-server-policy-protection": "libraries/banksy-mlro-boundary/src",
+    "s3-08-replay-bound-to-content-protection": "libraries/banksy-mlro-boundary/src",
     "central-restore-dual-control-probe-2026-09-10": "libraries/banksy-durable/src",
     "manifest-guards": "libraries/banksy-org/src",
     "memory-idempotence": "libraries/banksy-memory/src",
@@ -95,6 +95,26 @@ def разместить(снимок: pathlib.Path, источник: pathlib.P
     return размещено, убрано, неразмещённые
 
 
+def убрать(снимок: pathlib.Path) -> int:
+    """Снять СВОИ пробы с дерева после прогона. Возвращает число снятых.
+
+    ЗАЧЕМ. 2026-09-11 обход оставил 31 пробу в ОБЩЕМ дереве интеграции, и они были взяты jest
+    наравне с деревом: `conductor` показал 493 вместо 435, `mlro-boundary` 311 вместо 292,
+    и четыре набора числились КРАСНЫМИ. Чужая линия сведения потратила такт на объяснение
+    чисел, которые я же и сдвинула.
+
+    ПРОБЫ ЦЕНТРАЛЬНОГО ТЕРМИНАЛА СУТЬ ПРИБОР, А НЕ ДЕРЕВО. Прибор, оставленный внутри
+    измеряемого, меряет себя вместе с предметом.
+    """
+    снято = 0
+    for f in снимок.rglob("cc-*.spec.ts"):
+        if "node_modules" in f.parts:
+            continue
+        f.unlink()
+        снято += 1
+    return снято
+
+
 def прогнать(снимок: pathlib.Path, проект: str) -> dict:
     файлов = len(list((снимок / проект).rglob(ПРЕФИКС + "*.spec.ts")))
     if файлов == 0:
@@ -129,7 +149,12 @@ def главное() -> int:
         for n in нет:
             print("   ", n)
 
-    строки = [прогнать(снимок, пр) for пр in проекты(снимок)]
+    # УБОРКА ОБЯЗАТЕЛЬНА И ПРИ ОТКАЗЕ ПРОГОНА: иначе прибор остаётся внутри измеряемого.
+    try:
+        строки = [прогнать(снимок, пр) for пр in проекты(снимок)]
+    finally:
+        снято = убрать(снимок)
+        print(f"убрано проб после прогона: {снято} — прибор не остаётся в дереве")
     строки = [s for s in строки if s["файлов"]]
     print(f"\n{'проект':34s} {'файлов':>6} {'зелёных':>8} {'красных':>8}")
     for s in строки:
