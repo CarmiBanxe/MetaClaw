@@ -49,9 +49,13 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { acceptManifest, type Manifest } from "./manifest";
 
-const ЖИВОЙ = JSON.parse(
-  readFileSync(join(__dirname, "../../../governance/org/accepted-org-manifest.json"), "utf8"),
-) as Manifest;
+// ПУТЬ ПЕЧАТАЕТСЯ (правило R5, `specs/gap-probe-must-name-its-reddening.md`). Проба-читатель,
+// молчащая о прочитанном пути, неотличима от пробы, читающей соседа: в этой же линии
+// `require.resolve` по имени пакета увёл пробу из снимка в живое дерево, и вскрыла это только
+// непокрасневшая канарейка. Здесь путь берётся от `__dirname` и объявляется вслух.
+const ПУТЬ_МАНИФЕСТА = join(__dirname, "../../../governance/org/accepted-org-manifest.json");
+console.log("manifest-guards читает →", ПУТЬ_МАНИФЕСТА);
+const ЖИВОЙ = JSON.parse(readFileSync(ПУТЬ_МАНИФЕСТА, "utf8")) as Manifest;
 // Хеш подаётся снаружи: проба меряет ПРОВЕРКИ СОДЕРЖИМОГО, а не пересчёт хеша.
 const свой = () => ЖИВОЙ.integrity.digest;
 const копия = (): Manifest => JSON.parse(JSON.stringify(ЖИВОЙ)) as Manifest;
