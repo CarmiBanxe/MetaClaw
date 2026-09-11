@@ -103,7 +103,7 @@ const РЕШЕНИЕ = { caseId: "case_1", decidedBy: "sim://sandbox/MLRO", deci
                   roles: ["MLRO"], reason: "основание названо словами" };
 
 describe("S1-09 · контракт handoff не подключён к пути решений", () => {
-  it("ЗАПРЕЩЁННОЕ ПОЛЕ границы проходит дверь", async () => {
+  it("ЗАЩИТА: ЗАПРЕЩЁННОЕ ПОЛЕ границы дверь НЕ пропускает", async () => {
     const d = await дверь();
     try {
       // `suspicionRationale` — из закрытого перечня FORBIDDEN_RESPONSE_FIELDS. Контракт
@@ -112,18 +112,22 @@ describe("S1-09 · контракт handoff не подключён к пути 
                                  investigatorNotes: "смотри дело 42" });
       // eslint-disable-next-line no-console
       console.log("S1-09 запрещённое поле →", r.status, JSON.stringify(r.body).slice(0, 100));
-      expect(r.status).toBe(200);        // ← ДЕФЕКТ
+      // ЩЕЛЬ ЗАКРЫТА 2026-09-11: контракт handoff ПОДКЛЮЧЁН к пути решений, и запрещённое
+      // поле, приехавшее в теле, теперь показывается контракту — именно оно и проходило дверь.
+      expect(r.status).not.toBe(200);    // ← ЗАЩИТА
     } finally { await d.close(); }
   });
 
-  it("состояние дела ИЗМЕНЕНО, хотя граница нарушена", async () => {
+  it("ЗАЩИТА: состояние дела НЕ изменено, когда граница нарушена", async () => {
     const d = await дверь();
     try {
       await d.decide({ ...РЕШЕНИЕ, sarNarrative: "полный текст подозрения" });
       const после = d.queue.get("case_1")?.status;
       // eslint-disable-next-line no-console
       console.log("S1-09 состояние после нарушения границы →", после);
-      expect(после).not.toBe("PENDING");  // ← ДЕФЕКТ: проверка обязана быть ДО изменения
+      // Решение оператора 9 дословно: проверки подключаются ДО изменения состояния. Дело
+      // остаётся PENDING — отказ случился раньше, чем что-либо сдвинулось.
+      expect(после).toBe("PENDING");      // ← ЗАЩИТА
     } finally { await d.close(); }
   });
 

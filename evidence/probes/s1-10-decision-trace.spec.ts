@@ -63,9 +63,35 @@ async function дверь(журнал: VolatileLog) {
     async decide() {
       const r = await fetch(`http://127.0.0.1:${port}/v0/hitl/decisions`, {
         method: "POST", headers: { "content-type": "application/json" },
-        body: JSON.stringify({ caseId: "case_1", decidedBy: "sim://sandbox/MLRO",
-                               decision: "APPROVE", roles: ["MLRO"],
-                               reason: "основание названо словами" }),
+        // ОСНАСТКА ПЕРЕПИСАНА 2026-09-11, И ЭТО САМО ПО СЕБЕ ЗАМЕР.
+        //
+        // Прежняя подавала `{caseId, decidedBy, decision: "APPROVE", roles, reason}` — и этого
+        // хватало. Сегодня дверь отвергает такое трижды подряд, и каждый отказ есть исполненное
+        // требование:
+        //
+        //   409 DECISION_CONTEXT_MISMATCH   ← решение связано с ДЕЛОМ и КЛИЕНТОМ (решение 9)
+        //   400 CONTRACT_VERSION_MISMATCH   ← контракт handoff ПОДКЛЮЧЁН к пути решений (S1-09)
+        //   улики без провенанса          ← EVIDENCE_WITHOUT_PROVENANCE
+        //
+        // КРАСНЫЙ КОНТРОЛЬ ЗДЕСЬ ЕСТЬ ДОКАЗАТЕЛЬСТВО ЧУЖОЙ ПОЧИНКИ: щель S1-09 («контракт
+        // handoff не подключён к пути решений») закрыта ровно тем, что дверь теперь требует
+        // контракт и отвергает всё, что его не несёт.
+        //
+        // СЛОВАРИ: дверь берёт `decision` в словаре ОЧЕРЕДИ (`APPROVE`) и переводит его в
+        // словарь контракта (`PROCEED`) отображением `СТАТУС_ГРАНИЦЫ`. То есть отображение
+        // ЕСТЬ и оно явное — требование решения 4 исполнено. Остальные поля контракта дверь
+        // строит САМА из дела, и потому здесь не подаются: подать их значило бы позволить
+        // обратившемуся назначить себе полномочие.
+        body: JSON.stringify({
+          caseId: "case_1", customerReference: "cust_1",
+          decidedBy: "sim://sandbox/MLRO", roles: ["MLRO"],
+          reason: "основание названо словами",
+          decision: "APPROVE",              // ← словарь ОЧЕРЕДИ; дверь сама переводит в PROCEED
+          contractVersion: "dmi-1.0.0-draft",
+          requestId: "tx_1",
+          evidenceReferences: [{ evidenceId: "ev-1", provenance: "hitl.case.case_1",
+                                 recordedAt: "2026-09-11T00:00:00Z" }],
+        }),
       });
       return { status: r.status, body: (await r.json()) as Record<string, unknown> };
     },

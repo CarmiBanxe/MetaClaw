@@ -73,16 +73,36 @@ describe("S2-05 · характеризация контракта KYC ДО пе
     expect(new UnknownUser("x", "c1")).not.toBeInstanceOf(InvalidSignature);
   });
 
-  it("ПОВЕРХНОСТЬ закреплена числом: двенадцать вывезенных имён", async () => {
+  it("ПОВЕРХНОСТЬ закреплена числом: семнадцать вывезенных имён", async () => {
     const m = (await import("./kyc-provider-port")) as Record<string, unknown>;
     const имена = Object.keys(m).sort();
     // ТОЧНЫЙ перечень: перенос обязан сохранить его посимвольно. Интерфейсы стираются типом и
     // сюда не входят — это свойство сборки, а не упущение.
+    //
+    // ── ПОВЕРХНОСТЬ СДВИНУЛАСЬ 2026-09-11, И ПРОБА ЭТО СООБЩИЛА ────────────────────────────
+    //
+    // Прежде закреплено было ДЕВЯТЬ имён (заголовок говорил «двенадцать» — расхождение
+    // заголовка с перечнем существовало и до сегодня; исправлено вместе с числом). Прибавилось
+    // ВОСЕМЬ, и все восемь — от переходника `engine ↔ wire`, сведённого ветвью `kyc-engine-wire`:
+    //
+    //     KYCStatus · KYCType · KYC_RETRIGGER_TYPES · KycProjectionRefusal · RejectionReason
+    //     portToWire · resultToEngine · resultToWire
+    //
+    // ЧТО ЭТО ЗНАЧИТ И ЧЕГО НЕ ЗНАЧИТ. Характеризация НЕ судит, хорош ли сдвиг: её дело —
+    // не дать поверхности уехать МОЛЧА. Восемь имён названы поимённо и привязаны к ветви,
+    // которая их внесла; вопрос «вправе ли порт вывозить переводчики» остаётся открытым и
+    // относится к развилке о карте KYC, закреплённой за оператором.
+    //
+    // Число в заголовке и длина перечня сверяются ниже отдельным утверждением — иначе
+    // заголовок и перечень могут разойтись, как они уже расходились.
     expect(имена).toEqual([
-      "DeferredKYCProviderAdapter", "InvalidSignature", "KYCProviderError", "KYCTier",
-      "ProviderKYCStatus", "ProviderUnavailable", "TierDowngradeBlocked", "UnknownUser",
-      "WebhookReplayDetected",
+      "DeferredKYCProviderAdapter", "InvalidSignature", "KYCProviderError", "KYCStatus",
+      "KYCTier", "KYCType", "KYC_RETRIGGER_TYPES", "KycProjectionRefusal",
+      "ProviderKYCStatus", "ProviderUnavailable", "RejectionReason", "TierDowngradeBlocked",
+      "UnknownUser", "WebhookReplayDetected", "portToWire", "resultToEngine", "resultToWire",
     ]);
+    // Заголовок обязан сходиться с перечнем: расхождение уже случалось и осталось незамеченным.
+    expect(имена).toHaveLength(17);
   });
 
   it("КОРРЕЛЯЦИЯ обязательна ПО ТИПУ: ошибку без неё нельзя построить", () => {

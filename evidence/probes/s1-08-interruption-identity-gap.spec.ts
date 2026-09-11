@@ -57,18 +57,20 @@ async function дверь() {
 }
 
 describe("S1-08 · рычаг прерывания: чем удостоверяется вызывающий", () => {
-  it("ПОСТОРОННИЙ, знающий строку двойника, ПОДНИМАЕТ остановку", async () => {
+  it("ЗАЩИТА: посторонний, знающий строку двойника, остановку НЕ поднимает", async () => {
     const d = await дверь();
     try {
       const r = await d.post({ by: "sim://sandbox/MLRO", reason: "основание названо словами",
                                stopped: true, scopes: [] });
       // eslint-disable-next-line no-console
       console.log("S1-08 подъём посторонним →", r.status, JSON.stringify(r.body).slice(0, 90));
-      expect(r.status).toBe(200);          // ← ДЕФЕКТ: удостоверения нет, только знание строки
+      // ЩЕЛЬ ЗАКРЫТА 2026-09-11 (решение оператора 8): имя `sim://` и наличие в перечне
+      // КАЛЛЕРА НЕ УДОСТОВЕРЯЮТ. Знание строки перестало быть полномочием.
+      expect(r.status).not.toBe(200);      // ← ЗАЩИТА
     } finally { await d.close(); }
   });
 
-  it("ПОСТОРОННИЙ СНИМАЕТ остановку — и это тяжелее подъёма", async () => {
+  it("ЗАЩИТА: посторонний остановку НЕ снимает — и это тяжелее подъёма", async () => {
     const d = await дверь();
     try {
       await d.post({ by: "sim://sandbox/MLRO", reason: "остановка по основанию", stopped: true });
@@ -76,7 +78,9 @@ describe("S1-08 · рычаг прерывания: чем удостоверя�
                                stopped: false });
       // eslint-disable-next-line no-console
       console.log("S1-08 СНЯТИЕ посторонним →", r.status, JSON.stringify(r.body).slice(0, 90));
-      expect(r.status).toBe(200);          // ← ДЕФЕКТ, и он опаснее: снимается ЗАЩИТА
+      // Опаснее подъёма: снимается ЗАЩИТА. Основание требуется и для остановки, И ДЛЯ
+      // ОСВОБОЖДЕНИЯ — решение оператора 8 дословно.
+      expect(r.status).not.toBe(200);      // ← ЗАЩИТА
     } finally { await d.close(); }
   });
 
