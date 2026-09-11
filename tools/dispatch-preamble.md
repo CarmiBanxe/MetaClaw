@@ -11,17 +11,29 @@
 ## Твоё дерево — заведи его ПЕРВОЙ КОМАНДОЙ, до всякого чтения
 
 ```bash
-ВЕТКА=agent/factory/director01/<ИМЯ>
-ДЕРЕВО=/home/mmber/wt/<КОРОТКОЕ-ИМЯ>
-git -C /home/mmber/wt/bt-sepa01 worktree add "$ДЕРЕВО" -b "$ВЕТКА" b87a9041
-cd "$ДЕРЕВО"
+# ИМЕНА ЛАТИНСКИЕ — ОБЯЗАТЕЛЬНО. bash кириллические не берёт: присваивание молча не
+# происходит, переменная пуста, и `worktree add "$ДЕРЕВО"` заводит дерево по ЛИТЕРАЛЬНОМУ
+# пути «$ДЕРЕВО» ВНУТРИ общего дерева. Случилось 2026-09-11 по вине этого самого файла.
+branch=agent/factory/director01/<ИМЯ>
+tree=/home/mmber/wt/<КОРОТКОЕ-ИМЯ>
+git -C /home/mmber/wt/bt-sepa01 worktree add "$tree" -b "$branch" b87a9041
+cd "$tree"
+```
+
+**Проще и надёжнее — без переменных вовсе.** Подставь значения руками:
+
+```bash
+git -C /home/mmber/wt/bt-sepa01 worktree add /home/mmber/wt/<КОРОТКОЕ-ИМЯ> \
+    -b agent/factory/director01/<ИМЯ> b87a9041
+cd /home/mmber/wt/<КОРОТКОЕ-ИМЯ>
 ```
 
 **Проверь, что переселился, и не верь тому, что не проверил:**
 
 ```bash
-git -C "$ДЕРЕВО"                rev-parse --abbrev-ref HEAD   # твоя ветка
-git -C /home/mmber/wt/bt-sepa01 rev-parse --abbrev-ref HEAD   # agent/factory/director01/sepa-outgoing-entry
+git -C /home/mmber/wt/<КОРОТКОЕ-ИМЯ> rev-parse --abbrev-ref HEAD   # твоя ветка
+git -C /home/mmber/wt/bt-sepa01      rev-parse --abbrev-ref HEAD   # sepa-outgoing-entry
+ls -d '/home/mmber/wt/bt-sepa01/$tree' 2>/dev/null && echo "ДЕРЕВО ЗАВЕДЕНО ПО ЛИТЕРАЛЬНОМУ ИМЕНИ — снеси и заведи заново"
 ```
 
 **Обязаны дать РАЗНЫЕ ветки.** Если совпали — ты в общем дереве, и любая твоя подсадка видна
