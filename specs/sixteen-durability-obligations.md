@@ -22,13 +22,20 @@
 | 6–7 | `complaints/src/complaints-engine.ts:106,107` | `auditLogEntries`, `resolutionEntries` |
 | 8 | `complaints/src/fos-escalation.ts:128` | `caseLogEntries` |
 | 9 | `customer_lifecycle/src/lifecycle-engine.ts:122` | `_transitionLog` |
-| 10 | `ato_prevention/src/ato-engine.ts:111` | `logEntries` |
-| 11 | `device_fingerprint/src/fingerprint-engine.ts:60` | `deviceLogEntries` |
+| 10 | `financial-crime/ato_prevention/src/ato-engine.ts:111` | `logEntries` |
+| 11 | `financial-crime/device_fingerprint/src/fingerprint-engine.ts:60` | `deviceLogEntries` |
 | 12 | `fraud_tracer/src/tracer-engine.ts:50` | `log` |
 | 13 | `midaz_mcp/src/midaz-client.ts:37` | `transactionLogEntries` |
 | 14–16 | `observability/src/{health-aggregator:81, metrics-collector:55, observability-agent:51}` | `log`, `grafanaPushLog`, `alerts` |
 
-**Устройство одинаково у всех шестнадцати и хуже, чем «неверное умолчание»:**
+> **ПОПРАВКА 2026-09-11.** «Устройство одинаково у всех шестнадцати» — **неверно**: носитель 1
+> (`Recorders.events`) уже принимает `AppendOnlyLog` доводом сборки, читает через журнал, и проба
+> перезапуска зелена (35 passed). Остаётся **15 из 16**. Два пути были указаны как `identity/`,
+> фактически обе службы лежат в `financial-crime/`. Признак «объявлен массив» починку от
+> непочинки НЕ отличает: массив остаётся запасным путём и у починенного. Замер —
+> `MEASURE-S2-04-DURABILITY-STATE-2026-09-11.md`.
+
+**Устройство у пятнадцати из шестнадцати одинаково и хуже, чем «неверное умолчание»:**
 
 ```ts
 private readonly auditLogEntries: AuditEntry[] = []; // I-24
