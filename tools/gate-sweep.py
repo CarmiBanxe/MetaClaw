@@ -40,19 +40,29 @@ import sys
     "credential-containment-gate.py": "удержание учётных данных снято 2026-09-08",
 }
 
+# ПЕРЕЧЕНЬ ВЁЛСЯ ПРЕДПОЛОЖЕНИЕМ — И ЧЕТЫРЕ ЗАПИСИ ОКАЗАЛИСЬ НЕВЕРНЫ.
+#
+# Замер 2026-09-11 (запуск в копии, `git status` до и после): `emulation-revocation-test.py`,
+# `cross-repo-action-check.py`, `post-merge-coverage.py` и `accept-authored-map.py` **дерева НЕ
+# меняют**. Первая прямо говорит о себе «on a scratch copy, reverted whatever happens» — то есть
+# предположение противоречило тексту, который лежал рядом.
+#
+# **Исключение по предположению сужает вселенную молча.** Обход печатал `мер 69`, тогда как
+# запускать можно больше; исполняющая линия вывела свою вселенную ЗАМЕРОМ и получила 73, после
+# чего сказала прямо: «подгонять под 69 я не стал».
+#
+# Четыре возвращены во вселенную. Оставшиеся помечены основанием: ЗАМЕРЕНО либо ПРЕДПОЛОЖЕНО.
+# Предположение остаётся там, где запуск необратим по существу (слияние, поход наружу), и
+# проверять его запуском значило бы совершить то, чего опасаешься.
 МЕНЯЮЩИЕ = frozenset(
     {
-        "guarded-merge.py",
-        "merge-attestation.py",
-        "imports-refresh.py",
-        "migrate-overlay-keys.py",
-        "build-provenance-digests.py",
-        "parity-donor-run.py",
-        "post-merge-coverage.py",
-        "accept-authored-map.py",
-        "emulation-revocation-test.py",
-        "cross-repo-action-check.py",
-        "merge-evidence-reconcile.py",
+        "guarded-merge.py",  # ПРЕДПОЛОЖЕНО: сливает; проверять запуском нельзя
+        "merge-attestation.py",  # ПРЕДПОЛОЖЕНО: то же, и снята директивой
+        "imports-refresh.py",  # ПРЕДПОЛОЖЕНО: переписывает вендоренные импорты
+        "migrate-overlay-keys.py",  # ПРЕДПОЛОЖЕНО: переносит ключи
+        "build-provenance-digests.py",  # ПРЕДПОЛОЖЕНО: пишет дайджесты
+        "parity-donor-run.py",  # ПРЕДПОЛОЖЕНО: ходит в донорское дерево
+        "merge-evidence-reconcile.py",  # ПРЕДПОЛОЖЕНО: сверяет улики слияния
         # Живые прогоны: поднимают службы, пишут архивы и базы. Мера, меняющая предмет, обходом
         # не запускается — иначе обход становится участником того, что измеряет.
         "audit-door-live.cjs",
