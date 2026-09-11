@@ -36,7 +36,7 @@ def разрешить(откуда: pathlib.Path, цель: str) -> pathlib.Pat
     """Относительный ввоз И пакетный псевдоним. Без второго библиотеки выглядят недостижимыми."""
     if цель.startswith("."):
         p = (откуда.parent / цель).resolve()
-        for к in (p.with_suffix(".ts"), p / "index.ts", p):
+        for к in (p.with_name(p.name + ".ts"), p.with_suffix(".ts"), p / "index.ts", p):
             if к.is_file():
                 return к
         return None
@@ -47,7 +47,7 @@ def разрешить(откуда: pathlib.Path, цель: str) -> pathlib.Pat
             if not хвост:
                 return корень_пс if корень_пс.is_file() else None
             баз = корень_пс.parent / хвост
-            for к in (баз.with_suffix(".ts"), баз / "index.ts", баз):
+            for к in (баз.with_name(баз.name + ".ts"), баз.with_suffix(".ts"), баз / "index.ts", баз):
                 if к.is_file():
                     return к
     return None
@@ -63,7 +63,12 @@ def ввозы(ф: pathlib.Path) -> list[str]:
 
 
 входы = []
-for шаб in ("services/*/*/src/main.ts", "services/*/*/src/http/server.ts", "services/*/*/src/index.ts"):
+for шаб in (
+    "services/*/*/src/main.ts",
+    "services/*/*/src/http/main.ts",
+    "services/*/*/src/http/server.ts",
+    "services/*/*/src/index.ts",
+):
     входы += list(КОРЕНЬ.glob(шаб))
 видел, очередь = set(), list(входы)
 while очередь:
