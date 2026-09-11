@@ -82,8 +82,28 @@ describe("S3-08 · повтор с тем же ключом", () => {
     expect(e.enforce(запрещённое as never).enforced).toBe(true);
   });
 
-  it("объявленный отказ ALREADY_ENFORCED_DIFFERENTLY не выбрасывается НИКОГДА", () => {
-    // Он есть в перечне типов и ни в одной строке кода. Имя без меры.
-    expect(true).toBe(true);
+  it("объявленный отказ ALREADY_ENFORCED_DIFFERENTLY НЕ ПРОИЗВОДИТСЯ НИ ОДНОЙ СТРОКОЙ", () => {
+    // РЕДАКЦИЯ 2, 2026-09-11. Прежнее тело говорило `expect(true).toBe(true)` — заголовок
+    // ЗАЯВЛЯЛ, тело не доказывало ничего. Зелёная проба, измеряющая ноль: ровно тот разряд,
+    // который эта линия находит у чужих мер. Найдена сплошным обходом собственных проб.
+    //
+    // Утверждение проверяемо: имя обязано встречаться РОВНО ОДИН раз — в перечне типов, —
+    // и ни одна строка не вправе его ПРОИЗВОДИТЬ (ни `throw`, ни `refusal:`, ни `return`).
+    // РЕДАКЦИЯ 3, 2026-09-11. `require.resolve` по имени пакета разрешался в ЖИВОЕ ДЕРЕВО
+    // (`/home/mmber/wt/bt-sepa01/...`), а не в снимок, потому что `node_modules` снимка есть
+    // ссылка на дерево. Проба молча мерила не тот предмет, и КАНАРЕЙКА это вскрыла: подсадка
+    // производящей строки в снимок не краснила пробу. Путь берётся от САМОГО ФАЙЛА ПРОБЫ.
+    const путь = require("node:path").join(__dirname, "local-enforcement.ts");
+    const строки = require("node:fs").readFileSync(путь, "utf8").split("\n") as string[];
+    const где = строки
+      .map((s: string, i: number) => [i + 1, s] as [number, string])
+      .filter(([, s]: [number, string]) => s.includes("ALREADY_ENFORCED_DIFFERENTLY"));
+    const производящие = где.filter(([, s]: [number, string]) =>
+      /throw|refusal\s*:|return\s/.test(s));
+    console.log("S3-08 объявленный отказ →", JSON.stringify({
+      упоминаний: где.length, строки: где.map(([n]: [number, string]) => n), производящих: производящие.length,
+    }));
+    expect(где.length).toBe(1);          // только объявление
+    expect(производящие.length).toBe(0); // ни одна строка его не производит
   });
 });
